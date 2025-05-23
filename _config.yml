@@ -12,7 +12,7 @@ site_theme               : "default"
 title                    : "Louis Villejoubert"
 title_separator          : "-"
 name                     : &name "Louis Villejoubert"
-description              : &description "PhD Candidate | [Your Research Focus or Tagline Here]"
+description              : &description "PhD Candidate | "
 url                      : "https://villejoubertlouis.github.io"  # your GitHub Pages site URL
 baseurl                  : ""  # leave empty unless it's in a subdirectory
 repository               : "VillejoubertLouis/VillejoubertLouis"
@@ -23,20 +23,20 @@ repository               : "VillejoubertLouis/VillejoubertLouis"
 author:
   # Biographic information
   avatar           : "profile.png"
-  name             : "Your Sidebar Name"
+  name             : "Louis"
   pronouns         : # example: "she/her"  
   bio              : "Short biography for the left-hand sidebar"
   location         : "Earth"
-  employer         : "Red Brick University"
+  employer         : "University of Cambridge"
   uri              : # URL
-  email            : "none@example.org" 
+  email            : "lv362@cam.ac.uk" 
 
   # Academic websites
   academia         : # URL
   arxiv            : # URL - Update with the correct link to your profile
   googlescholar    : "https://scholar.google.com/citations?user=PS_CX0AAAAAJ"
   impactstory      : # URL
-  orcid            : "http://orcid.org/yourorcidurl"
+  orcid            : "https://orcid.org/0009-0009-7095-1016"
   semantic         : # URL
   pubmed           : "https://www.ncbi.nlm.nih.gov/pubmed/?term=john+snow"
   researchgate     : # URL
