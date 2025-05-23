@@ -1,6 +1,6 @@
 ---
 permalink: /
-title: "Welcome to my reasearch website"
+title: "Welcome to my research website."
 author_profile: true
 redirect_from: 
   - /about/
