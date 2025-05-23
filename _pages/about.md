@@ -21,10 +21,10 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 Does a cochlear implant sound the same to everyone — or is it personal?
 ------
 
-<table style="border: none; border-collapse: collapse;">
+<table style="border-collapse: collapse; width: 100%;">
   <tr>
-    <td style="vertical-align: top; padding-right: 20px; border: none;">
-      <img src="/images/medel-electrode-array-ezgif.com-crop.gif" alt="Electrode Array Animation" width="250">
+    <td style="vertical-align: top; padding-right: 20px; border: none; width: 260px;">
+      <img src="/images/medel-electrode-array-ezgif.com-crop.gif" alt="Electrode Array Animation" style="max-width: 100%; height: auto; display: block;">
     </td>
     <td style="border: none;">
       <p>
