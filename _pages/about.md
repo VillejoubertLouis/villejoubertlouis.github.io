@@ -23,7 +23,7 @@ Include a small presentation of the project with great (spectrogram vs insertion
 
 
 
-Explore how different sounds affect people with cochlear implants — and how personal factors shape what they hear.
+Does a cochlear implant sound the same to everyone — or is it personal?
 ------
 Include a small presentation of the project with great (spectrogram vs insertion depth?). Example of sounds with more or less and like to the article. 
 
