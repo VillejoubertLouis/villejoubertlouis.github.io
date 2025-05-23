@@ -9,7 +9,7 @@ redirect_from:
 
 <strong>PhD student in Neurosciences</strong>, passionate about making sound accessible to all.
 
-I love working at the intersection of <strong>brain science</strong>, <strong>deep learning</strong>, <strong>machine learning</strong>,
+I love working at the intersection of <strong>brain science</strong>, <strong>audiology</strong>, <strong>deep learning</strong>, <strong>machine learning</strong>,
 <strong>neuroprosthetics</strong>, and <strong>human-computer interaction</strong> to build inclusive,
 intelligent technologies for hearing.
 
