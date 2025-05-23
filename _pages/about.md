@@ -25,9 +25,11 @@ Does a cochlear implant sound the same to everyone — or is it personal?
   <tr>
     <td style="vertical-align: top; padding-right: 20px; border: none; width: 260px;">
       <img src="/images/medel-electrode-array-ezgif.com-crop.gif" alt="Electrode Array Animation" style="max-width: 100%; height: auto; display: block;">
-      <div style="font-size: 0.1em; color: #555; margin-top: 5px;">
-        <em>Figure 1. Animation of electrode insertion (from Mel El).</em> 
-      </div>
+<div>
+  <span style="font-size: 8px !important; color: #555 !important; display: block; margin-top: 5px;">
+    <em>Figure 1. Animation of electrode array insertion (from Med El).</em>
+  </span>
+</div>
     </td>
     <td style="border: none;">
       <p>
