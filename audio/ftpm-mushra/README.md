@@ -8,17 +8,21 @@ This folder holds the audio stimuli used by the MUSHRA listening test on
 ```
 audio/ftpm-mushra/
 ├── music/
-│   ├── reference.mp3   # unprocessed / anchor reference
-│   ├── A.mp3           # hidden reference (same audio as reference.mp3)
-│   ├── B.mp3           # test stimulus 1
-│   ├── C.mp3           # test stimulus 2
-│   ├── D.mp3           # test stimulus 3
-│   ├── E.mp3           # test stimulus 4
-│   └── F.mp3           # low-pass anchor (very low quality)
+│   ├── reference.mp3   # unprocessed reference (Let It Be excerpt)
+│   ├── A.mp3           # hidden reference (= reference.mp3, FTPM   0.00 oct)
+│   ├── B.mp3           # test stimulus, FTPM −0.26 oct
+│   ├── C.mp3           # test stimulus, FTPM −0.43 oct
+│   ├── D.mp3           # test stimulus, FTPM −0.63 oct
+│   ├── E.mp3           # test stimulus, FTPM −0.81 oct
+│   ├── F.mp3           # test stimulus, FTPM −0.98 oct
+│   └── G.mp3           # anchor — linear FTPM −1.50 oct
 └── speech/
-    ├── reference.mp3
-    ├── A.mp3 .. F.mp3
+    ├── reference.mp3   # unprocessed reference (Dickens excerpt)
+    └── A.mp3 .. G.mp3  # same shifts as the music trial
 ```
+
+These shifts match Condition 1 of Villejoubert et al. (JASA 159(4),
+3358–3371, 2026) — see Sec. II.E and Fig. 4(A).
 
 Filenames must match the `file:` paths in
 [`_data/mushra_ftpm.yml`](../../_data/mushra_ftpm.yml).
