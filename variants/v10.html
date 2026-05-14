@@ -1,0 +1,280 @@
+---
+permalink: /variants/v10.html
+sitemap: false
+---
+{% assign p = site.data.profile %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>V10 · Newspaper · {{ p.identity.name }}</title>
+<style>
+  :root {
+    --ink: #14110d;
+    --muted: #6c6457;
+    --rule: #c8c2b3;
+    --rule-thin: #e1dccf;
+    --bg: #f4f0e6;
+    --paper: #fbf7ec;
+    --accent: #7a1f15;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Charter", "Iowan Old Style", "Palatino Linotype", Cambria, Georgia, serif;
+    color: var(--ink); background: var(--bg);
+    line-height: 1.6; font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .sans { font-family: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", sans-serif; }
+  .mono { font-family: ui-monospace, Menlo, monospace; }
+
+  .switcher {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 24px;
+    background: rgba(244,240,230,0.96);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+    font-family: -apple-system, sans-serif; font-size: 13px;
+  }
+  .switcher a.idx { color: var(--muted); margin-right: auto; }
+  .switcher .nums { display: flex; gap: 4px; }
+  .switcher .nums a {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted); font-variant-numeric: tabular-nums;
+  }
+  .switcher .nums a.active { background: var(--ink); color: var(--bg); }
+  .switcher .nums a:hover { color: var(--ink); text-decoration: none; }
+  .switcher .nums a.active:hover { color: var(--bg); }
+  .switcher .name { color: var(--muted); margin-left: 12px; font-size: 12px; }
+
+  .paper { max-width: 1280px; margin: 24px auto; background: var(--paper); border: 1px solid var(--rule); padding: 32px 36px 56px; }
+
+  /* Masthead */
+  .mast {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding-bottom: 14px; border-bottom: 3px double var(--ink);
+    margin-bottom: 24px;
+  }
+  .mast .ttl {
+    font-size: clamp(40px, 5vw, 72px); letter-spacing: -0.025em; line-height: 1;
+    font-weight: 600; margin: 0;
+  }
+  .mast .sub {
+    text-align: right; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted); font-family: -apple-system, sans-serif;
+  }
+  .mast .sub div { margin-bottom: 2px; }
+
+  .strap {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 0 14px; border-bottom: 1px solid var(--rule);
+    margin-bottom: 28px;
+    font-family: -apple-system, sans-serif; font-size: 13px; color: var(--muted);
+  }
+  .strap .links { display: flex; flex-wrap: wrap; gap: 14px; }
+  .strap .links a { color: var(--muted); display: inline-flex; align-items: center; gap: 5px; }
+  .strap .links a:hover { color: var(--accent); text-decoration: none; }
+  .strap .links a .hi { width: 15px; height: 15px; }
+
+  /* Lead article */
+  .lead { padding: 8px 0 28px; border-bottom: 1px solid var(--rule); margin-bottom: 24px; }
+  .lead .kicker {
+    font-family: -apple-system, sans-serif;
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px;
+  }
+  .lead h2.head {
+    font-size: clamp(36px, 4.5vw, 56px); letter-spacing: -0.02em; line-height: 1.05;
+    margin: 0 0 12px; font-weight: 500;
+  }
+  .lead .deck {
+    font-style: italic; color: #2a2620;
+    font-size: 19px; line-height: 1.4; max-width: 60ch;
+    margin: 0 0 22px;
+  }
+  .lead .byline {
+    font-family: -apple-system, sans-serif;
+    font-size: 12.5px; color: var(--muted); letter-spacing: 0.04em;
+  }
+
+  /* Multi-column body */
+  .columns {
+    column-count: 3; column-gap: 36px; column-rule: 1px solid var(--rule-thin);
+    font-size: 16px; line-height: 1.7;
+  }
+  .columns p { margin: 0 0 16px; }
+  .columns p:first-child::first-letter {
+    font-size: 4em; line-height: 0.85; float: left;
+    padding: 6px 8px 0 0; font-weight: 600; color: var(--accent);
+  }
+
+  /* Section dividers */
+  .sec {
+    margin-top: 48px; padding-top: 14px; border-top: 3px double var(--ink);
+  }
+  .sec .sec-h {
+    font-size: clamp(24px, 3vw, 36px); letter-spacing: -0.015em;
+    margin: 0 0 4px; font-weight: 500;
+  }
+  .sec .sec-sub {
+    font-family: -apple-system, sans-serif;
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--muted); margin: 0 0 22px;
+  }
+
+  /* Two-col theme briefs */
+  .themes { columns: 2; column-gap: 36px; }
+  .theme-brief {
+    margin: 0 0 18px; padding: 14px 0; border-top: 1px solid var(--rule-thin);
+    break-inside: avoid;
+  }
+  .theme-brief:first-child { border-top: none; padding-top: 4px; }
+  .theme-brief h3 {
+    font-size: 19px; line-height: 1.25; font-weight: 600; margin: 0 0 6px;
+    letter-spacing: -0.01em;
+  }
+  .theme-brief .lbl {
+    font-family: -apple-system, sans-serif;
+    font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent);
+  }
+  .theme-brief p { margin: 0; font-size: 14.5px; color: #2a2620; line-height: 1.55; }
+
+  /* Classifieds (projects) */
+  .classifieds {
+    column-count: 2; column-gap: 36px;
+  }
+  .ad {
+    break-inside: avoid; margin: 0 0 18px;
+    padding-bottom: 14px; border-bottom: 1px dashed var(--rule);
+  }
+  .ad .ad-top {
+    font-family: -apple-system, sans-serif;
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 4px;
+    display: flex; justify-content: space-between;
+  }
+  .ad .ad-top .tag { color: var(--accent); }
+  .ad h3 { font-size: 17px; margin: 0 0 6px; line-height: 1.3; font-weight: 600; }
+  .ad p { margin: 0 0 6px; font-size: 14px; line-height: 1.55; color: #2a2620; }
+  .ad .stack { font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; color: var(--muted); }
+
+  /* Bibliography */
+  .biblio { padding-top: 4px; }
+  .biblio .pub {
+    padding: 14px 0; border-bottom: 1px solid var(--rule-thin);
+    display: grid; grid-template-columns: 120px 1fr; gap: 24px;
+  }
+  .biblio .pub .pmeta {
+    font-family: -apple-system, sans-serif;
+    font-size: 12px; color: var(--muted); letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .biblio .pub h3 { font-size: 18px; margin: 0 0 4px; font-weight: 500; line-height: 1.35; }
+  .biblio .pub .pauth { color: var(--muted); font-size: 13.5px; font-family: -apple-system, sans-serif; }
+  .biblio .pub .pvenue { font-size: 14px; color: #2a2620; font-style: italic; }
+
+  @media (max-width: 800px) {
+    .columns { column-count: 1; }
+    .themes { columns: 1; }
+    .classifieds { column-count: 1; }
+    .biblio .pub { grid-template-columns: 1fr; gap: 4px; }
+  }
+
+{% include hover_icon_css.html %}
+</style>
+</head>
+<body>
+
+{% include variant_switcher.html active=10 label="V10 · Newspaper" %}
+
+<article class="paper">
+
+  <header class="mast">
+    <h1 class="ttl">The Villejoubert.</h1>
+    <div class="sub">
+      <div>Vol. I · No. 1</div>
+      <div>Cambridge · 2026</div>
+      <div>Edition · {{ p.identity.short_affiliation }}</div>
+    </div>
+  </header>
+
+  <div class="strap">
+    <span class="sans">{{ p.identity.role }}</span>
+    <div class="links sans">
+      {% for l in p.links %}<a href="{{ l.url }}">{% include hover_icon.html name=l.icon %}{{ l.label }}</a>{% endfor %}
+    </div>
+  </div>
+
+  <section class="lead">
+    <div class="kicker">From the Editor</div>
+    <h2 class="head">{{ p.identity.tagline }}</h2>
+    <p class="deck">Cochlear implants restore hearing — but they also raise hard questions about what people perceive, why it differs, and how to measure it. This is a working notebook on those questions.</p>
+    <div class="byline">By <strong>{{ p.identity.name }}</strong> · {{ p.identity.affiliation }} · {{ p.identity.location }}</div>
+  </section>
+
+  <div class="columns">
+    {% for para in p.bio %}<p>{{ para | strip_html }}</p>{% endfor %}
+    <p><strong>Methods</strong> — {{ p.methods | join: ", " | downcase }}.</p>
+  </div>
+
+  <section class="sec">
+    <h2 class="sec-h">Research</h2>
+    <p class="sec-sub">Three open questions</p>
+    <div class="themes">
+      {% for t in p.themes %}
+        <article class="theme-brief">
+          <div class="lbl">Theme {{ forloop.index | prepend: "0" | slice: -2, 2 }}</div>
+          <h3>{{ t.title }}</h3>
+          <p>{{ t.body | strip_html | strip_newlines | truncate: 260 }}</p>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2 class="sec-h">Projects &amp; software</h2>
+    <p class="sec-sub">Classifieds</p>
+    <div class="classifieds">
+      {% for proj in p.projects %}
+        <article class="ad">
+          <div class="ad-top"><span class="tag">{{ proj.tag }}</span><span>{{ proj.date_label }}</span></div>
+          <h3>{% if proj.url and proj.url != "" %}<a href="{{ proj.url }}">{{ proj.title }}</a>{% else %}{{ proj.title }}{% endif %}</h3>
+          <p>{{ proj.blurb }}</p>
+          <div class="stack">{{ proj.stack }}</div>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2 class="sec-h">Bibliography</h2>
+    <p class="sec-sub">Peer-reviewed</p>
+    <div class="biblio">
+      {% for pub in p.publications %}
+        <div class="pub">
+          <div class="pmeta">{{ pub.date_label }}<br>{{ pub.short_venue }}</div>
+          <div>
+            <h3><a href="{{ pub.url }}">{{ pub.title }}</a></h3>
+            <div class="pauth">{{ pub.authors }}</div>
+            <div class="pvenue">{{ pub.venue }} {{ pub.citation }}</div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <footer style="margin-top:36px;padding-top:16px;border-top:3px double var(--ink);font-family:-apple-system,sans-serif;font-size:12px;color:var(--muted);letter-spacing:0.04em;text-align:center;">
+    Printed at the SOUND Lab · {{ p.identity.email }} · all rights reserved
+  </footer>
+
+</article>
+
+</body>
+</html>

@@ -1,0 +1,243 @@
+# =============================================================================
+#  profile.yml — single source of truth for the homepage at villejoubertlouis.github.io.
+# =============================================================================
+# HOW TO EDIT FROM GITHUB:
+#   1. Click the pencil icon on this file in github.com
+#   2. Find the list you want to edit (`recent:`, `projects:`, `publications:`, `themes:`)
+#   3. Copy an existing entry as a template, paste it below, edit the values
+#   4. Scroll to the bottom and click "Commit changes"
+#   5. Wait ~30-60 s — GitHub Pages auto-rebuilds and the live site updates
+#
+# Indentation matters in YAML: keep the same number of spaces as the surrounding entries.
+# =============================================================================
+
+identity:
+  name: "Louis Villejoubert"
+  role: "PhD Candidate in Clinical Neuroscience"
+  affiliation: "University of Cambridge — SOUND Lab"
+  short_affiliation: "Cambridge · SOUND Lab"
+  tagline: "Cochlear-implant perception, psychoacoustics, and hearing technology."
+  location: "Cambridge, UK"
+  email: "lv362@cam.ac.uk"
+  avatar: "/images/Profile_Picture_2.png"
+  cv_url: "/cv/"
+
+# Short chip-style tags shown next to the name on most variants.
+badges:
+  - "Cambridge"
+  - "SOUND Lab"
+  - "PhD Candidate"
+  - "Audiology · CI"
+
+# Long-form bio paragraphs (rendered as <p> in order).
+bio:
+  - "I study how people hear through <strong>cochlear implants</strong> — and how psychoacoustics, signal processing, and human-centred design can make implanted hearing clearer, more natural, and more personal."
+  - "My work sits at the intersection of <strong>auditory neuroscience</strong>, <strong>audiology</strong>, <strong>signal processing</strong>, and <strong>human–computer interaction</strong>. I run psychophysical experiments — in the lab and online — and build software for adaptive listening tests and sound-coding evaluation."
+
+methods:
+  - "Auditory neuroscience"
+  - "Psychoacoustics"
+  - "Signal processing"
+  - "Audiology"
+  - "Human–computer interaction"
+  - "MATLAB"
+  - "Web Audio"
+
+# Header social/scholarly links. Icon names follow Font Awesome conventions
+# but each variant draws its own icon — only label + url are required.
+links:
+  - {label: "Email", url: "mailto:lv362@cam.ac.uk", icon: "mail"}
+  - {label: "Google Scholar", url: "https://scholar.google.com/citations?user=CFO7UKQAAAAJ", icon: "scholar"}
+  - {label: "ORCID", url: "https://orcid.org/0009-0009-7095-1016", icon: "orcid"}
+  - {label: "ResearchGate", url: "https://www.researchgate.net/profile/Louis-Villejoubert", icon: "researchgate"}
+  - {label: "GitHub", url: "https://github.com/VillejoubertLouis", icon: "github"}
+
+# Three big research questions / themes. `figure_kind`: image | placeholder.
+themes:
+  - id: "perception"
+    title: "What does the world sound like through a cochlear implant?"
+    body: >
+      A cochlear implant restores hearing by stimulating the auditory nerve directly
+      with electrical pulses delivered through an electrode array surgically threaded
+      into the cochlea. The result is functional speech understanding for hundreds of
+      thousands of users worldwide — but the perceived sound is unlike normal acoustic
+      hearing. Music can lose its colour, voices their identity, and noisy rooms become
+      exhausting. My work asks how the signal-processing pipeline of an implant — from
+      microphone to electrical pulse — shapes what users actually hear, and where there
+      is room to do better.
+    figure_kind: "placeholder"
+    figure_label: "vocoder waveform / spectrogram"
+    figure_caption: "Acoustic CI simulations isolate the perceptual cost of each coding choice."
+  - id: "personal"
+    title: "Does it sound the same to everyone — or is it personal?"
+    body: >
+      Every cochlea is a slightly different shape, and every electrode array sits in a
+      slightly different place. The mapping between sound frequency and the nerves that
+      end up stimulated is, in practice, a personal thing — set at fitting and rarely
+      revisited. My thesis explores how frequency-to-place mismatch interacts with
+      channel-selection and noise-reduction algorithms, and how listening tests can
+      give clinicians the data they need to personalise these settings rather than
+      leave them at factory defaults.
+    figure_kind: "image"
+    figure: "/images/medel-electrode-array-ezgif.com-crop.gif"
+    figure_caption: "Animation of electrode-array insertion (Med-El)."
+  - id: "wearable"
+    title: "Can a smartwatch help you hear the world differently?"
+    body: >
+      Hearing assistance does not have to stop at the implant. Modern wearables —
+      smartwatches, earbuds, phones — carry microphones, accelerometers, and growing
+      on-device compute. They can act as a real-world layer on top of an implant:
+      surfacing environmental sounds, supporting situational awareness, and giving
+      users tools to characterise and tune their own hearing in everyday life — not
+      just in the clinic.
+    figure_kind: "placeholder"
+    figure_label: "wearable concept"
+    figure_caption: "A wearable companion for personalised everyday listening."
+
+# =============================================================================
+# PUBLICATIONS — shows in the "Publications" tab.
+# TO ADD A NEW PAPER: copy the block below, paste it above the existing entries,
+# and edit each field. `kind`: journal | conference | thesis | preprint.
+# -----------------------------------------------------------------------------
+# - year: 2027
+#   date_label: "Month 2027"
+#   title: "Title of the paper"
+#   authors: "First, A., Second, B., & Third, C."
+#   venue: "Full journal/conference name"
+#   citation: "Volume(Issue), pages OR Pages 1-10"
+#   doi: "10.xxxx/xxxxx"
+#   url: "https://doi.org/10.xxxx/xxxxx"
+#   kind: "journal"
+#   short_venue: "JASA"
+# =============================================================================
+publications:
+  - year: 2026
+    date_label: "April 2026"
+    title: "Effect of frequency-to-place mismatch on speech and music sound quality in acoustic cochlear implant simulation"
+    authors: "Villejoubert, L., Picinali, L., Faulkner, K., & Vickers, D."
+    venue: "The Journal of the Acoustical Society of America"
+    citation: "159(4), 3358–3371"
+    doi: "10.1121/10.0043470"
+    url: "https://doi.org/10.1121/10.0043470"
+    kind: "journal"
+    short_venue: "JASA"
+  - year: 2025
+    date_label: "2025"
+    title: "How frequency-based processing may help clinicians improve sound quality perception in cochlear implant users"
+    authors: "Villejoubert, L., Picinali, L., Faulkner, K., & Vickers, D."
+    venue: "Forum Acusticum / EuroNoise 2025 Proceedings"
+    citation: "3263–3266"
+    doi: "10.61782/fa.2025.0432"
+    url: "https://doi.org/10.61782/fa.2025.0432"
+    kind: "conference"
+    short_venue: "Forum Acusticum 2025"
+
+# =============================================================================
+# PROJECTS — shows in the "Projects" tab. Tools, platforms, applied work.
+# TO ADD A NEW PROJECT: copy the block below, paste above the existing entries.
+# -----------------------------------------------------------------------------
+# - title: "Project name"
+#   date_label: "2026 →"        # or "2024 — 2026", or just "2026"
+#   blurb: "One paragraph describing what it is and why it exists."
+#   stack: "Tech · stack · separated · by · middots"
+#   tag: "Open source"           # short label shown as a chip
+#   url: "https://github.com/..."  # leave "" if no link
+# =============================================================================
+projects:
+  - title: "CI Experiments Platform"
+    date_label: "2026"
+    blurb: "Open-source web platform porting vowel-identification, chord-perception, and MUSHRA experiments to the browser, so labs can run calibrated psychoacoustics online with CI users and normal-hearing controls alike."
+    stack: "Next.js · Prisma · SQLite · Web Audio"
+    tag: "Open source"
+    url: ""
+  - title: "Adaptive listening-test toolkit"
+    date_label: "2024 →"
+    blurb: "MATLAB framework for adaptive psychoacoustic procedures (n-AFC, MUSHRA, vocoder simulations), with headphone calibration and mixed-effects analysis pipelines used across my thesis experiments."
+    stack: "MATLAB R2025a"
+    tag: "Research code"
+    url: ""
+  - title: "FTPM analysis pipeline"
+    date_label: "2024 →"
+    blurb: "Signal-processing and stats pipeline for the frequency-to-place-mismatch line of work — vocoder synthesis, listening-test analysis, and clinically-oriented effect-size reporting."
+    stack: "MATLAB · R"
+    tag: "Research code"
+    url: ""
+  - title: "This website"
+    date_label: "2026"
+    blurb: "Built on Jekyll + AcademicPages. A single _data/profile.yml drives the homepage and seven prototype designs at /variants/ — edit once, every layout updates."
+    stack: "Jekyll · GitHub Pages"
+    tag: "Personal"
+    url: "https://github.com/VillejoubertLouis/villejoubertlouis.github.io"
+
+# Chronological lifeline (newest first). Used by V4 timeline variant.
+# `kind`: paper | project | milestone | talk
+timeline:
+  - date: "Apr 2026"
+    kind: "paper"
+    title: "Frequency-to-place mismatch in CI simulation"
+    body: "Villejoubert, Picinali, Faulkner &amp; Vickers — <em>JASA</em> 159(4), 3358–3371."
+    url: "https://doi.org/10.1121/10.0043470"
+  - date: "Apr 2026"
+    kind: "milestone"
+    title: "PhD thesis submitted"
+    body: "Cochlear-implant sound coding — FTPM, channel selection, noise reduction. Department of Clinical Neuroscience, University of Cambridge."
+    url: ""
+  - date: "2026"
+    kind: "project"
+    title: "CI Experiments Platform launched"
+    body: "Open-source web platform for online psychoacoustic experiments — vowel identification, chord perception, MUSHRA."
+    url: ""
+  - date: "Sep 2025"
+    kind: "talk"
+    title: "Forum Acusticum / EuroNoise 2025"
+    body: "Conference paper: <em>How frequency-based processing may help clinicians improve sound quality perception</em>."
+    url: "https://doi.org/10.61782/fa.2025.0432"
+  - date: "2024 →"
+    kind: "project"
+    title: "FTPM analysis &amp; listening-test pipeline"
+    body: "MATLAB framework for adaptive psychoacoustic experiments and effect-size analysis used across the thesis."
+    url: ""
+  - date: "Apr 2022"
+    kind: "milestone"
+    title: "PhD started at the University of Cambridge"
+    body: "Joined the SOUND Lab, Department of Clinical Neuroscience — supervised by Deborah Vickers."
+    url: ""
+
+# =============================================================================
+# NEWS / RECENT — shows in the "News" tab. Reverse-chronological feed.
+# TO ADD A NEWS ITEM: copy the block below, paste at the TOP (most recent first).
+# `kind` must be one of: paper · talk · milestone · project · site
+# -----------------------------------------------------------------------------
+# - date: "Month 2026"
+#   kind: "paper"               # picks the colour of the timeline dot + chip
+#   title: "Short headline (one line)"
+#   body: "One sentence describing the news."
+#   url: "https://link.example"  # leave "" if no link
+# =============================================================================
+recent:
+  - date: "May 2026"
+    kind: "site"
+    title: "Website redesign launched"
+    body: "Personal site rebuilt on a tabbed V12 template with a unified data source — one YAML edit updates the whole page."
+    url: ""
+  - date: "Apr 2026"
+    kind: "paper"
+    title: "Paper out in JASA"
+    body: "<em>Effect of frequency-to-place mismatch on speech and music sound quality in acoustic cochlear implant simulation</em> — Villejoubert, Picinali, Faulkner &amp; Vickers, <em>JASA</em> 159(4), 3358–3371."
+    url: "https://doi.org/10.1121/10.0043470"
+  - date: "Apr 2026"
+    kind: "milestone"
+    title: "PhD thesis submitted"
+    body: "Cochlear-implant sound coding — frequency-to-place mapping, channel selection, and noise reduction. Department of Clinical Neuroscience, University of Cambridge."
+    url: ""
+  - date: "2026"
+    kind: "project"
+    title: "CI Experiments Platform launched"
+    body: "Open-source online psychoacoustics platform — first cohort of online experiments running. Next.js + Web Audio."
+    url: ""
+  - date: "Sep 2025"
+    kind: "talk"
+    title: "Forum Acusticum / EuroNoise 2025"
+    body: "Conference paper presented in Málaga: <em>How frequency-based processing may help clinicians improve sound quality perception in cochlear implant users</em>."
+    url: "https://doi.org/10.61782/fa.2025.0432"
+    url: ""

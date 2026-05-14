@@ -1,0 +1,165 @@
+# =============================================================================
+#  research.yml — full detail pages for individual research projects.
+#  Drives the 10 design variants at /research/r1.html ... /research/r10.html
+# =============================================================================
+# HOW TO ADD A NEW RESEARCH PROJECT FROM GITHUB:
+#   1. Click the pencil icon on this file in github.com
+#   2. Scroll to the bottom; copy the existing `perception:` block as a template
+#   3. Rename the top-level key (e.g. `wearable:`, `language:`, `new_topic:`)
+#   4. Edit each field: title, headline, status, dates, question, background,
+#      methods, findings, figures, publications, collaborators, resources,
+#      next_steps, tags. Quiz is optional — leave the `quiz:` section if you
+#      don't need it.
+#   5. Commit. GitHub Pages rebuilds in ~30-60 s.
+# -----------------------------------------------------------------------------
+# `status_kind` values:  published · submitted · in-progress · proposal
+# `figure_kind` values:  image (provide `src`+`alt`) · placeholder (provide `label`)
+# =============================================================================
+#
+# The canonical example below ("perception") is the work behind the JASA 2026
+# paper — use it as a template structure for new research entries.
+
+perception:
+  # ---- Identity ----
+  theme_id: "perception"
+  title: "Frequency-to-place mismatch in cochlear-implant simulation"
+  headline: "How shifting the cochlea's frequency map changes what cochlear-implant users perceive — for speech, for music, for everything."
+  status: "Published — JASA 2026"
+  status_kind: "published"   # published | submitted | in-progress | proposal
+  date_range: "2023 — 2026"
+  reading_time: "8 min read"
+  tags:
+    - "Cochlear implants"
+    - "Psychoacoustics"
+    - "Signal processing"
+    - "Sound quality"
+    - "Vocoder"
+
+  # ---- The question ----
+  question: "When the electrode array's frequency-to-place mapping doesn't match a listener's native cochlear tonotopy, what is the perceptual cost — for speech intelligibility, for music perception, and for general sound quality?"
+
+  # ---- Background paragraphs ----
+  background:
+    - "A cochlear implant restores hearing by stimulating the auditory nerve directly with electrical pulses delivered through an electrode array surgically threaded into the cochlea. Each electrode is assigned a frequency band by the speech processor: low frequencies go apical, high frequencies basal."
+    - "The catch is that every cochlea is a slightly different shape, every implantation is a slightly different geometry, and the factory assignment of frequencies to electrodes only roughly matches the cochlea's native tonotopy. This <strong>frequency-to-place mismatch</strong> is rarely measured and even more rarely corrected in routine clinical fittings."
+    - "We don't know enough about what this mismatch costs the listener — and clinicians don't have the tools to measure it experimentally. So we built some."
+
+  # ---- Methods / approach ----
+  methods:
+    - title: "Vocoder simulation"
+      body: "We built an acoustic CI simulator that lets normal-hearing listeners experience CI-style processing under controlled mismatch conditions. By varying the apical/basal shift independently of every other coding choice, we can isolate the perceptual effect of mismatch alone."
+    - title: "Listening tests"
+      body: "Two perceptual measures: speech intelligibility (sentences in noise) and music sound quality (MUSHRA-style ratings). Same stimuli, same listeners, different mismatch conditions."
+    - title: "Mixed-effects analysis"
+      body: "Per-listener random effects to account for individual differences in how mismatch is tolerated, with confidence intervals reported in clinically meaningful units."
+
+  # ---- Key findings ----
+  findings:
+    - icon: "1"
+      title: "Mismatch costs music more than speech"
+      body: "Speech intelligibility was surprisingly tolerant of apical shifts up to ~3 mm. Music sound quality degraded substantially earlier and more consistently."
+    - icon: "2"
+      title: "Listeners adapt — but only partially"
+      body: "Short adaptation reduced the cost for speech, but did not recover music quality. This suggests separate mechanisms underlying the two domains."
+    - icon: "3"
+      title: "Individual differences are large"
+      body: "Some listeners barely noticed 4 mm of mismatch; others struggled with 1 mm. Personalised mapping is not optional — it is mandatory if we care about music."
+
+  # ---- Figures ----
+  figures:
+    - kind: "image"
+      src: "/images/medel-electrode-array-ezgif.com-crop.gif"
+      caption: "Electrode-array insertion into the cochlea (Med-El). The physical placement determines the available frequency-to-place mapping."
+      alt: "Animation of electrode-array insertion."
+    - kind: "placeholder"
+      label: "vocoder simulation pipeline"
+      caption: "Block diagram of the acoustic CI simulator used in the study."
+    - kind: "placeholder"
+      label: "mismatch × sound-quality plot"
+      caption: "Mean MUSHRA ratings as a function of apical shift, with mixed-effects confidence intervals."
+
+  # ---- Linked publications (refer by DOI from _data/profile.yml) ----
+  publications:
+    - title: "Effect of frequency-to-place mismatch on speech and music sound quality in acoustic cochlear implant simulation"
+      authors: "Villejoubert, L., Picinali, L., Faulkner, K., & Vickers, D."
+      venue: "JASA 159(4), 3358–3371"
+      year: 2026
+      doi: "10.1121/10.0043470"
+      url: "https://doi.org/10.1121/10.0043470"
+      kind: "Journal article"
+    - title: "How frequency-based processing may help clinicians improve sound quality perception in cochlear implant users"
+      authors: "Villejoubert, L., Picinali, L., Faulkner, K., & Vickers, D."
+      venue: "Forum Acusticum / EuroNoise 2025"
+      year: 2025
+      doi: "10.61782/fa.2025.0432"
+      url: "https://doi.org/10.61782/fa.2025.0432"
+      kind: "Conference paper"
+
+  # ---- Related projects (refer by title from _data/profile.yml) ----
+  related_projects:
+    - "FTPM analysis pipeline"
+    - "Adaptive listening-test toolkit"
+    - "CI Experiments Platform"
+
+  # ---- Collaborators ----
+  collaborators:
+    - name: "Lorenzo Picinali"
+      role: "Imperial College London"
+      web: "https://www.imperial.ac.uk/people/l.picinali"
+    - name: "Kathleen Faulkner"
+      role: "Independent / collab."
+      web: ""
+    - name: "Deborah Vickers"
+      role: "Supervisor — Cambridge SOUND Lab"
+      web: ""
+
+  # ---- Resources / links ----
+  resources:
+    - label: "Paper (JASA, open access)"
+      url: "https://doi.org/10.1121/10.0043470"
+      icon: "book"
+    - label: "Conference proceedings"
+      url: "https://doi.org/10.61782/fa.2025.0432"
+      icon: "file"
+    - label: "Code & analysis (private — request access)"
+      url: ""
+      icon: "github"
+    - label: "Audio examples (coming soon)"
+      url: ""
+      icon: "play"
+
+  # ---- Open questions / next steps ----
+  next_steps:
+    - "Replicate the mismatch effect in actual CI users (the simulation is a stepping stone, not the destination)."
+    - "Develop a clinic-friendly mismatch screening test that takes under 10 minutes per ear."
+    - "Test whether short personalised re-mapping recovers music quality on the same timescale as speech adaptation."
+    - "Extend the platform from vocoded normal-hearing listeners to CI users running tests remotely."
+
+  # ---- Mini-quiz (used by R7) ----
+  quiz:
+    intro: "A short demonstration. Below are three pairs — pick which option you think shows the larger frequency-to-place mismatch. (No audio is required; this is for layout demo purposes.)"
+    questions:
+      - prompt: "Which CI listener is more likely to find music dull?"
+        options:
+          - text: "Listener A — 0.5 mm apical shift"
+            correct: false
+            why: "0.5 mm is well within typical surgical placement and most listeners do not report a noticeable music-quality effect."
+          - text: "Listener B — 3.0 mm apical shift"
+            correct: true
+            why: "3 mm shifts are where MUSHRA ratings drop sharply in our data — music quality degrades faster than speech intelligibility."
+      - prompt: "Which task is more tolerant of mismatch?"
+        options:
+          - text: "Identifying a sentence in noise"
+            correct: true
+            why: "Speech intelligibility was surprisingly tolerant — up to roughly 3 mm of apical shift before scores dropped noticeably."
+          - text: "Rating a piano clip for sound quality"
+            correct: false
+            why: "Music quality is more sensitive — even modest shifts produced consistent rating drops."
+      - prompt: "What is the most useful next step for the clinic?"
+        options:
+          - text: "A 10-minute personalised mapping screen"
+            correct: true
+            why: "A quick, clinic-friendly screening is the most actionable next step — it brings the lab finding into the fitting room."
+          - text: "Re-implanting the electrode array"
+            correct: false
+            why: "Re-implantation is rarely justified; the practical solution is in how we set the frequency-to-electrode map, not the array itself."

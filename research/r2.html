@@ -1,0 +1,388 @@
+---
+permalink: /research/r2.html
+sitemap: false
+---
+{% assign p = site.data.profile %}{% assign r = site.data.research.perception %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>R2 · Flip cards · {{ r.title }}</title>
+<style>
+  :root {
+    --ink: #11141b;
+    --muted: #6a727e;
+    --rule: #e5e7ec;
+    --bg: #f7f8fa;
+    --paper: #ffffff;
+    --accent: #c43a6f;
+    --accent-soft: #f3eef1;
+    --grad-1: linear-gradient(135deg, #c43a6f 0%, #f56b95 100%);
+    --grad-2: linear-gradient(135deg, #2962ff 0%, #6d99ff 100%);
+    --grad-3: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    color: var(--ink); background: var(--bg);
+    line-height: 1.55; font-size: 15.5px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .switcher {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 24px;
+    background: rgba(247,248,250,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+  }
+  .switcher .idx a { color: var(--muted); text-decoration: none; }
+  .switcher .idx a:hover { color: var(--ink); }
+  .switcher .nums a {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted); font-variant-numeric: tabular-nums; text-decoration: none;
+  }
+  .switcher .nums a.active { background: var(--accent); color: #fff; }
+  .switcher .nums a:hover { color: var(--ink); }
+  .switcher .nums a.active:hover { color: #fff; }
+  .switcher .name { color: var(--muted); margin-left: 12px; font-size: 12px; }
+
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 56px 24px 80px; }
+
+  .hero {
+    text-align: center; margin-bottom: 48px;
+  }
+  .hero .crumb {
+    font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 12px;
+  }
+  .hero h1 {
+    font-size: clamp(32px, 4.5vw, 50px); letter-spacing: -0.02em; font-weight: 500;
+    margin: 0 0 14px; line-height: 1.05; max-width: 22ch; margin-left: auto; margin-right: auto;
+  }
+  .hero .headline { font-size: 17px; color: var(--muted); max-width: 64ch; margin: 0 auto 22px; line-height: 1.5; }
+  .hero .meta { display: inline-flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--muted); align-items: center; }
+  .hero .badge {
+    background: var(--accent-soft); color: var(--accent); padding: 4px 12px; border-radius: 999px;
+    font-size: 12px; font-weight: 500;
+  }
+  .hero .hint {
+    margin-top: 28px; font-size: 13px; color: var(--muted);
+    background: var(--paper); border: 1px dashed var(--rule);
+    display: inline-block; padding: 6px 14px; border-radius: 999px;
+  }
+  .hero .hint .kbd {
+    font-family: ui-monospace, Menlo, monospace; font-size: 11px;
+    background: #f0e6eb; color: var(--accent);
+    padding: 2px 7px; border-radius: 4px; margin: 0 2px;
+  }
+
+  .sec-h {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em;
+    color: var(--muted); margin: 56px 0 18px; font-weight: 600;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .sec-h::after { content: ""; flex: 1; height: 1px; background: var(--rule); }
+
+  /* Flip cards */
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .flip {
+    perspective: 1200px;
+    aspect-ratio: 1 / 1;
+  }
+  .flip-inner {
+    position: relative; width: 100%; height: 100%;
+    transition: transform 0.7s cubic-bezier(.2,.7,.2,1);
+    transform-style: preserve-3d;
+    cursor: pointer;
+  }
+  .flip.flipped .flip-inner,
+  .flip:hover .flip-inner { transform: rotateY(180deg); }
+
+  .face {
+    position: absolute; inset: 0;
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    border-radius: 18px; padding: 22px 24px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    overflow: hidden;
+  }
+  .face .corner {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    opacity: 0.85;
+  }
+  .face h3 {
+    margin: 0; font-size: 22px; line-height: 1.18; letter-spacing: -0.01em; font-weight: 500;
+  }
+  .face .flip-hint {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 11px; letter-spacing: 0.12em; opacity: 0.7;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .face .flip-hint::after { content: "↻"; transition: transform 0.3s; }
+  .flip:hover .face .flip-hint::after { transform: rotate(180deg); }
+
+  /* Front face — gradient */
+  .face.front { color: #fff; }
+  .face.front.g1 { background: var(--grad-1); }
+  .face.front.g2 { background: var(--grad-2); }
+  .face.front.g3 { background: var(--grad-3); }
+  .face.front .deco {
+    position: absolute; bottom: -40px; right: -40px;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+  }
+  .face.front .deco-2 {
+    position: absolute; top: -30px; right: 40px;
+    width: 60px; height: 60px; border-radius: 50%;
+    background: rgba(255,255,255,0.18);
+  }
+
+  /* Back face — paper */
+  .face.back {
+    transform: rotateY(180deg);
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    color: var(--ink);
+  }
+  .face.back .corner { color: var(--accent); }
+  .face.back p {
+    margin: 12px 0 0; font-size: 14px; line-height: 1.55; color: #2a2c33;
+    overflow-y: auto; flex: 1;
+  }
+  .face.back .meta {
+    font-size: 11.5px; color: var(--muted); margin-top: 12px;
+    font-family: ui-monospace, Menlo, monospace; letter-spacing: 0.06em;
+  }
+
+  /* Hero card (full width) */
+  .flip-wide { aspect-ratio: auto; min-height: 240px; grid-column: 1 / -1; perspective: 1500px; }
+  .flip-wide .face { padding: 36px 40px; }
+  .flip-wide .face.front h3 { font-size: 32px; max-width: 26ch; }
+  .flip-wide .face.back h3 { font-size: 22px; }
+
+  /* Project context cards */
+  .context-bar {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 18px;
+    padding: 24px 28px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  .context-bar .ctx h4 {
+    margin: 0 0 4px; font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.18em; color: var(--muted); font-weight: 600;
+  }
+  .context-bar .ctx p {
+    margin: 0; font-size: 14.5px; color: var(--ink);
+  }
+
+  /* Pubs + collab below */
+  .matter { margin-top: 56px; }
+  .matter h2 {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em;
+    color: var(--muted); margin: 0 0 18px; font-weight: 600;
+  }
+  .pubs .pub {
+    padding: 16px 0; border-top: 1px solid var(--rule);
+  }
+  .pubs .pub:last-child { border-bottom: 1px solid var(--rule); }
+  .pubs .pub .pmeta { color: var(--muted); font-size: 12.5px; }
+  .pubs .pub h3 { margin: 4px 0; font-size: 16px; font-weight: 500; line-height: 1.4; }
+  .pubs .pub .pauth { color: var(--muted); font-size: 13.5px; }
+  .pubs .pub .pvenue { color: #3a3d44; font-size: 13.5px; font-style: italic; }
+
+  .resources {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px;
+  }
+  .resource {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 10px;
+    padding: 14px 16px; display: inline-flex; align-items: center; gap: 10px;
+    color: var(--ink); font-size: 14px; transition: border-color 0.18s, transform 0.18s;
+  }
+  .resource:hover { border-color: var(--accent); transform: translateY(-1px); text-decoration: none; }
+  .resource .hi { width: 17px; height: 17px; color: var(--accent); }
+  .resource.disabled { opacity: 0.6; }
+
+{% include hover_icon_css.html %}
+</style>
+</head>
+<body>
+
+{% include research_switcher.html active=2 label="R2 · Flip cards" %}
+
+<main class="wrap">
+
+  <header class="hero">
+    <div class="crumb">Research project · Perception</div>
+    <h1>{{ r.title }}</h1>
+    <p class="headline">{{ r.headline }}</p>
+    <div class="meta">
+      <span class="badge">{{ r.status }}</span>
+      <span>· {{ r.date_range }}</span>
+      <span>· {{ r.reading_time }}</span>
+    </div>
+    <div class="hint">Hover a card to flip it ↺ &nbsp;·&nbsp; or tap <span class="kbd">click</span></div>
+  </header>
+
+  <div class="context-bar">
+    <div class="ctx"><h4>Status</h4><p>{{ r.status }}</p></div>
+    <div class="ctx"><h4>Dates</h4><p>{{ r.date_range }}</p></div>
+    <div class="ctx"><h4>Theme</h4><p>{{ r.tags[0] }}</p></div>
+    <div class="ctx"><h4>Output</h4><p>{{ r.publications.size }} papers</p></div>
+  </div>
+
+  <div class="sec-h">The big question</div>
+  <div class="grid">
+    <div class="flip flip-wide" tabindex="0">
+      <div class="flip-inner">
+        <div class="face front g1">
+          <div class="corner">↻ Q · 00</div>
+          <h3>What does mismatch actually cost the listener?</h3>
+          <div class="flip-hint">Flip for the question in full</div>
+          <div class="deco"></div><div class="deco-2"></div>
+        </div>
+        <div class="face back">
+          <div class="corner">A · 00</div>
+          <h3>The question, in full.</h3>
+          <p>{{ r.question }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-h">Methods · how we measured it</div>
+  <div class="grid">
+    {% for m in r.methods %}
+      {% assign cls = "g1" %}
+      {% if forloop.index == 2 %}{% assign cls = "g2" %}{% endif %}
+      {% if forloop.index == 3 %}{% assign cls = "g3" %}{% endif %}
+      <div class="flip" tabindex="0">
+        <div class="flip-inner">
+          <div class="face front {{ cls }}">
+            <div class="corner">M · 0{{ forloop.index }}</div>
+            <h3>{{ m.title }}</h3>
+            <div class="flip-hint">Hover for detail</div>
+            <div class="deco"></div>
+          </div>
+          <div class="face back">
+            <div class="corner">DETAIL</div>
+            <h3>{{ m.title }}</h3>
+            <p>{{ m.body }}</p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="sec-h">Findings · what the data showed</div>
+  <div class="grid">
+    {% for f in r.findings %}
+      {% assign cls = "g2" %}
+      {% if forloop.index == 2 %}{% assign cls = "g3" %}{% endif %}
+      {% if forloop.index == 3 %}{% assign cls = "g1" %}{% endif %}
+      <div class="flip" tabindex="0">
+        <div class="flip-inner">
+          <div class="face front {{ cls }}">
+            <div class="corner">F · 0{{ f.icon }}</div>
+            <h3>{{ f.title }}</h3>
+            <div class="flip-hint">Hover for the data</div>
+            <div class="deco"></div>
+          </div>
+          <div class="face back">
+            <div class="corner">FINDING</div>
+            <h3>{{ f.title }}</h3>
+            <p>{{ f.body }}</p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="sec-h">Where it goes next</div>
+  <div class="grid">
+    {% for n in r.next_steps %}
+      {% assign cls = "g3" %}
+      {% if forloop.index == 2 %}{% assign cls = "g1" %}{% endif %}
+      {% if forloop.index == 3 %}{% assign cls = "g2" %}{% endif %}
+      {% if forloop.index == 4 %}{% assign cls = "g1" %}{% endif %}
+      <div class="flip" tabindex="0">
+        <div class="flip-inner">
+          <div class="face front {{ cls }}">
+            <div class="corner">→ NEXT · 0{{ forloop.index }}</div>
+            <h3>{{ n | truncate: 60 }}</h3>
+            <div class="flip-hint">Flip for the full plan</div>
+            <div class="deco"></div>
+          </div>
+          <div class="face back">
+            <div class="corner">PLAN</div>
+            <p style="margin-top:0;">{{ n }}</p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <section class="matter">
+    <h2>Publications</h2>
+    <div class="pubs">
+      {% for pub in r.publications %}
+        <div class="pub">
+          <div class="pmeta">{{ pub.year }} · {{ pub.kind }}</div>
+          <h3><a href="{{ pub.url }}">{{ pub.title }}</a></h3>
+          <div class="pauth">{{ pub.authors }}</div>
+          <div class="pvenue">{{ pub.venue }}</div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <h2 style="margin-top:48px;">Collaborators</h2>
+    <div class="resources" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
+      {% for c in r.collaborators %}
+        <div class="resource" style="cursor:default;">
+          <div>
+            <div style="font-weight:600;">{% if c.web and c.web != "" %}<a href="{{ c.web }}">{{ c.name }}</a>{% else %}{{ c.name }}{% endif %}</div>
+            <div style="font-size:12.5px;color:var(--muted);">{{ c.role }}</div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <h2 style="margin-top:48px;">Resources</h2>
+    <div class="resources">
+      {% for res in r.resources %}
+        {% if res.url and res.url != "" %}
+          <a class="resource" href="{{ res.url }}">{% include hover_icon.html name=res.icon %}<span>{{ res.label }}</span></a>
+        {% else %}
+          <span class="resource disabled">{% include hover_icon.html name=res.icon %}<span>{{ res.label }}</span></span>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // Click toggles flipped state (useful for touch — hover still works on desktop).
+  document.querySelectorAll('.flip').forEach(card => {
+    card.addEventListener('click', () => card.classList.toggle('flipped'));
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        card.classList.toggle('flipped');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

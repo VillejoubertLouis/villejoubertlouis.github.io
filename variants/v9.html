@@ -1,0 +1,229 @@
+---
+permalink: /variants/v9.html
+sitemap: false
+---
+{% assign p = site.data.profile %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>V9 · Split Half-Half · {{ p.identity.name }}</title>
+<style>
+  :root {
+    --light: #fafaf6;
+    --dark: #111620;
+    --rule-light: #e5e3da;
+    --rule-dark: #1f2738;
+    --muted-light: #6b6358;
+    --muted-dark: #8995b0;
+    --accent: #1f5fae;
+    --accent-dark: #6cc5ff;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    line-height: 1.6; font-size: 15.5px;
+    -webkit-font-smoothing: antialiased;
+    background: var(--light);
+  }
+  a { text-decoration: none; }
+
+  .switcher {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 24px;
+    background: rgba(250,250,246,0.94);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule-light);
+    font-size: 13px;
+    color: #444;
+  }
+  .switcher a.idx { color: var(--muted-light); margin-right: auto; }
+  .switcher .nums { display: flex; gap: 4px; }
+  .switcher .nums a {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted-light);
+    font-variant-numeric: tabular-nums;
+  }
+  .switcher .nums a.active { background: var(--dark); color: var(--light); }
+  .switcher .nums a:hover { color: var(--dark); text-decoration: none; }
+  .switcher .nums a.active:hover { color: var(--light); }
+  .switcher .name { color: var(--muted-light); margin-left: 12px; font-size: 12px; }
+
+  /* The split layout: two equal halves */
+  .split {
+    display: grid; grid-template-columns: 1fr 1fr;
+    min-height: calc(100vh - 47px);
+  }
+
+  /* LEFT — light, sticky profile */
+  .left {
+    background: var(--light); color: #1a1610;
+    padding: 64px 6vw;
+    position: sticky; top: 47px; align-self: start;
+    height: calc(100vh - 47px); overflow-y: auto;
+    border-right: 1px solid var(--rule-light);
+  }
+  .left .avatar {
+    width: 120px; height: 120px; border-radius: 50%; object-fit: cover;
+    margin-bottom: 24px; display: block;
+    border: 1px solid var(--rule-light);
+  }
+  .left h1 { font-size: 30px; margin: 0 0 6px; letter-spacing: -0.015em; font-weight: 600; line-height: 1.15; }
+  .left .role { color: var(--muted-light); margin: 0 0 8px; font-size: 15px; }
+  .left .aff { color: var(--muted-light); margin: 0 0 22px; font-size: 14px; }
+  .left p.tagline { font-size: 16px; line-height: 1.55; color: #1a1610; margin: 0 0 24px; max-width: 38ch; }
+  .left .links {
+    display: flex; flex-direction: column; gap: 10px; font-size: 14px;
+  }
+  .left .links a {
+    color: var(--muted-light); display: inline-flex; align-items: center; gap: 8px;
+    transition: color 0.15s;
+  }
+  .left .links a:hover { color: var(--accent); }
+  .left .links a .hi { width: 17px; height: 17px; }
+  .left .badges {
+    margin-top: 24px; display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .left .badges span {
+    background: var(--light); border: 1px solid var(--rule-light);
+    padding: 4px 9px; border-radius: 999px; font-size: 11.5px; color: #3a3530;
+  }
+  .left .footnote {
+    margin-top: auto; padding-top: 32px; font-size: 12px; color: var(--muted-light);
+    font-family: ui-monospace, Menlo, monospace; letter-spacing: 0.04em;
+  }
+
+  /* RIGHT — dark, scrolling content */
+  .right {
+    background: var(--dark); color: #dbe1ee;
+    padding: 64px 6vw 100px;
+  }
+  .right a { color: var(--accent-dark); }
+  .right a:hover { text-decoration: underline; }
+
+  .sec-h {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.22em;
+    color: var(--muted-dark); margin: 0 0 22px; font-weight: 600;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sec-h::after { content: ""; flex: 1; height: 1px; background: var(--rule-dark); }
+  .sec-h .hi { width: 14px; height: 14px; color: var(--accent-dark); }
+  .sec-h + .sec-h, .right h2 + h2 { margin-top: 56px; }
+
+  .theme {
+    padding: 22px 0; border-bottom: 1px solid var(--rule-dark);
+  }
+  .theme:last-of-type { border-bottom: none; }
+  .theme .num {
+    font-family: ui-monospace, Menlo, monospace; font-size: 11px;
+    color: var(--accent-dark); letter-spacing: 0.16em; margin-bottom: 8px;
+  }
+  .theme h3 { margin: 0 0 10px; font-size: 20px; line-height: 1.25; letter-spacing: -0.005em; color: #f3f6fc; font-weight: 500; }
+  .theme p { margin: 0; color: #bcc4d6; font-size: 14.5px; line-height: 1.65; }
+
+  .proj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 8px; }
+  .proj-card {
+    background: rgba(255,255,255,0.04); border: 1px solid var(--rule-dark);
+    border-radius: 12px; padding: 18px;
+  }
+  .proj-card .top {
+    display: flex; justify-content: space-between; font-size: 11px;
+    color: var(--muted-dark); font-family: ui-monospace, Menlo, monospace;
+    letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px;
+  }
+  .proj-card .top .tag { color: var(--accent-dark); }
+  .proj-card h3 { margin: 0 0 8px; font-size: 15.5px; line-height: 1.35; color: #f3f6fc; }
+  .proj-card p { margin: 0 0 10px; color: #c1c8d8; font-size: 13.5px; line-height: 1.55; }
+  .proj-card .stack { color: var(--muted-dark); font-size: 12px; font-family: ui-monospace, Menlo, monospace; }
+
+  .pub {
+    padding: 20px 0; border-bottom: 1px solid var(--rule-dark);
+  }
+  .pub:last-child { border-bottom: none; }
+  .pub .pmeta {
+    font-family: ui-monospace, Menlo, monospace; font-size: 11px;
+    color: var(--accent-dark); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 4px;
+  }
+  .pub h3 { margin: 0 0 6px; font-size: 17px; line-height: 1.35; font-weight: 500; color: #f3f6fc; }
+  .pub .pauth { color: var(--muted-dark); font-size: 13.5px; }
+  .pub .pvenue { color: #c1c8d8; font-size: 13.5px; font-style: italic; }
+
+  @media (max-width: 900px) {
+    .split { grid-template-columns: 1fr; }
+    .left { position: static; height: auto; padding: 48px 24px; }
+    .right { padding: 48px 24px 80px; }
+    .proj-grid { grid-template-columns: 1fr; }
+  }
+
+{% include hover_icon_css.html %}
+</style>
+</head>
+<body>
+
+{% include variant_switcher.html active=9 label="V9 · Split Half-Half" %}
+
+<div class="split">
+
+  <aside class="left">
+    <img class="avatar" src="{{ p.identity.avatar }}" alt="{{ p.identity.name }}">
+    <h1>{{ p.identity.name }}</h1>
+    <p class="role">{{ p.identity.role }}</p>
+    <p class="aff">{{ p.identity.affiliation }}</p>
+    <p class="tagline">{{ p.identity.tagline }}</p>
+
+    <div class="links">
+      {% for l in p.links %}<a href="{{ l.url }}">{% include hover_icon.html name=l.icon %}<span>{{ l.label }}</span></a>{% endfor %}
+    </div>
+
+    <div class="badges">
+      {% for b in p.badges %}<span>{{ b }}</span>{% endfor %}
+    </div>
+
+    <div class="footnote">{{ p.identity.location }} · est. 2022</div>
+  </aside>
+
+  <main class="right">
+
+    <h2 class="sec-h">{% include hover_icon.html name="file" %} About</h2>
+    {% for para in p.bio %}<p style="color:#c5cde0;margin:0 0 14px;font-size:15.5px;line-height:1.7;">{{ para | strip_html }}</p>{% endfor %}
+
+    <h2 class="sec-h">{% include hover_icon.html name="brain" %} Research</h2>
+    {% for t in p.themes %}
+      <article class="theme">
+        <div class="num">Theme {{ forloop.index | prepend: "0" | slice: -2, 2 }}</div>
+        <h3>{{ t.title }}</h3>
+        <p>{{ t.body | strip_html | strip_newlines }}</p>
+      </article>
+    {% endfor %}
+
+    <h2 class="sec-h">{% include hover_icon.html name="file" %} Projects &amp; software</h2>
+    <div class="proj-grid">
+      {% for proj in p.projects %}
+        <div class="proj-card">
+          <div class="top"><span class="tag">{{ proj.tag }}</span><span>{{ proj.date_label }}</span></div>
+          <h3>{% if proj.url and proj.url != "" %}<a href="{{ proj.url }}">{{ proj.title }}</a>{% else %}{{ proj.title }}{% endif %}</h3>
+          <p>{{ proj.blurb }}</p>
+          <div class="stack">{{ proj.stack }}</div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <h2 class="sec-h">{% include hover_icon.html name="book" %} Publications</h2>
+    {% for pub in p.publications %}
+      <div class="pub">
+        <div class="pmeta">{{ pub.date_label }} · {{ pub.short_venue }}</div>
+        <h3><a href="{{ pub.url }}" style="color:#f3f6fc">{{ pub.title }}</a></h3>
+        <div class="pauth">{{ pub.authors }}</div>
+        <div class="pvenue">{{ pub.venue }} {{ pub.citation }}</div>
+      </div>
+    {% endfor %}
+
+  </main>
+
+</div>
+
+</body>
+</html>

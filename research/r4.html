@@ -1,0 +1,372 @@
+---
+permalink: /research/r4.html
+sitemap: false
+---
+{% assign p = site.data.profile %}{% assign r = site.data.research.perception %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>R4 · Notebook · {{ r.title }}</title>
+<style>
+  :root {
+    --ink: #1a1815;
+    --muted: #6b6660;
+    --rule: #d9d2c5;
+    --bg: #fffff8;
+    --paper: #fffaf0;
+    --accent: #8a1a0c;
+    --accent-soft: #fbedeb;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); }
+  body {
+    font-family: "Charter", "Iowan Old Style", "Palatino Linotype", "Sitka Text", Cambria, Georgia, serif;
+    color: var(--ink); line-height: 1.72; font-size: 17px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; border-bottom: 1px solid #d4c8b6; transition: border-color 0.15s; }
+  a:hover { border-bottom-color: var(--accent); }
+
+  .sans { font-family: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", sans-serif; }
+  .mono { font-family: ui-monospace, Menlo, monospace; }
+
+  .switcher {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 24px;
+    background: rgba(255,255,248,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+    font-family: -apple-system, sans-serif; font-size: 13px;
+  }
+  .switcher .idx a { color: var(--muted); border-bottom: none; text-decoration: none; }
+  .switcher .idx a:hover { color: var(--ink); }
+  .switcher .nums a {
+    width: 26px; height: 26px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted); border-bottom: none; font-variant-numeric: tabular-nums; text-decoration: none;
+  }
+  .switcher .nums a.active { color: var(--ink); border-bottom: 2px solid var(--accent); }
+  .switcher .nums a:hover { color: var(--ink); }
+  .switcher .name { color: var(--muted); margin-left: 12px; font-style: italic; }
+
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 56px 56px 100px; }
+
+  .doc {
+    display: grid;
+    grid-template-columns: minmax(0, 620px) 24px minmax(0, 260px);
+    column-gap: 0;
+  }
+  .main { grid-column: 1; }
+  .side { grid-column: 3; padding-left: 16px; }
+
+  .doc > section { display: contents; }
+
+  .epigraph {
+    font-style: italic; color: var(--muted);
+    margin: 0 0 30px; font-size: 16px; line-height: 1.65;
+  }
+  .head h1 {
+    font-size: 42px; line-height: 1.05; margin: 0 0 8px;
+    letter-spacing: -0.01em; font-weight: 500;
+  }
+  .head .deck {
+    font-style: italic; color: var(--muted);
+    margin: 0 0 28px; font-size: 18px;
+  }
+  .head .meta {
+    font-family: -apple-system, sans-serif;
+    font-size: 12.5px; color: var(--muted); letter-spacing: 0.04em;
+    display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
+  }
+  .head .meta .badge {
+    background: var(--accent-soft); color: var(--accent);
+    padding: 3px 9px; border-radius: 999px; font-size: 12px; font-weight: 500;
+  }
+
+  hr.rule { border: none; height: 1px; background: var(--rule); margin: 36px 0; }
+
+  h2.sec {
+    font-size: 22px; font-weight: 600;
+    margin: 48px 0 6px;
+    font-variant: small-caps; letter-spacing: 0.04em;
+  }
+  h2.sec .num {
+    color: var(--muted); margin-right: 12px;
+    font-variant: normal; letter-spacing: 0;
+    font-family: -apple-system, sans-serif; font-size: 12px;
+  }
+
+  .lede::first-letter {
+    font-size: 3.5em; line-height: 0.85; float: left;
+    padding: 6px 8px 0 0; font-weight: 600; color: var(--accent);
+  }
+
+  p { margin: 0 0 16px; }
+
+  /* Sidenotes — interactive marginalia */
+  .sidenote {
+    font-family: -apple-system, sans-serif;
+    font-size: 13px; line-height: 1.55;
+    color: var(--muted);
+    padding: 12px 14px; margin-bottom: 18px;
+    background: var(--paper);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    transition: transform 0.22s, box-shadow 0.22s;
+  }
+  .sidenote:hover {
+    transform: translateX(-6px);
+    box-shadow: -6px 4px 14px rgba(138,26,12,0.08);
+  }
+  .sidenote .nlabel {
+    color: var(--accent); font-weight: 600; margin-right: 6px;
+    display: inline-block; min-width: 18px;
+  }
+  .sidenote.expandable summary {
+    cursor: pointer; color: var(--accent); font-weight: 500;
+    list-style: none;
+  }
+  .sidenote.expandable summary::after {
+    content: " ↓"; transition: transform 0.2s; display: inline-block;
+  }
+  .sidenote.expandable[open] summary::after { transform: rotate(180deg); }
+  .sidenote.expandable[open] summary { color: var(--ink); }
+  .sidenote.expandable div { margin-top: 8px; }
+
+  /* Inline ref markers */
+  .ref-num {
+    color: var(--accent); font-size: 0.78em;
+    vertical-align: super; font-weight: 600;
+    cursor: pointer;
+    padding: 0 2px;
+    border-bottom: none;
+  }
+  .ref-num:hover { background: var(--accent-soft); border-radius: 3px; }
+
+  /* Entries */
+  .entry { margin: 0 0 24px; }
+  .entry .meta { color: var(--muted); font-style: italic; font-size: 14.5px; }
+  .entry .etitle { font-weight: 600; }
+  .entry .body { margin-top: 4px; font-size: 16px; line-height: 1.65; }
+
+  /* Findings as numbered cards */
+  .findings { padding-left: 0; list-style: none; margin: 18px 0; }
+  .findings li {
+    padding: 18px 0 18px 56px; border-top: 1px solid var(--rule);
+    position: relative;
+  }
+  .findings li:last-child { border-bottom: 1px solid var(--rule); }
+  .findings li::before {
+    content: attr(data-n);
+    position: absolute; left: 0; top: 18px;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--accent-soft); color: var(--accent);
+    font-family: -apple-system, sans-serif; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .findings li strong { display: block; margin-bottom: 4px; font-size: 17px; }
+  .findings li p { margin: 0; font-size: 15.5px; color: #2a2620; }
+
+  /* Pubs / resources */
+  .pub { padding: 14px 0; border-top: 1px solid var(--rule); }
+  .pub:last-child { border-bottom: 1px solid var(--rule); }
+  .pub h3 { font-size: 17px; margin: 0 0 4px; font-weight: 500; line-height: 1.35; }
+  .pub .pmeta { font-family: -apple-system, sans-serif; font-size: 13px; color: var(--muted); }
+
+  .colophon {
+    margin-top: 56px; padding-top: 20px;
+    border-top: 1px solid var(--rule);
+    font-family: -apple-system, sans-serif;
+    font-size: 12.5px; color: var(--muted); letter-spacing: 0.04em;
+    display: flex; flex-wrap: wrap; gap: 18px; justify-content: space-between;
+  }
+
+  /* Resources row (sans-serif) */
+  .resources {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px; margin-top: 14px; font-family: -apple-system, sans-serif;
+  }
+  .resource {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 8px;
+    padding: 12px 14px; display: inline-flex; align-items: center; gap: 10px;
+    color: var(--ink); font-size: 13.5px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .resource:hover { border-color: var(--accent); text-decoration: none; }
+  .resource.disabled { opacity: 0.55; }
+  .resource .hi { width: 16px; height: 16px; color: var(--accent); }
+
+  @media (max-width: 1040px) {
+    .wrap { padding: 36px 24px 80px; }
+    .doc { grid-template-columns: 1fr; }
+    .side { padding-left: 0; border-left: none; }
+    .sidenote { margin: 14px 0; }
+  }
+
+{% include hover_icon_css.html %}
+</style>
+</head>
+<body>
+
+{% include research_switcher.html active=4 label="R4 · Notebook" %}
+
+<main class="wrap">
+
+  <div class="doc">
+
+    <section>
+      <div class="main head">
+        <p class="epigraph">A working notebook on cochlear-implant perception and the listening tests that connect tonotopy to taste.</p>
+        <h1>{{ r.title }}</h1>
+        <p class="deck">{{ r.headline }}</p>
+        <p class="meta">
+          <span class="badge">{{ r.status }}</span>
+          <span>· {{ r.date_range }}</span>
+          <span>· {{ r.reading_time }}</span>
+        </p>
+      </div>
+      <div class="side">
+        <div class="sidenote">
+          <span class="nlabel">a.</span>The thesis-level question, restated: when the tonotopic map is wrong, by how much, and for whom, does it matter?
+        </div>
+      </div>
+    </section>
+
+    <section><div class="main"><hr class="rule"></div><div class="side"></div></section>
+
+    <!-- Background -->
+    <section>
+      <div class="main">
+        <h2 class="sec"><span class="num">I.</span>Background</h2>
+        {% for para in r.background %}
+          <p {% if forloop.first %}class="lede"{% endif %}>{{ para | strip_html | replace: "<strong>", "<em>" | replace: "</strong>", "</em>" }}<a class="ref-num" href="#note-{{ forloop.index }}">{{ forloop.index }}</a></p>
+        {% endfor %}
+      </div>
+      <div class="side">
+        <div class="sidenote" id="note-1">
+          <span class="nlabel">1.</span>Most CI fittings still use a default frequency-to-electrode table assigned at activation and rarely revisited — a one-size-fits-all decision encoded in the speech processor.
+        </div>
+        <details class="sidenote expandable" id="note-2">
+          <summary><span class="nlabel">2.</span>Why the mismatch is rarely measured</summary>
+          <div>It needs imaging (CT/CBCT) for precise electrode localisation and a perceptual model to translate that into a listener-specific frequency map. Both are slow, costly, and not part of routine clinical pathways.</div>
+        </details>
+        <details class="sidenote expandable" id="note-3">
+          <summary><span class="nlabel">3.</span>Why we built our own platform</summary>
+          <div>Existing tools were either commercial black boxes or research-only Linux setups. Neither lets a clinician run a 5-minute mismatch screen at the chairside. So we wrote one — see the <a href="#tool">software section</a>.</div>
+        </details>
+      </div>
+    </section>
+
+    <!-- The question -->
+    <section>
+      <div class="main">
+        <h2 class="sec"><span class="num">II.</span>The question</h2>
+        <p style="font-size:19px;line-height:1.55;color:#1a1815;font-style:italic;">{{ r.question }}</p>
+      </div>
+      <div class="side">
+        <div class="sidenote">
+          <span class="nlabel">b.</span>Two complementary measures — speech intelligibility (objective) and music sound quality (subjective MUSHRA) — chosen for ecological span.
+        </div>
+      </div>
+    </section>
+
+    <!-- Methods -->
+    <section>
+      <div class="main">
+        <h2 class="sec"><span class="num">III.</span>Methods</h2>
+        {% for m in r.methods %}
+          <div class="entry">
+            <div class="etitle">{{ m.title }}<span class="meta"> — Step {{ forloop.index }}</span></div>
+            <div class="body">{{ m.body }}<a class="ref-num" href="#mnote-{{ forloop.index }}">{{ forloop.index }}</a></div>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="side" id="tool">
+        <div class="sidenote" id="mnote-1">
+          <span class="nlabel">1.</span>The simulator runs in the browser via Web Audio. See the <a href="#">CI Experiments Platform</a> in projects.
+        </div>
+        <div class="sidenote" id="mnote-2">
+          <span class="nlabel">2.</span>We used both fixed-list sentence tests and MUSHRA-style continuous scaling. The two diverged at moderate mismatch — speech held up, music fell.
+        </div>
+        <details class="sidenote expandable" id="mnote-3">
+          <summary><span class="nlabel">3.</span>Why mixed effects, not group means</summary>
+          <div>Individual differences in mismatch tolerance are large enough that group-only statistics would smear the real story. Per-listener random effects keep the variance visible.</div>
+        </details>
+      </div>
+    </section>
+
+    <!-- Findings -->
+    <section>
+      <div class="main">
+        <h2 class="sec"><span class="num">IV.</span>Findings</h2>
+        <ul class="findings">
+          {% for f in r.findings %}
+            <li data-n="{{ f.icon }}"><strong>{{ f.title }}</strong><p>{{ f.body }}</p></li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="side">
+        <div class="sidenote">
+          <span class="nlabel">c.</span>The music-vs-speech dissociation is the part clinicians find most surprising — and the most clinically actionable.
+        </div>
+      </div>
+    </section>
+
+    <!-- Next -->
+    <section>
+      <div class="main">
+        <h2 class="sec"><span class="num">V.</span>Next</h2>
+        {% for n in r.next_steps %}<p>— {{ n }}</p>{% endfor %}
+      </div>
+      <div class="side"></div>
+    </section>
+
+    <section><div class="main"><hr class="rule"></div><div class="side"></div></section>
+
+    <!-- References -->
+    <section>
+      <div class="main">
+        <h2 class="sec"><span class="num">VI.</span>Publications &amp; resources</h2>
+        {% for pub in r.publications %}
+          <div class="pub">
+            <h3><a href="{{ pub.url }}">{{ pub.title }}</a><span class="ref-num">[{{ forloop.index }}]</span></h3>
+            <div class="pmeta">{{ pub.authors }} — <em>{{ pub.venue }}</em>, {{ pub.year }}. <a href="{{ pub.url }}">doi:{{ pub.doi }}</a></div>
+          </div>
+        {% endfor %}
+
+        <div class="resources">
+          {% for res in r.resources %}
+            {% if res.url and res.url != "" %}
+              <a class="resource" href="{{ res.url }}">{% include hover_icon.html name=res.icon %}<span>{{ res.label }}</span></a>
+            {% else %}
+              <span class="resource disabled">{% include hover_icon.html name=res.icon %}<span>{{ res.label }}</span></span>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+      <div class="side">
+        <div class="sidenote">
+          <span class="nlabel">refs.</span>Co-authors: Picinali (Imperial), Faulkner (independent), Vickers (Cambridge — supervisor). Funding/affiliations on the <a href="/">homepage</a>.
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="main">
+        <div class="colophon">
+          <div>{{ p.identity.name }} · <a href="mailto:{{ p.identity.email }}">{{ p.identity.email }}</a> · {{ p.identity.location }}</div>
+          <div>R4 · LAB NOTEBOOK</div>
+        </div>
+      </div>
+      <div class="side"></div>
+    </section>
+
+  </div>
+
+</main>
+
+</body>
+</html>

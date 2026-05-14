@@ -1,0 +1,354 @@
+---
+permalink: /research/r1.html
+sitemap: false
+---
+{% assign p = site.data.profile %}{% assign r = site.data.research.perception %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>R1 · Scrollytelling · {{ r.title }}</title>
+<style>
+  :root {
+    --ink: #11141b;
+    --muted: #6a727e;
+    --rule: #e5e7ec;
+    --bg: #f7f8fa;
+    --paper: #ffffff;
+    --accent: #c43a6f;
+    --tag-bg: #f3eef1;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    color: var(--ink); background: var(--bg);
+    line-height: 1.65; font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Switcher (matches V12 family) */
+  .switcher {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 24px;
+    background: rgba(247,248,250,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+  }
+  .switcher .idx a { color: var(--muted); text-decoration: none; }
+  .switcher .idx a:hover { color: var(--ink); }
+  .switcher .nums a {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted); font-variant-numeric: tabular-nums; text-decoration: none;
+  }
+  .switcher .nums a.active { background: var(--accent); color: #fff; }
+  .switcher .nums a:hover { color: var(--ink); }
+  .switcher .nums a.active:hover { color: #fff; }
+  .switcher .name { color: var(--muted); margin-left: 12px; font-size: 12px; }
+
+  /* Hero */
+  .hero { padding: 64px 8vw 40px; max-width: 1280px; margin: 0 auto; }
+  .hero .crumb {
+    font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 12px;
+  }
+  .hero h1 {
+    font-size: clamp(34px, 5vw, 56px); line-height: 1.05; letter-spacing: -0.025em;
+    font-weight: 500; margin: 0 0 16px; max-width: 22ch;
+  }
+  .hero .headline { font-size: 19px; color: #3a3d44; max-width: 60ch; margin: 0 0 22px; line-height: 1.5; }
+  .hero .meta-row {
+    display: flex; flex-wrap: wrap; gap: 20px; font-size: 13px; color: var(--muted);
+    margin-top: 24px;
+  }
+  .hero .meta-row .badge {
+    background: var(--tag-bg); color: var(--accent); padding: 4px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 500;
+  }
+  .hero .tags { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .hero .tags span {
+    background: var(--paper); border: 1px solid var(--rule); color: #2a2c33;
+    padding: 3px 9px; border-radius: 8px; font-size: 11.5px;
+  }
+
+  /* Progress bar */
+  .progress {
+    position: fixed; top: 47px; left: 0; right: 0; height: 3px;
+    background: transparent; z-index: 99;
+  }
+  .progress .bar { height: 100%; width: 0%; background: var(--accent); transition: width 0.1s linear; }
+
+  /* Scrolly layout */
+  .scrolly {
+    max-width: 1280px; margin: 0 auto;
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 56px; padding: 32px 8vw 80px;
+  }
+  .stage {
+    position: sticky; top: 80px; height: calc(100vh - 120px);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .stage .frame {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 14px;
+    padding: 32px; width: 100%;
+    box-shadow: 0 14px 40px rgba(0,0,0,0.04);
+    position: relative; overflow: hidden;
+  }
+  .figure-card {
+    position: absolute; inset: 32px;
+    opacity: 0; transition: opacity 0.4s, transform 0.5s cubic-bezier(.2,.7,.2,1);
+    transform: translateY(12px);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+  }
+  .figure-card.active { opacity: 1; transform: translateY(0); }
+  .figure-card img {
+    max-width: 100%; max-height: 60%; height: auto; border-radius: 8px; display: block;
+  }
+  .figure-card .placeholder {
+    width: 100%; max-height: 60%; aspect-ratio: 4/3;
+    background: repeating-linear-gradient(45deg, #f5f6f9 0 8px, #ebeef3 8px 16px);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted); font-family: ui-monospace, Menlo, monospace; font-size: 12px; letter-spacing: 0.05em;
+  }
+  .figure-card .cap {
+    margin-top: 14px; font-size: 13px; color: var(--muted); font-style: italic;
+    max-width: 50ch; line-height: 1.5;
+  }
+  .figure-card .lbl {
+    font-family: ui-monospace, Menlo, monospace; font-size: 10.5px;
+    color: var(--accent); letter-spacing: 0.16em; text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  /* Scrolling story column */
+  .story { padding: 8px 0 60vh; }
+  .story section {
+    padding: 60px 0;
+    transition: opacity 0.4s;
+    opacity: 0.35;
+  }
+  .story section.active { opacity: 1; }
+  .story section .lbl {
+    font-family: ui-monospace, Menlo, monospace; font-size: 11px;
+    color: var(--accent); letter-spacing: 0.18em; text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .story section h2 {
+    margin: 0 0 14px; font-size: 28px; letter-spacing: -0.015em;
+    line-height: 1.15; font-weight: 600;
+  }
+  .story section p {
+    margin: 0 0 12px; font-size: 16px; line-height: 1.7; color: #2a2c33;
+  }
+  .story section ul {
+    margin: 12px 0; padding-left: 0; list-style: none;
+  }
+  .story section ul li {
+    padding: 10px 0 10px 32px; border-top: 1px solid var(--rule);
+    position: relative; font-size: 15px; color: #2a2c33; line-height: 1.55;
+  }
+  .story section ul li:last-child { border-bottom: 1px solid var(--rule); }
+  .story section ul li::before {
+    content: attr(data-n);
+    position: absolute; left: 0; top: 12px;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--accent); color: #fff;
+    font-size: 11px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    font-family: ui-monospace, Menlo, monospace;
+  }
+  .story section ul li strong { display: block; margin-bottom: 4px; }
+
+  /* Bottom matter */
+  .matter { max-width: 1280px; margin: 0 auto; padding: 60px 8vw 100px; }
+  .matter h2 {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.2em;
+    color: var(--muted); margin: 36px 0 16px; font-weight: 600;
+  }
+  .pub, .resource-row {
+    padding: 14px 0; border-top: 1px solid var(--rule);
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 16px;
+  }
+  .pub:last-of-type, .resource-row:last-of-type { border-bottom: 1px solid var(--rule); }
+  .pub .pmeta { color: var(--muted); font-size: 12.5px; min-width: 110px; font-family: ui-monospace, Menlo, monospace; }
+  .pub .ptitle { flex: 1; min-width: 240px; font-size: 15.5px; font-weight: 500; }
+  .pub .pauth { color: var(--muted); font-size: 13px; flex: 1; min-width: 240px; }
+  .collab-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+  .collab-grid .person {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 16px;
+  }
+  .collab-grid .person .name { font-weight: 600; font-size: 14.5px; }
+  .collab-grid .person .role { color: var(--muted); font-size: 13px; }
+
+  .resource-row .hi { width: 16px; height: 16px; color: var(--accent); }
+  .resource-row a { color: var(--ink); display: inline-flex; align-items: center; gap: 8px; }
+  .resource-row a:hover { color: var(--accent); text-decoration: none; }
+
+  @media (max-width: 920px) {
+    .scrolly { grid-template-columns: 1fr; gap: 0; padding: 24px 24px 60px; }
+    .stage { position: static; height: auto; padding: 24px 0; }
+    .figure-card { position: static; opacity: 1; transform: none; }
+    .figure-card + .figure-card { margin-top: 18px; }
+    .story section { padding: 30px 0; opacity: 1; }
+  }
+
+{% include hover_icon_css.html %}
+</style>
+</head>
+<body>
+
+{% include research_switcher.html active=1 label="R1 · Scrollytelling" %}
+
+<div class="progress"><div class="bar" id="progress-bar"></div></div>
+
+<header class="hero">
+  <div class="crumb">Research project · Perception</div>
+  <h1>{{ r.title }}</h1>
+  <p class="headline">{{ r.headline }}</p>
+  <div class="meta-row">
+    <span class="badge">{{ r.status }}</span>
+    <span>· {{ r.date_range }}</span>
+    <span>· {{ r.reading_time }}</span>
+  </div>
+  <div class="tags">
+    {% for t in r.tags %}<span>{{ t }}</span>{% endfor %}
+  </div>
+</header>
+
+<div class="scrolly">
+
+  <aside class="stage">
+    <div class="frame">
+      <div class="figure-card active" data-fig="0">
+        <div class="lbl">The setup</div>
+        <img src="{{ r.figures[0].src }}" alt="{{ r.figures[0].alt }}">
+        <div class="cap">{{ r.figures[0].caption }}</div>
+      </div>
+      <div class="figure-card" data-fig="1">
+        <div class="lbl">The pipeline</div>
+        <div class="placeholder">[ {{ r.figures[1].label }} ]</div>
+        <div class="cap">{{ r.figures[1].caption }}</div>
+      </div>
+      <div class="figure-card" data-fig="2">
+        <div class="lbl">The result</div>
+        <div class="placeholder">[ {{ r.figures[2].label }} ]</div>
+        <div class="cap">{{ r.figures[2].caption }}</div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="story">
+
+    <section class="active" data-fig="0">
+      <div class="lbl">The question</div>
+      <h2>What does mismatch actually cost the listener?</h2>
+      <p>{{ r.question }}</p>
+    </section>
+
+    <section data-fig="0">
+      <div class="lbl">Background</div>
+      <h2>Why this matters</h2>
+      {% for para in r.background %}<p>{{ para }}</p>{% endfor %}
+    </section>
+
+    <section data-fig="1">
+      <div class="lbl">Methods</div>
+      <h2>How we measured it</h2>
+      <ul>
+        {% for m in r.methods %}
+          <li data-n="{{ forloop.index }}"><strong>{{ m.title }}</strong>{{ m.body }}</li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <section data-fig="2">
+      <div class="lbl">Findings</div>
+      <h2>What the data showed</h2>
+      <ul>
+        {% for f in r.findings %}
+          <li data-n="{{ f.icon }}"><strong>{{ f.title }}</strong>{{ f.body }}</li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <section data-fig="2">
+      <div class="lbl">Next</div>
+      <h2>Where this goes next</h2>
+      <ul>
+        {% for n in r.next_steps %}
+          <li data-n="{{ forloop.index }}">{{ n }}</li>
+        {% endfor %}
+      </ul>
+    </section>
+
+  </main>
+
+</div>
+
+<section class="matter">
+  <h2>Publications</h2>
+  {% for pub in r.publications %}
+    <div class="pub">
+      <div class="pmeta">{{ pub.year }} · {{ pub.kind }}</div>
+      <div class="ptitle"><a href="{{ pub.url }}">{{ pub.title }}</a></div>
+      <div class="pauth">{{ pub.authors }} — <em>{{ pub.venue }}</em></div>
+    </div>
+  {% endfor %}
+
+  <h2>Collaborators</h2>
+  <div class="collab-grid">
+    {% for c in r.collaborators %}
+      <div class="person">
+        <div class="name">{% if c.web and c.web != "" %}<a href="{{ c.web }}">{{ c.name }}</a>{% else %}{{ c.name }}{% endif %}</div>
+        <div class="role">{{ c.role }}</div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <h2>Resources</h2>
+  {% for res in r.resources %}
+    <div class="resource-row">
+      {% if res.url and res.url != "" %}
+        <a href="{{ res.url }}">{% include hover_icon.html name=res.icon %} {{ res.label }}</a>
+      {% else %}
+        <span style="color:var(--muted);display:inline-flex;align-items:center;gap:8px;">{% include hover_icon.html name=res.icon %} {{ res.label }}</span>
+      {% endif %}
+    </div>
+  {% endfor %}
+</section>
+
+<script>
+  // Section highlight + figure swap on scroll.
+  const sections = document.querySelectorAll('.story section');
+  const figures = document.querySelectorAll('.figure-card');
+  const bar = document.getElementById('progress-bar');
+
+  function update() {
+    const mid = window.scrollY + window.innerHeight * 0.4;
+    let active = sections[0];
+    sections.forEach(s => {
+      const t = s.offsetTop + s.parentElement.offsetTop;
+      if (t < mid) active = s;
+    });
+    sections.forEach(s => s.classList.toggle('active', s === active));
+    const figIdx = active.dataset.fig;
+    figures.forEach(f => f.classList.toggle('active', f.dataset.fig === figIdx));
+
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = Math.min(100, (window.scrollY / docHeight) * 100) + '%';
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+</script>
+
+</body>
+</html>

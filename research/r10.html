@@ -1,0 +1,339 @@
+---
+permalink: /research/r10.html
+sitemap: false
+---
+{% assign p = site.data.profile %}{% assign r = site.data.research.perception %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>R10 · FAQ · {{ r.title }}</title>
+<style>
+  :root {
+    --ink: #11141b;
+    --muted: #6a727e;
+    --rule: #e5e7ec;
+    --bg: #f7f8fa;
+    --paper: #ffffff;
+    --accent: #c43a6f;
+    --accent-soft: #f3eef1;
+    --bubble-q: #2962ff;
+    --bubble-q-soft: #eaf0ff;
+    --bubble-a: var(--accent);
+    --bubble-a-soft: var(--accent-soft);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    color: var(--ink); background: var(--bg);
+    line-height: 1.65; font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .switcher {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 24px;
+    background: rgba(247,248,250,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+  }
+  .switcher .idx a { color: var(--muted); text-decoration: none; }
+  .switcher .idx a:hover { color: var(--ink); }
+  .switcher .nums a {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted); font-variant-numeric: tabular-nums; text-decoration: none;
+  }
+  .switcher .nums a.active { background: var(--accent); color: #fff; }
+  .switcher .nums a:hover { color: var(--ink); }
+  .switcher .nums a.active:hover { color: #fff; }
+  .switcher .name { color: var(--muted); margin-left: 12px; font-size: 12px; }
+
+  .wrap { max-width: 880px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  /* Compact header */
+  .head { margin-bottom: 28px; text-align: center; }
+  .head .crumb {
+    font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 12px;
+  }
+  .head h1 { font-size: clamp(26px, 4vw, 38px); margin: 0 0 10px; letter-spacing: -0.015em; font-weight: 600; line-height: 1.15; max-width: 24ch; margin-left: auto; margin-right: auto; }
+  .head .headline { color: #3a3d44; max-width: 64ch; margin: 0 auto 18px; font-size: 16px; line-height: 1.55; }
+  .head .meta { display: inline-flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--muted); align-items: center; }
+  .head .badge { background: var(--accent-soft); color: var(--accent); padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+
+  .chat-intro {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 20px;
+    padding: 22px 26px; margin-bottom: 24px;
+    display: flex; gap: 16px; align-items: flex-start;
+  }
+  .chat-intro .avatar {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--accent-soft); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 18px; flex: none;
+  }
+  .chat-intro .body p { margin: 0 0 6px; font-size: 15px; line-height: 1.6; color: #2a2c33; }
+  .chat-intro .body p:last-child { margin: 0; color: var(--muted); font-size: 13.5px; }
+
+  /* Each Q&A pair */
+  .qa {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 18px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color 0.18s, box-shadow 0.18s;
+  }
+  .qa:hover { border-color: #cdd5e3; }
+  .qa[open] { border-color: var(--accent); box-shadow: 0 12px 30px rgba(196,58,111,0.08); }
+
+  .qa summary {
+    cursor: pointer; list-style: none;
+    padding: 18px 22px;
+    display: flex; align-items: flex-start; gap: 14px;
+    font-size: 16.5px; font-weight: 500;
+    color: var(--ink);
+  }
+  .qa summary::-webkit-details-marker { display: none; }
+  .qa summary .bubble {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--bubble-q-soft); color: var(--bubble-q);
+    display: flex; align-items: center; justify-content: center;
+    font-family: ui-monospace, Menlo, monospace; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.05em;
+    flex: none;
+  }
+  .qa summary .qtext { flex: 1; line-height: 1.4; }
+  .qa summary .caret {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--bg); display: flex; align-items: center; justify-content: center;
+    color: var(--muted); font-size: 12px; flex: none; margin-top: 2px;
+    transition: transform 0.25s, background 0.18s;
+  }
+  .qa[open] summary .caret { transform: rotate(180deg); background: var(--accent-soft); color: var(--accent); }
+
+  .qa .answer {
+    padding: 0 22px 22px 68px;
+    animation: openfade 0.3s cubic-bezier(.2,.7,.2,1);
+  }
+  @keyframes openfade {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .qa .answer p { margin: 0 0 12px; font-size: 15px; line-height: 1.7; color: #2a2c33; }
+  .qa .answer p:last-child { margin: 0; }
+  .qa .answer .bubble-a {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: var(--accent-soft); border-radius: 14px;
+    padding: 14px 16px; margin-top: 8px;
+  }
+  .qa .answer .bubble-a::before {
+    content: "L"; flex: none;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 13px;
+  }
+  .qa .answer .bubble-a .text { font-size: 14px; line-height: 1.6; color: var(--ink); }
+  .qa .answer .meta { color: var(--muted); font-size: 12.5px; margin-top: 6px; }
+
+  /* Tags / clusters of QAs */
+  .cluster { margin: 0 0 30px; }
+  .cluster .cluster-h {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.2em;
+    color: var(--muted); margin: 0 0 12px; font-weight: 600;
+    padding-left: 4px;
+  }
+
+  .fig-card {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 14px;
+    padding: 14px; text-align: center; margin: 12px 0;
+  }
+  .fig-card img { max-width: 100%; max-height: 220px; border-radius: 6px; }
+  .fig-card .placeholder { height: 180px; border-radius: 6px; background: repeating-linear-gradient(45deg, #ebeef3 0 8px, #f4f6f9 8px 16px); display: flex; align-items: center; justify-content: center; color: var(--muted); font-family: ui-monospace, Menlo, monospace; font-size: 12px; }
+  .fig-card .cap { font-size: 12.5px; color: var(--muted); margin-top: 10px; font-style: italic; }
+
+  .pub { padding: 12px 0; border-top: 1px solid var(--rule); }
+  .pub:last-child { border-bottom: 1px solid var(--rule); }
+  .pub h3 { margin: 0 0 4px; font-size: 15.5px; font-weight: 500; line-height: 1.35; }
+  .pub .pmeta { color: var(--muted); font-size: 12.5px; }
+
+  .matter { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--rule); }
+
+  .resources { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 12px; }
+  .resource { background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; padding: 14px 16px; display: inline-flex; align-items: center; gap: 10px; color: var(--ink); font-size: 14px; transition: border-color 0.18s; }
+  .resource:hover { border-color: var(--accent); text-decoration: none; }
+  .resource.disabled { opacity: 0.55; cursor: default; }
+  .resource .hi { width: 17px; height: 17px; color: var(--accent); }
+
+{% include hover_icon_css.html %}
+</style>
+</head>
+<body>
+
+{% include research_switcher.html active=10 label="R10 · FAQ" %}
+
+<main class="wrap">
+
+  <header class="head">
+    <div class="crumb">Research project · Perception · FAQ</div>
+    <h1>{{ r.title }}</h1>
+    <p class="headline">{{ r.headline }}</p>
+    <div class="meta">
+      <span class="badge">{{ r.status }}</span>
+      <span>· {{ r.date_range }}</span>
+      <span>· {{ r.reading_time }}</span>
+    </div>
+  </header>
+
+  <section class="chat-intro">
+    <div class="avatar">?</div>
+    <div class="body">
+      <p>A short Q&amp;A to walk you through this project. Click any question to expand the answer.</p>
+      <p>If you'd rather read it as a paper, the JASA version is below; if you'd rather try the experiment, see <a href="/research/r7.html">R7</a>; if you'd rather see the figures, see <a href="/research/r8.html">R8</a>.</p>
+    </div>
+  </section>
+
+  <div class="cluster">
+    <div class="cluster-h">The basics</div>
+
+    <details class="qa">
+      <summary><span class="bubble">Q1</span><span class="qtext">What's this project about, in one sentence?</span><span class="caret">▾</span></summary>
+      <div class="answer">
+        <p>{{ r.headline }}</p>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary><span class="bubble">Q2</span><span class="qtext">Why does this matter?</span><span class="caret">▾</span></summary>
+      <div class="answer">
+        {% for para in r.background %}<p>{{ para }}</p>{% endfor %}
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary><span class="bubble">Q3</span><span class="qtext">What is the actual research question?</span><span class="caret">▾</span></summary>
+      <div class="answer">
+        <p>{{ r.question }}</p>
+        <div class="bubble-a"><div class="text">In one breath: <em>when the cochlea's frequency map and the implant's frequency map disagree, what does the listener lose?</em></div></div>
+      </div>
+    </details>
+  </div>
+
+  <div class="cluster">
+    <div class="cluster-h">What we did</div>
+
+    {% for m in r.methods %}
+      <details class="qa">
+        <summary><span class="bubble">M{{ forloop.index }}</span><span class="qtext">{{ m.title }} — how does it work?</span><span class="caret">▾</span></summary>
+        <div class="answer">
+          <p>{{ m.body }}</p>
+        </div>
+      </details>
+    {% endfor %}
+
+    <details class="qa">
+      <summary><span class="bubble">M4</span><span class="qtext">Show me what the setup looks like.</span><span class="caret">▾</span></summary>
+      <div class="answer">
+        <div class="fig-card">
+          <img src="{{ r.figures[0].src }}" alt="{{ r.figures[0].alt }}">
+          <div class="cap">{{ r.figures[0].caption }}</div>
+        </div>
+        <div class="fig-card">
+          <div class="placeholder">[ {{ r.figures[1].label }} ]</div>
+          <div class="cap">{{ r.figures[1].caption }}</div>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <div class="cluster">
+    <div class="cluster-h">What we found</div>
+
+    {% for f in r.findings %}
+      <details class="qa">
+        <summary><span class="bubble">F{{ f.icon }}</span><span class="qtext">{{ f.title }}</span><span class="caret">▾</span></summary>
+        <div class="answer">
+          <p>{{ f.body }}</p>
+        </div>
+      </details>
+    {% endfor %}
+
+    <details class="qa">
+      <summary><span class="bubble">F4</span><span class="qtext">Is this the same for all listeners?</span><span class="caret">▾</span></summary>
+      <div class="answer">
+        <p>No — and that turns out to be the clinically important part. Some listeners barely noticed a 4 mm mismatch; others struggled with 1 mm. Group averages hide that range; per-listener random effects in the analysis make it visible.</p>
+        <div class="bubble-a"><div class="text">Practically: <em>personalised mapping isn't a nice-to-have. For music, it's required.</em></div></div>
+      </div>
+    </details>
+  </div>
+
+  <div class="cluster">
+    <div class="cluster-h">Where it goes next</div>
+
+    {% for n in r.next_steps %}
+      <details class="qa">
+        <summary><span class="bubble">→{{ forloop.index }}</span><span class="qtext">{{ n | truncate: 90 }}</span><span class="caret">▾</span></summary>
+        <div class="answer">
+          <p>{{ n }}</p>
+        </div>
+      </details>
+    {% endfor %}
+  </div>
+
+  <div class="cluster">
+    <div class="cluster-h">For the curious</div>
+
+    <details class="qa">
+      <summary><span class="bubble">L1</span><span class="qtext">Can I read the paper?</span><span class="caret">▾</span></summary>
+      <div class="answer">
+        {% for pub in r.publications %}
+          <div class="pub">
+            <h3><a href="{{ pub.url }}">{{ pub.title }}</a></h3>
+            <div class="pmeta">{{ pub.authors }} — <em>{{ pub.venue }}</em>, {{ pub.year }}. doi:{{ pub.doi }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary><span class="bubble">L2</span><span class="qtext">Who did this work with you?</span><span class="caret">▾</span></summary>
+      <div class="answer">
+        <div class="resources" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
+          {% for c in r.collaborators %}
+            <div class="resource" style="cursor:default;">
+              <div>
+                <div style="font-weight:600;">{% if c.web and c.web != "" %}<a href="{{ c.web }}">{{ c.name }}</a>{% else %}{{ c.name }}{% endif %}</div>
+                <div style="font-size:12.5px;color:var(--muted);">{{ c.role }}</div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary><span class="bubble">L3</span><span class="qtext">Code? Data? Audio examples?</span><span class="caret">▾</span></summary>
+      <div class="answer">
+        <p>Some of the supporting tools are open source — check the resources below.</p>
+        <div class="resources">
+          {% for res in r.resources %}
+            {% if res.url and res.url != "" %}
+              <a class="resource" href="{{ res.url }}">{% include hover_icon.html name=res.icon %}<span>{{ res.label }}</span></a>
+            {% else %}
+              <span class="resource disabled">{% include hover_icon.html name=res.icon %}<span>{{ res.label }}</span></span>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </details>
+  </div>
+
+</main>
+
+</body>
+</html>

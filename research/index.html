@@ -1,0 +1,322 @@
+---
+permalink: /research/
+sitemap: false
+---
+{% assign p = site.data.profile %}{% assign r = site.data.research.perception %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>10 research-page designs · {{ p.identity.name }}</title>
+<style>
+  :root {
+    --ink: #11141b;
+    --muted: #6a727e;
+    --rule: #e5e7ec;
+    --bg: #f7f8fa;
+    --paper: #ffffff;
+    --accent: #c43a6f;
+    --tag-bg: #f3eef1;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    color: var(--ink); background: var(--bg);
+    line-height: 1.55; font-size: 15.5px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Switcher */
+  .switcher {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 24px;
+    background: rgba(247,248,250,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+  }
+  .switcher a.idx, .switcher .idx a { color: var(--muted); text-decoration: none; }
+  .switcher .idx a:hover { color: var(--ink); }
+  .switcher .nums { display: flex; gap: 4px; }
+  .switcher .nums a {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted); font-variant-numeric: tabular-nums; text-decoration: none;
+  }
+  .switcher .nums a.active { background: var(--accent); color: #fff; }
+  .switcher .nums a:hover { color: var(--ink); }
+  .switcher .nums a.active:hover { color: #fff; }
+  .switcher .name { color: var(--muted); margin-left: 12px; font-size: 12px; }
+
+  header.top {
+    background: var(--paper); border-bottom: 1px solid var(--rule);
+    padding: 28px 32px;
+  }
+  header.top .crumb {
+    font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 8px;
+  }
+  header.top h1 { margin: 0 0 8px; font-size: 24px; font-weight: 600; letter-spacing: -0.01em; }
+  header.top p { margin: 0; color: #2a2c33; font-size: 14.5px; max-width: 76ch; line-height: 1.6; }
+  header.top .ex {
+    margin-top: 14px; display: flex; gap: 16px; font-size: 13px; flex-wrap: wrap; color: var(--muted);
+  }
+  header.top .ex strong { color: var(--ink); }
+
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 36px 24px 80px; }
+
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 14px;
+    padding: 22px; display: flex; flex-direction: column; gap: 12px;
+    transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(0,0,0,0.06); border-color: #d8cdd3; }
+  .card .rnum {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 11px; color: var(--muted); letter-spacing: 0.16em; text-transform: uppercase;
+  }
+  .card h2 {
+    margin: 0; font-size: 18px; letter-spacing: -0.01em;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card h2 .hi { width: 17px; height: 17px; color: var(--accent); }
+  .card p { margin: 0; color: #3a3d44; font-size: 13.5px; line-height: 1.55; }
+  .card .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .card .tags span {
+    background: var(--tag-bg); color: var(--accent); padding: 2px 8px; border-radius: 8px;
+    font-size: 11px; font-weight: 500;
+  }
+
+  .preview {
+    border: 1px solid var(--rule); border-radius: 10px; overflow: hidden;
+    height: 100px; position: relative; background: #fff;
+  }
+  .preview .body { position: absolute; inset: 0; padding: 12px; font-size: 8.5px; color: #444; }
+
+  /* Per-variant little preview hints */
+  .pv-1 .body { padding: 0; display: grid; grid-template-columns: 1fr 1fr; }
+  .pv-1 .body::before { content: ""; background: linear-gradient(135deg, #c43a6f 0%, #f3a6c0 100%); }
+  .pv-1 .body::after { content: "Scroll →\Asticky figure\Atext flows"; white-space: pre; padding: 12px; font-size: 8.5px; line-height: 1.4; }
+
+  .pv-2 .body { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 8px; }
+  .pv-2 .body::before { content: "Q · 1"; background: #c43a6f; color: #fff; border-radius: 4px; padding: 4px; font-size: 8px; font-weight: 600; text-align: center; }
+  .pv-2 .body::after { content: ""; background: linear-gradient(135deg, #fff 50%, #c43a6f 50%); border-radius: 4px; }
+  .pv-2 .body > * { display: block; }
+
+  .pv-3 .body { padding: 0; }
+  .pv-3 .body::before {
+    content: "● Background · Methods · Findings";
+    display: block; padding: 6px 10px;
+    background: #f3eef1; color: #c43a6f;
+    border-bottom: 1px solid #e5e7ec; font-weight: 600;
+  }
+  .pv-3 .body::after {
+    content: "Tab-based detail page";
+    display: block; padding: 8px 10px; color: #6a727e;
+  }
+
+  .pv-4 .body { display: grid; grid-template-columns: 1fr 80px; gap: 8px; }
+  .pv-4 .body::before { content: "Drop cap.\AMain reading\Acolumn — calm,\Aserif, with"; white-space: pre; font-family: Georgia, serif; font-size: 9px; line-height: 1.5; color: #3a3530; }
+  .pv-4 .body::after { content: "¹ note\A² hover\A³ try!"; white-space: pre; font-size: 7px; color: #c43a6f; border-left: 1px solid #d8cdd3; padding-left: 6px; }
+
+  .pv-5 .body { padding: 0; display: grid; grid-template-columns: 1fr 1fr; }
+  .pv-5 .body::before { content: "matched"; background: #e5f0fa; padding: 8px; font-size: 8px; color: #1f5fae; text-align: center; }
+  .pv-5 .body::after { content: "mismatched"; background: #fbe5e5; padding: 8px; font-size: 8px; color: #b13c2d; text-align: center; }
+
+  .pv-6 .body { padding: 0; display: grid; grid-template-rows: 12px 1fr; }
+  .pv-6 .body::before {
+    content: "● ○ ○ ○ ○";
+    color: #c43a6f; padding: 0 10px; font-size: 9px;
+    display: flex; align-items: center; background: #f3eef1;
+  }
+  .pv-6 .body::after { content: "Step 1 of 5\AThe question →"; white-space: pre; padding: 10px; font-size: 9px; color: #3a3d44; }
+
+  .pv-7 .body { padding: 8px 10px; font-size: 9px; line-height: 1.5; color: #3a3d44; }
+  .pv-7 .body::before {
+    content: "Quick experiment:\AWhich is the bigger\Amismatch?";
+    white-space: pre; display: block; color: #c43a6f; font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .pv-7 .body::after {
+    content: "○ A   ◉ B";
+    display: block; color: #6a727e;
+  }
+
+  .pv-8 .body { padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; padding: 3px; }
+  .pv-8 .body::before { content: ""; background: linear-gradient(135deg, #c43a6f, #f0b5cc); }
+  .pv-8 .body::after { content: ""; background: linear-gradient(135deg, #4a7cc2, #b3cae8); }
+  .pv-8 .body > * { display: block; }
+
+  .pv-9 .body { padding: 6px 0; }
+  .pv-9 .body::before {
+    content: "2023 ── 2024 ── 2025 ── 2026";
+    display: block; padding: 0 10px; font-family: ui-monospace, Menlo, monospace;
+    font-size: 8px; color: #c43a6f; letter-spacing: 0.1em;
+  }
+  .pv-9 .body::after {
+    content: "● ● ● ●";
+    display: block; padding: 6px 10px 0; font-size: 12px; color: #c43a6f;
+    letter-spacing: 18px;
+  }
+
+  .pv-10 .body { padding: 10px; font-size: 9px; color: #3a3d44; line-height: 1.5; }
+  .pv-10 .body::before {
+    content: "▸ Why this matters?\A▸ What did you do?";
+    white-space: pre; display: block; color: #c43a6f; font-weight: 600;
+  }
+
+  .card .openrow {
+    display: flex; align-items: center; justify-content: space-between; margin-top: auto;
+    padding-top: 6px;
+  }
+  .card .openrow a.open {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--ink); color: #fff; padding: 8px 14px; border-radius: 8px;
+    font-size: 13px; font-weight: 500; text-decoration: none;
+    transition: background 0.18s;
+  }
+  .card .openrow a.open:hover { background: var(--accent); }
+  .card .openrow a.open .hi { width: 13px; height: 13px; }
+  .card .openrow .vibe { color: var(--muted); font-size: 12px; }
+
+  .edit-callout {
+    margin-top: 36px; padding: 20px 24px;
+    background: #fff5fa; border: 1px solid #f5d3df; border-radius: 14px;
+    color: #6e1b40; font-size: 14px;
+  }
+  .edit-callout strong { color: #41122a; }
+  .edit-callout code {
+    background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 4px;
+    font-family: ui-monospace, Menlo, monospace; font-size: 13px;
+  }
+
+{% include hover_icon_css.html %}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="crumb">V12 · Research · 10 detail-page designs</div>
+  <h1>How should I present a research project?</h1>
+  <p>Ten interactive prototype layouts for the project-detail page reached from V12's <em>Research</em> tab. Each shows the same canonical content — <strong>{{ r.title }}</strong> — in a different style. Pick the one that fits, and we'll wire it up for all three themes.</p>
+  <div class="ex">
+    <span><strong>Example content:</strong> {{ r.title }}</span>
+    <span>·</span>
+    <span>{{ r.status }}</span>
+    <span>·</span>
+    <span>{{ r.date_range }}</span>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="grid">
+
+    <article class="card">
+      <span class="rnum">R1 / Scrollytelling</span>
+      <div class="preview pv-1"><div class="body"></div></div>
+      <h2>{% include hover_icon.html name="globe" %} Sticky scrollytelling</h2>
+      <p>The figure sticks on one side while text scrolls on the other. Sections highlight as you scroll. Reads like a feature article.</p>
+      <div class="tags"><span>Scroll-driven</span><span>Sticky figure</span></div>
+      <div class="openrow"><a class="open" href="/research/r1.html">{% include hover_icon.html name="open" %} Open R1</a><span class="vibe">Editorial · cinematic</span></div>
+    </article>
+
+    <article class="card">
+      <span class="rnum">R2 / Flip cards</span>
+      <div class="preview pv-2"><div class="body"><span></span><span></span><span></span></div></div>
+      <h2>{% include hover_icon.html name="heart" %} Question flip cards</h2>
+      <p>3D flip cards. Front shows a question, hover or click reveals the answer behind. Tactile, exploratory.</p>
+      <div class="tags"><span>Interactive</span><span>Card flip</span></div>
+      <div class="openrow"><a class="open" href="/research/r2.html">{% include hover_icon.html name="open" %} Open R2</a><span class="vibe">Playful · discovery</span></div>
+    </article>
+
+    <article class="card">
+      <span class="rnum">R3 / Internal tabs</span>
+      <div class="preview pv-3"><div class="body"></div></div>
+      <h2>{% include hover_icon.html name="file" %} Internal tabs</h2>
+      <p>Sub-tabs <em>inside</em> the detail page — Background / Methods / Findings / Resources. Mirrors V12's structure one level deeper.</p>
+      <div class="tags"><span>Tab nav</span><span>Modular</span></div>
+      <div class="openrow"><a class="open" href="/research/r3.html">{% include hover_icon.html name="open" %} Open R3</a><span class="vibe">Familiar · scannable</span></div>
+    </article>
+
+    <article class="card">
+      <span class="rnum">R4 / Notebook</span>
+      <div class="preview pv-4"><div class="body"></div></div>
+      <h2>{% include hover_icon.html name="book" %} Notebook with margins</h2>
+      <p>Serif body + clickable margin notes. Hover or tap a footnote to read it inline. Tufte-style, calm, considered.</p>
+      <div class="tags"><span>Serif</span><span>Marginalia</span></div>
+      <div class="openrow"><a class="open" href="/research/r4.html">{% include hover_icon.html name="open" %} Open R4</a><span class="vibe">Reading-first</span></div>
+    </article>
+
+    <article class="card">
+      <span class="rnum">R5 / Compare slider</span>
+      <div class="preview pv-5"><div class="body"></div></div>
+      <h2>{% include hover_icon.html name="external" %} Drag-to-compare</h2>
+      <p>A horizontal slider you drag to reveal <em>matched</em> versus <em>mismatched</em> tonotopic mapping. The interaction <strong>is</strong> the explanation.</p>
+      <div class="tags"><span>Drag</span><span>Compare</span></div>
+      <div class="openrow"><a class="open" href="/research/r5.html">{% include hover_icon.html name="open" %} Open R5</a><span class="vibe">Hands-on · visual</span></div>
+    </article>
+
+    <article class="card">
+      <span class="rnum">R6 / Stepper</span>
+      <div class="preview pv-6"><div class="body"></div></div>
+      <h2>{% include hover_icon.html name="play" %} 5-step wizard</h2>
+      <p>Numbered slides — question → method → results → discussion → next. Prev/next, keyboard arrows. Like a small talk.</p>
+      <div class="tags"><span>Stepped</span><span>Keyboard</span></div>
+      <div class="openrow"><a class="open" href="/research/r6.html">{% include hover_icon.html name="open" %} Open R6</a><span class="vibe">Presentation feel</span></div>
+    </article>
+
+    <article class="card">
+      <span class="rnum">R7 / Mini quiz</span>
+      <div class="preview pv-7"><div class="body"></div></div>
+      <h2>{% include hover_icon.html name="brain" %} Try the experiment</h2>
+      <p>A short interactive quiz with the same kind of choices listeners face. Wrong answer? See what the data showed. Right answer? Same.</p>
+      <div class="tags"><span>Quiz</span><span>Engagement</span></div>
+      <div class="openrow"><a class="open" href="/research/r7.html">{% include hover_icon.html name="open" %} Open R7</a><span class="vibe">Genuinely fun</span></div>
+    </article>
+
+    <article class="card">
+      <span class="rnum">R8 / Visual index</span>
+      <div class="preview pv-8"><div class="body"><span></span><span></span></div></div>
+      <h2>{% include hover_icon.html name="external" %} Visual mood-board</h2>
+      <p>Figures dominate; captions on hover. The text supports the images, not the other way round. Click any figure to expand.</p>
+      <div class="tags"><span>Figure-led</span><span>Grid</span></div>
+      <div class="openrow"><a class="open" href="/research/r8.html">{% include hover_icon.html name="open" %} Open R8</a><span class="vibe">Visual-first</span></div>
+    </article>
+
+    <article class="card">
+      <span class="rnum">R9 / Timeline</span>
+      <div class="preview pv-9"><div class="body"></div></div>
+      <h2>{% include hover_icon.html name="clock" %} Timeline carousel</h2>
+      <p>A horizontal timeline of milestones — pilot, main study, analysis, paper. Click a node to see what happened then.</p>
+      <div class="tags"><span>Chronological</span><span>Scrub</span></div>
+      <div class="openrow"><a class="open" href="/research/r9.html">{% include hover_icon.html name="open" %} Open R9</a><span class="vibe">Process-aware</span></div>
+    </article>
+
+    <article class="card">
+      <span class="rnum">R10 / FAQ</span>
+      <div class="preview pv-10"><div class="body"></div></div>
+      <h2>{% include hover_icon.html name="link" %} Conversation / FAQ</h2>
+      <p>Friendly Q&amp;A format. Each question opens with a click. Reads like a chat. Welcoming for non-specialists, fast to scan.</p>
+      <div class="tags"><span>Q&amp;A</span><span>Friendly</span></div>
+      <div class="openrow"><a class="open" href="/research/r10.html">{% include hover_icon.html name="open" %} Open R10</a><span class="vibe">Welcoming</span></div>
+    </article>
+
+  </div>
+
+  <div class="edit-callout">
+    <strong>Single source of truth.</strong> Every variant pulls from <code>_data/research.yml</code>. Edit the question, background, methods, findings, figures, publications, collaborators, resources, or quiz once — all 10 detail pages update on save. The same template can be wired to the other two themes (personal, wearable) when you've picked a design.
+  </div>
+
+</main>
+
+</body>
+</html>

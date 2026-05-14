@@ -1,0 +1,452 @@
+---
+permalink: /research/r5.html
+sitemap: false
+---
+{% assign p = site.data.profile %}{% assign r = site.data.research.perception %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>R5 · Drag to compare · {{ r.title }}</title>
+<style>
+  :root {
+    --ink: #11141b;
+    --muted: #6a727e;
+    --rule: #e5e7ec;
+    --bg: #f7f8fa;
+    --paper: #ffffff;
+    --accent: #c43a6f;
+    --accent-soft: #f3eef1;
+    --matched: #1f5fae;
+    --matched-soft: #e8f0fb;
+    --mismatched: #b13c2d;
+    --mismatched-soft: #fbe5e3;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    color: var(--ink); background: var(--bg);
+    line-height: 1.6; font-size: 15.5px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .switcher {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 24px;
+    background: rgba(247,248,250,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+  }
+  .switcher .idx a { color: var(--muted); text-decoration: none; }
+  .switcher .idx a:hover { color: var(--ink); }
+  .switcher .nums a {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted); font-variant-numeric: tabular-nums; text-decoration: none;
+  }
+  .switcher .nums a.active { background: var(--accent); color: #fff; }
+  .switcher .nums a:hover { color: var(--ink); }
+  .switcher .nums a.active:hover { color: #fff; }
+  .switcher .name { color: var(--muted); margin-left: 12px; font-size: 12px; }
+
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  /* Header */
+  .head {
+    text-align: center; margin-bottom: 40px;
+  }
+  .head .crumb {
+    font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 12px;
+  }
+  .head h1 {
+    font-size: clamp(32px, 4.5vw, 50px); letter-spacing: -0.02em; font-weight: 500;
+    margin: 0 0 14px; line-height: 1.05; max-width: 22ch; margin-left: auto; margin-right: auto;
+  }
+  .head .headline { font-size: 17px; color: var(--muted); max-width: 64ch; margin: 0 auto 22px; line-height: 1.5; }
+  .head .meta { display: inline-flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--muted); align-items: center; }
+  .head .badge {
+    background: var(--accent-soft); color: var(--accent); padding: 4px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 500;
+  }
+
+  /* The big interactive demo */
+  .demo-shell {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 20px;
+    padding: 28px; margin: 24px 0 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+  }
+  .demo-shell .title {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.2em;
+    color: var(--accent); font-weight: 600; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .demo-shell h2 {
+    font-size: 24px; margin: 0 0 8px; letter-spacing: -0.015em; font-weight: 600;
+  }
+  .demo-shell .sub { color: var(--muted); margin: 0 0 24px; font-size: 15px; max-width: 70ch; }
+
+  /* Compare canvas */
+  .compare {
+    --pos: 50%;
+    position: relative;
+    aspect-ratio: 16/9;
+    width: 100%;
+    border-radius: 14px;
+    overflow: hidden;
+    user-select: none;
+    background: var(--matched-soft);
+  }
+  .compare .layer {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+    font-size: 16px; line-height: 1.5;
+  }
+  .compare .layer.matched {
+    background: var(--matched-soft); color: var(--matched);
+  }
+  .compare .layer.mismatched {
+    background: var(--mismatched-soft); color: var(--mismatched);
+    clip-path: inset(0 0 0 var(--pos));
+  }
+
+  /* Schematic cochlea + electrode array drawn in CSS */
+  .cochlea {
+    width: 80%; max-width: 480px; aspect-ratio: 5/2;
+    position: relative;
+  }
+  .cochlea .axis {
+    position: absolute; top: 50%; left: 0; right: 0; height: 2px;
+    background: currentColor; opacity: 0.25; transform: translateY(-50%);
+  }
+  .cochlea .freqlabel {
+    position: absolute; top: 4px; font-size: 11px; opacity: 0.8;
+    font-family: ui-monospace, Menlo, monospace; letter-spacing: 0.06em;
+  }
+  .cochlea .freqlabel.apex { left: 0; }
+  .cochlea .freqlabel.base { right: 0; }
+  .cochlea .e {
+    position: absolute; bottom: 12px;
+    width: 24px; height: 12px; border-radius: 3px;
+    background: currentColor;
+  }
+  .cochlea .e::after {
+    content: attr(data-f); position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+    font-size: 10px; opacity: 0.85; font-family: ui-monospace, Menlo, monospace;
+  }
+  .compare .layer.matched .e:nth-child(3) { left: 12%; } /* low f apical */
+  .compare .layer.matched .e:nth-child(4) { left: 32%; }
+  .compare .layer.matched .e:nth-child(5) { left: 52%; }
+  .compare .layer.matched .e:nth-child(6) { left: 72%; }
+  .compare .layer.matched .e:nth-child(7) { left: 88%; }
+  /* Mismatched: shifted basally */
+  .compare .layer.mismatched .e:nth-child(3) { left: 30%; }
+  .compare .layer.mismatched .e:nth-child(4) { left: 50%; }
+  .compare .layer.mismatched .e:nth-child(5) { left: 68%; }
+  .compare .layer.mismatched .e:nth-child(6) { left: 84%; }
+  .compare .layer.mismatched .e:nth-child(7) { left: 96%; }
+
+  .compare .layer .corner {
+    position: absolute; top: 18px; left: 22px;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    font-weight: 600;
+  }
+  .compare .layer.mismatched .corner { left: auto; right: 22px; }
+
+  .compare .layer .caption {
+    position: absolute; bottom: 22px; left: 22px; right: 22px;
+    font-size: 13.5px; max-width: 40ch;
+  }
+  .compare .layer.mismatched .caption { left: auto; right: 22px; text-align: right; }
+
+  /* Slider handle */
+  .compare .handle {
+    position: absolute; top: 0; bottom: 0; left: var(--pos);
+    width: 4px; background: var(--ink);
+    transform: translateX(-50%);
+    cursor: ew-resize;
+  }
+  .compare .handle::before {
+    content: ""; position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--ink); border: 3px solid #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  .compare .handle::after {
+    content: "‹ ›"; position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff; font-size: 16px; font-weight: 600;
+    pointer-events: none;
+    letter-spacing: -3px;
+  }
+
+  /* Slider control */
+  .slider-row {
+    display: grid; grid-template-columns: 1fr 200px 1fr; gap: 16px; align-items: center;
+    margin-top: 20px;
+  }
+  .slider-row label.lbl {
+    font-size: 13px; font-family: ui-monospace, Menlo, monospace;
+    letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600;
+  }
+  .slider-row label.lbl.matched { color: var(--matched); text-align: left; }
+  .slider-row label.lbl.mismatched { color: var(--mismatched); text-align: right; }
+  .slider-row input[type=range] {
+    width: 100%; accent-color: var(--accent);
+  }
+  .slider-readout {
+    text-align: center; font-size: 13px; color: var(--muted);
+    font-family: ui-monospace, Menlo, monospace;
+    margin-top: 10px;
+  }
+  .slider-readout strong { color: var(--accent); font-size: 16px; }
+
+  /* Content sections */
+  .sec { margin: 56px 0 8px; }
+  .sec .sec-h {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em;
+    color: var(--muted); margin: 0 0 18px; font-weight: 600;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sec .sec-h::after { content: ""; flex: 1; height: 1px; background: var(--rule); }
+
+  .text-card {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 14px;
+    padding: 22px 26px; margin-bottom: 14px;
+    font-size: 16px; line-height: 1.7; color: #2a2c33;
+  }
+  .text-card p { margin: 0 0 12px; }
+  .text-card p:last-child { margin: 0; }
+
+  .row-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .row-card {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 14px;
+    padding: 20px 22px;
+  }
+  .row-card .ttop {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 8px;
+  }
+  .row-card .ttop .ttag {
+    background: var(--accent-soft); color: var(--accent);
+    padding: 3px 8px; border-radius: 999px;
+    font-family: ui-monospace, Menlo, monospace; font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600;
+  }
+  .row-card h3 { margin: 0 0 6px; font-size: 16px; line-height: 1.35; }
+  .row-card p { margin: 0; color: #3a3d44; font-size: 14px; line-height: 1.55; }
+
+  .pub {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 14px;
+    padding: 20px; margin-bottom: 10px;
+  }
+  .pub .pmeta { color: var(--muted); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; font-family: ui-monospace, Menlo, monospace; }
+  .pub h3 { margin: 4px 0; font-size: 16.5px; line-height: 1.35; font-weight: 500; }
+  .pub .pauth { color: var(--muted); font-size: 13.5px; }
+  .pub .pvenue { color: #3a3d44; font-size: 13.5px; font-style: italic; }
+
+  .resources {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+  }
+  .resource {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 10px;
+    padding: 14px 16px; display: inline-flex; align-items: center; gap: 10px;
+    color: var(--ink); font-size: 14px; transition: border-color 0.18s;
+  }
+  .resource:hover { border-color: var(--accent); text-decoration: none; }
+  .resource.disabled { opacity: 0.55; cursor: default; }
+  .resource .hi { width: 17px; height: 17px; color: var(--accent); }
+
+  @media (max-width: 720px) {
+    .compare .layer { padding: 14px; }
+    .compare .layer .corner { left: 12px; top: 12px; font-size: 10px; }
+    .compare .layer.mismatched .corner { right: 12px; left: auto; }
+    .row-grid { grid-template-columns: 1fr; }
+    .slider-row { grid-template-columns: 1fr; }
+  }
+
+{% include hover_icon_css.html %}
+</style>
+</head>
+<body>
+
+{% include research_switcher.html active=5 label="R5 · Drag to compare" %}
+
+<main class="wrap">
+
+  <header class="head">
+    <div class="crumb">Research project · Perception</div>
+    <h1>{{ r.title }}</h1>
+    <p class="headline">{{ r.headline }}</p>
+    <div class="meta">
+      <span class="badge">{{ r.status }}</span>
+      <span>· {{ r.date_range }}</span>
+      <span>· {{ r.reading_time }}</span>
+    </div>
+  </header>
+
+  <section class="demo-shell">
+    <div class="title">{% include hover_icon.html name="external" %} Interactive · drag to compare</div>
+    <h2>What does mismatch look like?</h2>
+    <p class="sub">Drag the slider left or right (or use the range below) to see how a <strong>matched</strong> tonotopic mapping differs from a <strong>mismatched</strong> one. Each rectangle is a CI electrode; numbers below give the assigned frequency band.</p>
+
+    <div class="compare" id="compare">
+      <div class="layer matched">
+        <div class="corner">MATCHED</div>
+        <div class="cochlea">
+          <div class="freqlabel apex">APEX · LOW Hz</div>
+          <div class="freqlabel base">BASE · HIGH Hz</div>
+          <div class="axis"></div>
+          <div class="e" data-f="250"></div>
+          <div class="e" data-f="500"></div>
+          <div class="e" data-f="1k"></div>
+          <div class="e" data-f="2k"></div>
+          <div class="e" data-f="4k"></div>
+        </div>
+        <div class="caption">Electrodes deliver each frequency band where the cochlea is naturally tuned to receive it. Speech and music both come through clearly.</div>
+      </div>
+
+      <div class="layer mismatched">
+        <div class="corner">MISMATCHED · +3 mm SHIFT</div>
+        <div class="cochlea">
+          <div class="freqlabel apex">APEX · LOW Hz</div>
+          <div class="freqlabel base">BASE · HIGH Hz</div>
+          <div class="axis"></div>
+          <div class="e" data-f="250"></div>
+          <div class="e" data-f="500"></div>
+          <div class="e" data-f="1k"></div>
+          <div class="e" data-f="2k"></div>
+          <div class="e" data-f="4k"></div>
+        </div>
+        <div class="caption">The same frequencies arrive at more basal locations. Speech holds up; music sound quality drops.</div>
+      </div>
+
+      <div class="handle" id="handle"></div>
+    </div>
+
+    <div class="slider-row">
+      <label class="lbl matched">← Matched</label>
+      <input type="range" min="0" max="100" value="50" id="slider" aria-label="Compare matched vs mismatched">
+      <label class="lbl mismatched">Mismatched →</label>
+    </div>
+    <div class="slider-readout">Showing <strong><span id="pct">50</span>% mismatched</strong> · drag the handle in the figure or use this slider</div>
+  </section>
+
+  <div class="sec">
+    <div class="sec-h">The question</div>
+    <div class="text-card"><p style="font-size:17px;">{{ r.question }}</p></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h">Background</div>
+    <div class="text-card">
+      {% for para in r.background %}<p>{{ para }}</p>{% endfor %}
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h">Methods</div>
+    <div class="row-grid">
+      {% for m in r.methods %}
+        <div class="row-card">
+          <div class="ttop"><span class="ttag">M · 0{{ forloop.index }}</span></div>
+          <h3>{{ m.title }}</h3>
+          <p>{{ m.body }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h">Findings</div>
+    <div class="row-grid">
+      {% for f in r.findings %}
+        <div class="row-card">
+          <div class="ttop"><span class="ttag">F · 0{{ f.icon }}</span></div>
+          <h3>{{ f.title }}</h3>
+          <p>{{ f.body }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h">Where this goes next</div>
+    <div class="text-card">
+      {% for n in r.next_steps %}<p>→ {{ n }}</p>{% endfor %}
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h">Publications</div>
+    {% for pub in r.publications %}
+      <div class="pub">
+        <div class="pmeta">{{ pub.year }} · {{ pub.kind }}</div>
+        <h3><a href="{{ pub.url }}">{{ pub.title }}</a></h3>
+        <div class="pauth">{{ pub.authors }}</div>
+        <div class="pvenue">{{ pub.venue }}</div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="sec">
+    <div class="sec-h">Resources</div>
+    <div class="resources">
+      {% for res in r.resources %}
+        {% if res.url and res.url != "" %}
+          <a class="resource" href="{{ res.url }}">{% include hover_icon.html name=res.icon %}<span>{{ res.label }}</span></a>
+        {% else %}
+          <span class="resource disabled">{% include hover_icon.html name=res.icon %}<span>{{ res.label }}</span></span>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+</main>
+
+<script>
+  const compare = document.getElementById('compare');
+  const handle = document.getElementById('handle');
+  const slider = document.getElementById('slider');
+  const pct = document.getElementById('pct');
+
+  function setPos(p) {
+    p = Math.max(0, Math.min(100, p));
+    compare.style.setProperty('--pos', p + '%');
+    slider.value = p;
+    pct.textContent = Math.round(p);
+  }
+
+  slider.addEventListener('input', () => setPos(+slider.value));
+
+  let dragging = false;
+  function move(e) {
+    if (!dragging) return;
+    const rect = compare.getBoundingClientRect();
+    const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+    setPos((x / rect.width) * 100);
+  }
+  function down(e) { dragging = true; move(e); e.preventDefault(); }
+  function up() { dragging = false; }
+
+  handle.addEventListener('mousedown', down);
+  compare.addEventListener('mousedown', down);
+  window.addEventListener('mousemove', move);
+  window.addEventListener('mouseup', up);
+  handle.addEventListener('touchstart', down, { passive: false });
+  compare.addEventListener('touchstart', down, { passive: false });
+  window.addEventListener('touchmove', move);
+  window.addEventListener('touchend', up);
+</script>
+
+</body>
+</html>

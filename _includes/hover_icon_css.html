@@ -1,0 +1,79 @@
+{%- comment -%}
+Hover-trigger animations for icons from /_includes/hover_icon.html.
+Include inside a page <style> block. Set ".hi" size via local CSS in the host.
+{%- endcomment -%}
+  .hi { width: 1em; height: 1em; vertical-align: -0.18em; flex: none; }
+  .hi path, .hi circle, .hi g { transition: transform 0.45s cubic-bezier(.4,.0,.2,1), opacity 0.3s, stroke-dashoffset 0.45s; transform-origin: center; transform-box: fill-box; }
+
+  /* Mail — flap rotates open */
+  .hi-mail .mail-open { transform-origin: 50% 0%; transform-box: view-box; }
+  a:hover .hi-mail .mail-open, .iconlink:hover .hi-mail .mail-open { transform: rotateX(-55deg); }
+
+  /* GitHub — wiggle on hover */
+  .hi-github .github-grp { transition: transform 0.5s cubic-bezier(.34,1.56,.64,1); transform-origin: 50% 50%; transform-box: view-box; }
+  a:hover .hi-github .github-grp, .iconlink:hover .hi-github .github-grp { transform: rotate(-12deg) scale(1.06); }
+
+  /* Link — middle line rotates, ends spread */
+  .hi-link .link-middle, .hi-link .link-top, .hi-link .link-bottom { transform-box: view-box; transform-origin: 12px 12px; }
+  a:hover .hi-link .link-middle, .iconlink:hover .hi-link .link-middle { transform: rotate(-22deg); }
+  a:hover .hi-link .link-top,    .iconlink:hover .hi-link .link-top    { transform: translate(-1px, -1px); }
+  a:hover .hi-link .link-bottom, .iconlink:hover .hi-link .link-bottom { transform: translate(1px, 1px); }
+
+  /* Globe — slow rotation on hover */
+  .hi-globe .globe-grp { transform-origin: 50% 50%; transform-box: view-box; }
+  a:hover .hi-globe .globe-grp, .iconlink:hover .hi-globe .globe-grp { animation: hi-spin 4s linear infinite; }
+  @keyframes hi-spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+
+  /* External — arrow shoots out */
+  .hi-external .external-arrow { transform-box: view-box; transform-origin: 12px 12px; }
+  a:hover .hi-external .external-arrow, .iconlink:hover .hi-external .external-arrow { transform: translate(2px, -2px); }
+
+  /* Brain — circuits light up, terminals pulse */
+  .hi-brain .circuit-line { transition: stroke 0.3s, opacity 0.3s; opacity: 0.7; }
+  .hi-brain .terminal { transition: r 0.4s, opacity 0.4s; opacity: 0.6; transform-box: view-box; }
+  a:hover .hi-brain .circuit-line, .iconlink:hover .hi-brain .circuit-line { opacity: 1; stroke: currentColor; }
+  a:hover .hi-brain .terminal, .iconlink:hover .hi-brain .terminal { opacity: 1; r: 1.2; }
+
+  /* Book — pages flutter */
+  .hi-book .book-line { transition: transform 0.4s; transform-box: view-box; }
+  a:hover .hi-book .book-line-1, .iconlink:hover .hi-book .book-line-1 { transform: translateX(2px); }
+  a:hover .hi-book .book-line-2, .iconlink:hover .hi-book .book-line-2 { transform: translateX(3px); }
+  a:hover .hi-book .book-line-3, .iconlink:hover .hi-book .book-line-3 { transform: translateX(2px); }
+
+  /* Clock — hand sweeps */
+  .hi-clock .clock-hands { transform-origin: 50% 50%; transform-box: view-box; }
+  a:hover .hi-clock .clock-hands, .iconlink:hover .hi-clock .clock-hands { animation: hi-spin 3s linear infinite; }
+
+  /* Scan-heart — corners contract, heart pulses */
+  .hi-heart .corners { transition: transform 0.35s; transform-origin: 50% 50%; transform-box: view-box; }
+  .hi-heart .heart { transform-origin: 50% 50%; transform-box: view-box; transition: transform 0.4s cubic-bezier(.34,1.56,.64,1); }
+  a:hover .hi-heart .corners, .iconlink:hover .hi-heart .corners { transform: scale(0.92); }
+  a:hover .hi-heart .heart, .iconlink:hover .hi-heart .heart { transform: scale(1.15); }
+
+  /* File — lines fade in */
+  .hi-file .file-lines { transition: opacity 0.35s, transform 0.35s; opacity: 0.55; transform: translateX(-2px); transform-box: view-box; }
+  a:hover .hi-file .file-lines, .iconlink:hover .hi-file .file-lines { opacity: 1; transform: translateX(0); }
+
+  /* Play — scale on hover */
+  .hi-play { transition: transform 0.3s cubic-bezier(.34,1.56,.64,1); }
+  a:hover .hi-play, .iconlink:hover .hi-play { transform: scale(1.15); }
+
+  /* Open (arrow) — slide top-right */
+  .hi-open .open-arrow { transform-box: view-box; }
+  a:hover .hi-open .open-arrow, .iconlink:hover .hi-open .open-arrow { transform: translate(2px, -2px); }
+
+  /* Waveform — each bar bounces in sequence */
+  .hi-wave path { transform-box: view-box; transform-origin: center; transition: transform 0.35s; }
+  a:hover .hi-wave .wave-1, .iconlink:hover .hi-wave .wave-1 { transform: scaleY(1.4); }
+  a:hover .hi-wave .wave-2, .iconlink:hover .hi-wave .wave-2 { transform: scaleY(1.6); }
+  a:hover .hi-wave .wave-3, .iconlink:hover .hi-wave .wave-3 { transform: scaleY(0.7); }
+  a:hover .hi-wave .wave-4, .iconlink:hover .hi-wave .wave-4 { transform: scaleY(1.5); }
+  a:hover .hi-wave .wave-5, .iconlink:hover .hi-wave .wave-5 { transform: scaleY(1.8); }
+  a:hover .hi-wave .wave-6, .iconlink:hover .hi-wave .wave-6 { transform: scaleY(0.8); }
+  a:hover .hi-wave .wave-7, .iconlink:hover .hi-wave .wave-7 { transform: scaleY(1.4); }
+
+  /* ORCID + Scholar + RG — solid logos, subtle pop on hover */
+  .hi-orcid, .hi-scholar, .hi-rg { transition: transform 0.25s; }
+  a:hover .hi-orcid, .iconlink:hover .hi-orcid,
+  a:hover .hi-scholar, .iconlink:hover .hi-scholar,
+  a:hover .hi-rg, .iconlink:hover .hi-rg { transform: translateY(-2px); }

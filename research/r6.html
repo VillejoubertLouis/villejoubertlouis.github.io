@@ -1,0 +1,372 @@
+---
+permalink: /research/r6.html
+sitemap: false
+---
+{% assign p = site.data.profile %}{% assign r = site.data.research.perception %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>R6 · Stepper · {{ r.title }}</title>
+<style>
+  :root {
+    --ink: #11141b;
+    --muted: #6a727e;
+    --rule: #e5e7ec;
+    --bg: #f7f8fa;
+    --paper: #ffffff;
+    --accent: #c43a6f;
+    --accent-soft: #f3eef1;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    color: var(--ink); background: var(--bg);
+    line-height: 1.6; font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .switcher {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 24px;
+    background: rgba(247,248,250,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+  }
+  .switcher .idx a { color: var(--muted); text-decoration: none; }
+  .switcher .idx a:hover { color: var(--ink); }
+  .switcher .nums a {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted); font-variant-numeric: tabular-nums; text-decoration: none;
+  }
+  .switcher .nums a.active { background: var(--accent); color: #fff; }
+  .switcher .nums a:hover { color: var(--ink); }
+  .switcher .nums a.active:hover { color: #fff; }
+  .switcher .name { color: var(--muted); margin-left: 12px; font-size: 12px; }
+
+  .wrap { max-width: 980px; margin: 24px auto 80px; padding: 0 24px; flex: 1; width: 100%; }
+
+  /* Compact header */
+  .head { margin-bottom: 18px; }
+  .head .crumb {
+    font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 6px;
+  }
+  .head h1 { font-size: 26px; margin: 0 0 8px; letter-spacing: -0.015em; font-weight: 600; line-height: 1.2; }
+  .head .headline { color: #3a3d44; margin: 0 0 12px; font-size: 15.5px; max-width: 70ch; line-height: 1.5; }
+  .head .meta-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; font-size: 13px; color: var(--muted); }
+  .head .badge {
+    background: var(--accent-soft); color: var(--accent); padding: 4px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 500;
+  }
+
+  /* Stepper progress bar */
+  .stepper-rail {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 18px;
+    padding: 18px 22px;
+    margin-bottom: 18px;
+  }
+  .steps {
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px;
+    list-style: none; padding: 0; margin: 0;
+  }
+  .steps li {
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+  }
+  .steps li .dot {
+    width: 36px; height: 36px; margin: 0 auto 6px;
+    border-radius: 50%; background: var(--bg); border: 2px solid var(--rule);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-family: ui-monospace, Menlo, monospace; font-size: 13px;
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+  .steps li .lbl {
+    font-size: 11.5px; letter-spacing: 0.04em;
+    color: var(--muted); transition: color 0.2s;
+  }
+  .steps li::after {
+    content: ""; position: absolute; top: 18px; left: calc(50% + 24px); right: calc(-50% + 24px);
+    height: 2px; background: var(--rule); z-index: -1;
+  }
+  .steps li:last-child::after { display: none; }
+  .steps li.active .dot {
+    background: var(--accent); border-color: var(--accent); color: #fff;
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+  .steps li.done .dot {
+    background: var(--accent-soft); border-color: var(--accent); color: var(--accent);
+  }
+  .steps li.done::after { background: var(--accent); }
+  .steps li.active .lbl, .steps li.done .lbl { color: var(--ink); }
+
+  /* Slide stage */
+  .slide-stage {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 22px;
+    padding: 40px 44px; min-height: 460px;
+    position: relative;
+    overflow: hidden;
+  }
+  .slide {
+    display: none;
+    animation: slidein 0.32s cubic-bezier(.2,.7,.2,1);
+  }
+  .slide.active { display: block; }
+
+  @keyframes slidein {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .slide .step-tag {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px;
+  }
+  .slide h2 {
+    font-size: clamp(26px, 3.5vw, 36px); letter-spacing: -0.015em;
+    margin: 0 0 18px; line-height: 1.15; font-weight: 600;
+  }
+  .slide p { font-size: 17px; line-height: 1.7; color: #2a2c33; margin: 0 0 14px; max-width: 68ch; }
+
+  .slide .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0 0; }
+  .slide .card {
+    background: var(--bg); border: 1px solid var(--rule); border-radius: 14px;
+    padding: 18px 20px;
+  }
+  .slide .card h3 { margin: 0 0 6px; font-size: 16px; }
+  .slide .card p { margin: 0; color: #2a2c33; font-size: 14.5px; line-height: 1.55; }
+  .slide .card .badge-n {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent); color: #fff; font-family: ui-monospace, Menlo, monospace;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600; margin-bottom: 8px;
+  }
+
+  .slide .figure-row {
+    background: var(--bg); border: 1px solid var(--rule); border-radius: 14px;
+    padding: 20px; margin-top: 18px; text-align: center;
+  }
+  .slide .figure-row img { max-width: 100%; max-height: 240px; border-radius: 6px; }
+  .slide .figure-row .placeholder {
+    height: 200px; border-radius: 8px;
+    background: repeating-linear-gradient(45deg, #ebeef3 0 8px, #f4f6f9 8px 16px);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted); font-family: ui-monospace, Menlo, monospace; font-size: 12px; letter-spacing: 0.05em;
+  }
+  .slide .figure-row .cap { color: var(--muted); font-size: 12.5px; margin-top: 10px; font-style: italic; }
+
+  .pub-list .pub {
+    padding: 14px 0; border-top: 1px solid var(--rule);
+  }
+  .pub-list .pub:last-child { border-bottom: 1px solid var(--rule); }
+  .pub-list .pub h3 { margin: 0 0 4px; font-size: 15.5px; line-height: 1.35; font-weight: 500; }
+  .pub-list .pub .pmeta { color: var(--muted); font-size: 12.5px; }
+
+  /* Controls bar */
+  .controls {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 18px;
+  }
+  .controls button {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 999px;
+    padding: 10px 22px; font-size: 14px; font-weight: 500;
+    color: var(--ink); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: background 0.18s, border-color 0.18s;
+    font-family: inherit;
+  }
+  .controls button:hover { border-color: var(--accent); }
+  .controls button:disabled { opacity: 0.4; cursor: default; }
+  .controls .next { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .controls .next:hover { background: #a92e5b; border-color: #a92e5b; }
+  .controls .kbd-hint {
+    font-size: 12px; color: var(--muted);
+    font-family: ui-monospace, Menlo, monospace;
+  }
+  .controls .kbd {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 4px;
+    padding: 1px 6px; margin: 0 2px;
+  }
+
+  @media (max-width: 720px) {
+    .slide .grid-2 { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: repeat(6, 1fr); gap: 4px; }
+    .steps li .lbl { display: none; }
+    .slide-stage { padding: 24px; }
+    .controls button { padding: 8px 14px; font-size: 13px; }
+  }
+
+{% include hover_icon_css.html %}
+</style>
+</head>
+<body>
+
+{% include research_switcher.html active=6 label="R6 · Stepper" %}
+
+<main class="wrap">
+
+  <div class="head">
+    <div class="crumb">Research project · Perception</div>
+    <h1>{{ r.title }}</h1>
+    <p class="headline">{{ r.headline }}</p>
+    <div class="meta-row">
+      <span class="badge">{{ r.status }}</span>
+      <span>· {{ r.date_range }}</span>
+      <span>· Step <span id="cur">1</span> of 6</span>
+    </div>
+  </div>
+
+  <div class="stepper-rail">
+    <ul class="steps" id="steps">
+      <li data-i="0" class="active"><div class="dot">1</div><div class="lbl">Question</div></li>
+      <li data-i="1"><div class="dot">2</div><div class="lbl">Background</div></li>
+      <li data-i="2"><div class="dot">3</div><div class="lbl">Methods</div></li>
+      <li data-i="3"><div class="dot">4</div><div class="lbl">Findings</div></li>
+      <li data-i="4"><div class="dot">5</div><div class="lbl">Next</div></li>
+      <li data-i="5"><div class="dot">6</div><div class="lbl">Resources</div></li>
+    </ul>
+  </div>
+
+  <section class="slide-stage" id="stage">
+
+    <!-- Slide 1 -->
+    <div class="slide active">
+      <div class="step-tag">Step 1 of 6 · The question</div>
+      <h2>What does mismatch actually cost the listener?</h2>
+      <p style="font-size:19px;">{{ r.question }}</p>
+      <div class="figure-row">
+        <img src="{{ r.figures[0].src }}" alt="{{ r.figures[0].alt }}">
+        <div class="cap">{{ r.figures[0].caption }}</div>
+      </div>
+    </div>
+
+    <!-- Slide 2 -->
+    <div class="slide">
+      <div class="step-tag">Step 2 of 6 · Background</div>
+      <h2>Why this matters</h2>
+      {% for para in r.background %}<p>{{ para }}</p>{% endfor %}
+    </div>
+
+    <!-- Slide 3 -->
+    <div class="slide">
+      <div class="step-tag">Step 3 of 6 · Methods</div>
+      <h2>How we measured it</h2>
+      <div class="grid-2">
+        {% for m in r.methods %}
+          <div class="card">
+            <div class="badge-n">{{ forloop.index }}</div>
+            <h3>{{ m.title }}</h3>
+            <p>{{ m.body }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Slide 4 -->
+    <div class="slide">
+      <div class="step-tag">Step 4 of 6 · Findings</div>
+      <h2>What the data showed</h2>
+      <div class="grid-2">
+        {% for f in r.findings %}
+          <div class="card">
+            <div class="badge-n">{{ f.icon }}</div>
+            <h3>{{ f.title }}</h3>
+            <p>{{ f.body }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Slide 5 -->
+    <div class="slide">
+      <div class="step-tag">Step 5 of 6 · Where this goes next</div>
+      <h2>Open questions, concrete plans</h2>
+      <div class="grid-2">
+        {% for n in r.next_steps %}
+          <div class="card">
+            <div class="badge-n">{{ forloop.index }}</div>
+            <p>{{ n }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Slide 6 -->
+    <div class="slide">
+      <div class="step-tag">Step 6 of 6 · Resources &amp; collaborators</div>
+      <h2>Where to go from here</h2>
+      <div class="pub-list">
+        {% for pub in r.publications %}
+          <div class="pub">
+            <h3><a href="{{ pub.url }}">{{ pub.title }}</a></h3>
+            <div class="pmeta">{{ pub.authors }} — <em>{{ pub.venue }}</em>, {{ pub.year }}.</div>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="grid-2" style="margin-top:18px;">
+        {% for c in r.collaborators %}
+          <div class="card">
+            <h3>{{ c.name }}</h3>
+            <p>{{ c.role }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </section>
+
+  <div class="controls">
+    <button id="prev" disabled>{% include hover_icon.html name="open" %} Previous</button>
+    <span class="kbd-hint">Use <span class="kbd">←</span> <span class="kbd">→</span> arrow keys</span>
+    <button id="next" class="next">Next {% include hover_icon.html name="open" %}</button>
+  </div>
+
+</main>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const stepLis = document.querySelectorAll('#steps li');
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+  const cur = document.getElementById('cur');
+  let idx = 0;
+
+  function goTo(i) {
+    idx = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach((s, j) => s.classList.toggle('active', j === idx));
+    stepLis.forEach((li, j) => {
+      li.classList.toggle('active', j === idx);
+      li.classList.toggle('done', j < idx);
+    });
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === slides.length - 1;
+    nextBtn.innerHTML = idx === slides.length - 1
+      ? 'Finished'
+      : 'Next ' + nextBtn.querySelector('svg').outerHTML;
+    cur.textContent = idx + 1;
+    document.querySelector('.slide-stage').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  prevBtn.addEventListener('click', () => goTo(idx - 1));
+  nextBtn.addEventListener('click', () => goTo(idx + 1));
+  stepLis.forEach(li => li.addEventListener('click', () => goTo(+li.dataset.i)));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') goTo(idx + 1);
+    if (e.key === 'ArrowLeft') goTo(idx - 1);
+  });
+</script>
+
+</body>
+</html>
