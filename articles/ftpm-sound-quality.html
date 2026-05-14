@@ -436,7 +436,6 @@ sitemap: true
     <p>Stored locally in your browser only. A real CI study would average scores across many listeners — this is a single-shot demo.</p>
     <table id="summary-table"><thead><tr><th>Trial</th><th>Stimulus</th><th class="score">Score</th></tr></thead><tbody></tbody></table>
     <div class="actions">
-      <button id="copy-csv">Copy as CSV</button>
       <button id="restart">Try again</button>
     </div>
   </section>
@@ -677,22 +676,6 @@ sitemap: true
     summary.classList.remove('visible');
     renderTrial();
     window.scrollTo({ top: mushraSection.offsetTop - 80, behavior: 'smooth' });
-  });
-
-  document.getElementById('copy-csv').addEventListener('click', () => {
-    const rows = [['trial', 'stimulus', 'score', 'kind']];
-    trials.forEach(t => t.stimuli.forEach(s => {
-      const sc = (scores[t.id] && scores[t.id][s.label] != null) ? scores[t.id][s.label] : '';
-      const kind = s.hidden_ref ? 'hidden_ref' : (s.anchor ? 'anchor' : 'test');
-      rows.push([t.id, s.label, sc, kind]);
-    }));
-    const csv = rows.map(r => r.join(',')).join('\n');
-    navigator.clipboard.writeText(csv).then(() => {
-      const b = document.getElementById('copy-csv');
-      const orig = b.textContent;
-      b.textContent = 'Copied ✓';
-      setTimeout(() => { b.textContent = orig; }, 1500);
-    });
   });
 
   // Probe the first reference file to detect a missing-audio scenario early
