@@ -120,7 +120,43 @@ sitemap: false
     padding: 4px 10px; border-radius: 999px; font-size: 11.5px; color: #2a2c33;
   }
 
-  /* News timeline */
+  /* Articles grid (News tab) */
+  .articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+  }
+  .article-card {
+    background: var(--paper); border: 1px solid var(--rule);
+    border-top: 4px solid var(--accent);
+    border-radius: 14px; padding: 22px 24px;
+    display: flex; flex-direction: column; gap: 10px;
+    transition: transform 0.18s, box-shadow 0.18s;
+  }
+  .article-card:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(0,0,0,0.06); }
+  .article-card[data-cat="blue"]   { border-top-color: #1f80c0; }
+  .article-card[data-cat="purple"] { border-top-color: #6a45c2; }
+  .article-card[data-cat="green"]  { border-top-color: #2a8e3a; }
+  .article-card[data-cat="pink"]   { border-top-color: var(--accent); }
+  .article-card[data-cat="orange"] { border-top-color: #f59e0b; }
+  .article-card[data-cat="teal"]   { border-top-color: #0a7e8c; }
+  .article-card .art-top { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-family: ui-monospace, Menlo, monospace; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .article-card .cat { padding: 3px 9px; border-radius: 999px; font-weight: 600; font-size: 10.5px; }
+  .article-card[data-cat="blue"]   .cat { background: #e1f0fa; color: #1f80c0; }
+  .article-card[data-cat="purple"] .cat { background: #ede7fa; color: #6a45c2; }
+  .article-card[data-cat="green"]  .cat { background: #e2f3e6; color: #2a8e3a; }
+  .article-card[data-cat="pink"]   .cat { background: #f3eef1; color: var(--accent); }
+  .article-card[data-cat="orange"] .cat { background: #fdf0d8; color: #b87808; }
+  .article-card[data-cat="teal"]   .cat { background: #e1f0f0; color: #0a7e8c; }
+  .article-card h3 { margin: 4px 0; font-size: 18px; line-height: 1.3; letter-spacing: -0.005em; font-weight: 600; }
+  .article-card h3 a { color: inherit; }
+  .article-card p { margin: 0; color: #3a3d44; font-size: 14px; line-height: 1.6; }
+  .article-card .art-more { margin-top: auto; padding-top: 8px; font-size: 13.5px; font-weight: 500; color: var(--accent); display: inline-flex; align-items: center; gap: 4px; }
+  .article-card .art-more .hi { width: 13px; height: 13px; }
+  .article-card.draft .art-more { color: var(--muted); }
+  .article-card.draft .art-more::after { content: " (draft)"; opacity: 0.8; }
+
+  /* News timeline (kept for reference) */
   .news-feed { position: relative; padding-left: 24px; }
   .news-feed::before {
     content: ""; position: absolute; left: 6px; top: 8px; bottom: 8px;
@@ -249,7 +285,7 @@ sitemap: false
 
     <nav class="tabbar">
       <a id="t-about" href="#pane-about" class="active">{% include hover_icon.html name="file" %} About</a>
-      <a id="t-news" href="#pane-news">{% include hover_icon.html name="clock" %} News <span class="count">{{ p.recent.size }}</span></a>
+      <a id="t-news" href="#pane-news">{% include hover_icon.html name="file" %} News <span class="count">{{ p.articles.size }}</span></a>
       <a id="t-research" href="#pane-research">{% include hover_icon.html name="brain" %} Research <span class="count">{{ p.themes.size }}</span></a>
       <a id="t-projects" href="#pane-projects">{% include hover_icon.html name="file" %} Projects <span class="count">{{ p.projects.size }}</span></a>
       <a id="t-publications" href="#pane-publications">{% include hover_icon.html name="book" %} Publications <span class="count">{{ p.publications.size }}</span></a>
@@ -268,23 +304,24 @@ sitemap: false
 
       <section id="pane-news" class="pane">
         <h2>News</h2>
-        <p class="h-sub">Recent updates</p>
-        <div class="news-feed">
-          {% for r in p.recent %}
-            <article class="news-item" data-kind="{{ r.kind }}">
-              <div class="head-row">
-                <span class="date">{{ r.date }}</span>
-                <span class="chip">{{ r.kind }}</span>
+        <p class="h-sub">Articles &amp; essays</p>
+        <div class="articles-grid">
+          {% for a in p.articles %}
+            {% assign is_draft = false %}{% if a.url == "#" or a.url == "" %}{% assign is_draft = true %}{% endif %}
+            <article class="article-card{% if is_draft %} draft{% endif %}" data-cat="{{ a.accent | default: 'pink' }}">
+              <div class="art-top">
+                <span class="cat">{{ a.category }}</span>
+                <span>{{ a.date }}</span>
               </div>
-              <h3>{{ r.title }}</h3>
-              <p>{{ r.body }}</p>
-              {% if r.url and r.url != "" %}<a class="more" href="{{ r.url }}">Read more {% include hover_icon.html name="open" %}</a>{% endif %}
+              <h3>{% if a.url and a.url != "" and a.url != "#" %}<a href="{{ a.url }}">{{ a.title }}</a>{% else %}{{ a.title }}{% endif %}</h3>
+              <p>{{ a.excerpt }}</p>
+              {% if a.url and a.url != "" %}<a class="art-more" href="{{ a.url }}">Read more {% include hover_icon.html name="open" %}</a>{% endif %}
             </article>
           {% endfor %}
         </div>
         <div class="add-row">
-          <a class="add-btn" href="{{ edit_profile }}" target="_blank" rel="noopener"><span class="plus">+</span> Add a news item {% include hover_icon.html name="external" %}</a>
-          <span class="add-hint">opens <code>_data/profile.yml</code> on github.com</span>
+          <a class="add-btn" href="{{ edit_profile }}" target="_blank" rel="noopener"><span class="plus">+</span> Add an article {% include hover_icon.html name="external" %}</a>
+          <span class="add-hint">opens <code>_data/profile.yml</code> on github.com · find <code>articles:</code></span>
         </div>
       </section>
 

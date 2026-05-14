@@ -204,15 +204,67 @@ timeline:
     url: ""
 
 # =============================================================================
-# NEWS / RECENT — shows in the "News" tab. Reverse-chronological feed.
-# TO ADD A NEWS ITEM: copy the block below, paste at the TOP (most recent first).
-# `kind` must be one of: paper · talk · milestone · project · site
+# ARTICLES — shows in the "News" tab as a card grid (not a timeline).
+# TO ADD AN ARTICLE: copy the block below, paste above the existing entries.
+# `accent` controls the card's top-stripe + category-chip colour:
+#   pink | blue | purple | green | orange | teal
 # -----------------------------------------------------------------------------
-# - date: "Month 2026"
-#   kind: "paper"               # picks the colour of the timeline dot + chip
-#   title: "Short headline (one line)"
-#   body: "One sentence describing the news."
-#   url: "https://link.example"  # leave "" if no link
+# - title: "Article title (one line)"
+#   date: "Month 2026"
+#   category: "Short label"     # appears as a chip at the top of the card
+#   accent: "pink"               # one of the colours above
+#   excerpt: "Two or three sentences that preview the article. This is what
+#     a visitor reads first; the full piece opens via the link below."
+#   url: "#"                     # link to the full article (use "#" if draft)
+# =============================================================================
+articles:
+  - title: "How a smart watch might enhance speech and music perception of cochlear-implant users?"
+    date: "May 2026"
+    category: "Wearables"
+    accent: "blue"
+    excerpt: "Modern wearables already carry microphones, accelerometers, and growing on-device compute. What would it mean to treat a smartwatch not as an accessory but as an active layer on top of the implant — surfacing missed environmental sounds, supporting situational awareness, and tuning each user's listening day-to-day? A short draft of where this idea is heading."
+    url: "#"
+
+  - title: "Is the brain a prediction or a perception machine?"
+    date: "May 2026"
+    category: "Theory"
+    accent: "purple"
+    excerpt: "The auditory system is famously slow at the periphery and remarkably fast at the cortex. That gap has driven a long-running argument: is what we hear bottom-up perception, or top-down prediction? Cochlear implants happen to be an unusually clear window into that question — a few thoughts on why."
+    url: "#"
+
+  - title: "Bridging the gap between research and clinics: towards a testing platform"
+    date: "Apr 2026"
+    category: "Platform"
+    accent: "green"
+    excerpt: "Research-grade listening tests stay in research labs because clinics can't run them: too slow, too specialised, too brittle. The CI Experiments Platform is a browser-based attempt to change that — calibrated psychoacoustics that a clinician can run between two appointments."
+    url: "#"
+
+  - title: "Frequency-to-place factors: how do people adapt?"
+    date: "Apr 2026"
+    category: "Research"
+    accent: "pink"
+    excerpt: "Frequency-to-place mismatch degrades sound quality, but listeners are not passive — they adapt. The interesting question is how fast, how completely, and whether the adaptation is the same for speech and music. Early observations and a roadmap for measuring it properly."
+    url: "#"
+
+  - title: "What is it like to hear with an implant? Try it yourself."
+    date: "Mar 2026"
+    category: "Demo"
+    accent: "orange"
+    excerpt: "Vocoder simulations let normal-hearing listeners experience a degraded acoustic version of cochlear-implant processing. A short interactive walk-through: a few audio clips, a slider, and the chance to hear what an implant might sound like in your living room."
+    url: "#"
+
+  - title: "Towards individualised cochlear-implant fitting"
+    date: "Feb 2026"
+    category: "Clinical"
+    accent: "teal"
+    excerpt: "Personalised fitting has been a research talking point for two decades. What would it take to make it routine? Some honest observations on the workflow gap, the measurement gap, and the time-per-patient gap that is actually blocking it — and a few ideas for closing them."
+    url: "#"
+
+
+# =============================================================================
+# RECENT — short reverse-chronological list of events (papers, talks, milestones).
+# Kept for the reference timeline variants under /variants/ — the live homepage
+# uses `articles:` above instead.
 # =============================================================================
 recent:
   - date: "May 2026"
