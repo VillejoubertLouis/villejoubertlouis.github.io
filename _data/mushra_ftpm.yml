@@ -3,22 +3,21 @@
 # =============================================================================
 #
 # HOW TO UPLOAD AUDIO FILES FROM GITHUB:
-#   1. In the GitHub web UI, navigate to /audio/ftpm-mushra/<sample-id>/
+#   1. In the GitHub web UI, navigate to /audio/ftpm-mushra/<folder>/
 #   2. Click "Add file" → "Upload files"
 #   3. Drag the .mp3 (or .wav, .ogg) files in. File names must match the
 #      `file:` fields below (e.g. reference.mp3, A.mp3, B.mp3, ...)
 #   4. Commit. The page at /articles/ftpm-sound-quality/ picks them up
 #      automatically — no code change needed.
 #
-# To add a new TRIAL (e.g. a new music sample): copy one of the trial blocks
-# below, change `id`, `label`, and the file paths, and put your audio at the
-# matching location.
+# To add a new TRIAL: copy one of the trial blocks below, change `id`,
+# `label`, and the file paths, and put your audio at the matching location.
 #
-# Notes:
-# - `hidden_ref: true`  → this stimulus is the unprocessed reference,
-#                         hidden so the listener should also rate it ~100.
-# - `anchor: true`      → low-quality anchor (typically heavy LPF).
-#                         Listeners should rate it very low.
+# NOTE on mean_mismatch:
+#   Each stimulus has a `mean_mismatch` field — the value shown by the
+#   "Reveal mismatch" button. UPDATE THESE TO MATCH THE PAPER's actual
+#   per-stimulus shifts (currently placeholder values from the MUSHRA
+#   runner in ci-experiments-platform — realistic Condition 1).
 # =============================================================================
 
 title: "MUSHRA — Frequency-to-place mismatch &amp; sound quality"
@@ -27,12 +26,14 @@ intro: |
   Below is a short listening test using stimuli from the JASA 2026 study on
   frequency-to-place mismatch. <strong>Listen to the reference first</strong>,
   then for each unlabelled clip (A, B, C, …) drag the slider to indicate how
-  similar it sounds to the reference: <strong>0 = bad, 100 = essentially
-  identical to the reference</strong>. Use headphones for the best experience.
-  This is a demo — your responses are stored locally in your browser and never
-  sent anywhere.
+  similar it sounds to the reference. Use headphones for the best experience.
+  This is a demo — your responses are stored locally in your browser only.
 
+# Scale labels shown beneath each slider. Update once you confirm the
+# article's exact wording.
 scale:
+  min: 0
+  max: 100
   labels:
     - { v: 0,   text: "Bad" }
     - { v: 20,  text: "Poor" }
@@ -41,28 +42,39 @@ scale:
     - { v: 80,  text: "Excellent" }
     - { v: 100, text: "Reference" }
 
-# Each trial is one block. The MUSHRA widget shows them one at a time.
-trials:
-  - id: "piano-realistic"
-    label: "Piano · realistic FTPM"
-    description: "A solo piano excerpt processed with a realistic frequency-to-place mismatch profile. Compare each labelled clip to the reference and rate its similarity."
-    reference: "/audio/ftpm-mushra/piano/reference.mp3"
-    stimuli:
-      - { label: "A", file: "/audio/ftpm-mushra/piano/A.mp3", hidden_ref: true }
-      - { label: "B", file: "/audio/ftpm-mushra/piano/B.mp3" }
-      - { label: "C", file: "/audio/ftpm-mushra/piano/C.mp3" }
-      - { label: "D", file: "/audio/ftpm-mushra/piano/D.mp3" }
-      - { label: "E", file: "/audio/ftpm-mushra/piano/E.mp3" }
-      - { label: "F", file: "/audio/ftpm-mushra/piano/F.mp3", anchor: true }
+# The "Reveal" feature on the article. Each stimulus gets a `mean_mismatch`
+# number that's hidden by default and unveiled by clicking the Reveal button.
+mismatch:
+  unit: "oct"                # appears after each value (e.g. "−0.43 oct")
+  label: "Mean FTPM"          # tooltip / header for the reveal column
+  reveal_button: "Reveal the mismatch"
+  hide_button: "Hide the mismatch"
 
+# Each trial is one block. The MUSHRA widget shows them one at a time.
+# Order matters — top entry is presented first.
+trials:
+  # ---- Trial 1: SPEECH ----
   - id: "speech-realistic"
-    label: "Speech · realistic FTPM"
-    description: "An English sentence processed with the same family of mismatch profiles. Same task — rate each clip's similarity to the reference."
+    label: "Trial 1 · Speech"
+    description: "A short English sentence processed with the same family of frequency-to-place mismatch profiles used in the JASA 2026 study. Rate each unlabelled clip on similarity to the reference."
     reference: "/audio/ftpm-mushra/speech/reference.mp3"
     stimuli:
-      - { label: "A", file: "/audio/ftpm-mushra/speech/A.mp3", hidden_ref: true }
-      - { label: "B", file: "/audio/ftpm-mushra/speech/B.mp3" }
-      - { label: "C", file: "/audio/ftpm-mushra/speech/C.mp3" }
-      - { label: "D", file: "/audio/ftpm-mushra/speech/D.mp3" }
-      - { label: "E", file: "/audio/ftpm-mushra/speech/E.mp3" }
-      - { label: "F", file: "/audio/ftpm-mushra/speech/F.mp3", anchor: true }
+      - { label: "A", file: "/audio/ftpm-mushra/speech/A.mp3", hidden_ref: true, mean_mismatch: 0 }
+      - { label: "B", file: "/audio/ftpm-mushra/speech/B.mp3", mean_mismatch: -0.26 }
+      - { label: "C", file: "/audio/ftpm-mushra/speech/C.mp3", mean_mismatch: -0.43 }
+      - { label: "D", file: "/audio/ftpm-mushra/speech/D.mp3", mean_mismatch: -0.63 }
+      - { label: "E", file: "/audio/ftpm-mushra/speech/E.mp3", mean_mismatch: -0.81 }
+      - { label: "F", file: "/audio/ftpm-mushra/speech/F.mp3", anchor: true, mean_mismatch: -1.5 }
+
+  # ---- Trial 2: MUSIC — Let It Be ----
+  - id: "music-letitbe"
+    label: "Trial 2 · Music — “Let It Be”"
+    description: "An excerpt of the Beatles' <em>Let It Be</em> under the same mismatch conditions. Same task — rate each unlabelled clip's similarity to the reference."
+    reference: "/audio/ftpm-mushra/music/reference.mp3"
+    stimuli:
+      - { label: "A", file: "/audio/ftpm-mushra/music/A.mp3", hidden_ref: true, mean_mismatch: 0 }
+      - { label: "B", file: "/audio/ftpm-mushra/music/B.mp3", mean_mismatch: -0.26 }
+      - { label: "C", file: "/audio/ftpm-mushra/music/C.mp3", mean_mismatch: -0.43 }
+      - { label: "D", file: "/audio/ftpm-mushra/music/D.mp3", mean_mismatch: -0.63 }
+      - { label: "E", file: "/audio/ftpm-mushra/music/E.mp3", mean_mismatch: -0.81 }
+      - { label: "F", file: "/audio/ftpm-mushra/music/F.mp3", anchor: true, mean_mismatch: -1.5 }

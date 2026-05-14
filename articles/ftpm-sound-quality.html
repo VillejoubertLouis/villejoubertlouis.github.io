@@ -149,42 +149,103 @@ sitemap: true
   }
 
   /* Stimulus grid */
-  .stim-grid {
-    display: grid; gap: 12px;
-    grid-template-columns: 1fr;
-  }
+  .stim-grid { display: grid; gap: 10px; grid-template-columns: 1fr; }
+
   .stim-row {
     background: var(--paper); border: 1px solid var(--rule); border-radius: 14px;
-    padding: 14px 18px;
+    padding: 12px 16px;
     display: grid;
-    grid-template-columns: 44px 60px 1fr 80px;
-    gap: 14px; align-items: center;
+    grid-template-columns: 44px 56px 1fr 70px;
+    grid-template-areas: "play stim slider score";
+    gap: 12px; align-items: center;
   }
   .stim-row.playing { border-color: var(--accent); background: #fffafc; }
+  .stim-row .play-btn { grid-area: play; }
+  .stim-row .stim-block { grid-area: stim; text-align: center; }
   .stim-row .stim-label {
     font-family: ui-monospace, Menlo, monospace;
     font-size: 18px; font-weight: 700; color: var(--accent);
-    text-align: center;
+    line-height: 1;
   }
-  .stim-row .slider-wrap { position: relative; }
+  .stim-row .mismatch-tag {
+    display: none;
+    margin-top: 4px;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 11px; color: var(--ink);
+    background: var(--accent-soft); padding: 2px 6px; border-radius: 6px;
+  }
+  .stim-row .mismatch-tag.hidden-ref { background: #e2f3e6; color: var(--good); }
+  .stim-row .mismatch-tag.anchor     { background: #fbe6c2; color: var(--warn); }
+  .mushra.revealed .stim-row .mismatch-tag { display: inline-block; }
+
+  .stim-row .slider-wrap { grid-area: slider; position: relative; min-width: 0; }
   .stim-row input[type=range] {
-    width: 100%; accent-color: var(--accent);
+    width: 100%;
+    accent-color: var(--accent);
     background: transparent;
+    /* Make sliders chunky enough for touch */
+    height: 32px;
   }
   .stim-row .scale-marks {
     display: flex; justify-content: space-between;
     font-size: 10px; color: var(--muted);
     font-family: ui-monospace, Menlo, monospace; letter-spacing: 0.04em;
-    margin-top: 4px;
+    margin-top: 2px;
     pointer-events: none;
   }
   .stim-row .score-readout {
+    grid-area: score;
     text-align: right;
     font-family: ui-monospace, Menlo, monospace;
     font-size: 18px; font-weight: 600; color: var(--ink);
-    min-width: 60px;
+    min-width: 50px;
   }
   .stim-row.unset .score-readout { color: var(--muted); }
+
+  /* Reveal button row */
+  .reveal-row {
+    margin: 14px 0 8px;
+    display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+  }
+  .reveal-btn {
+    background: transparent; color: var(--accent); border: 1px dashed var(--accent);
+    border-radius: 999px; padding: 6px 14px;
+    font-size: 12.5px; cursor: pointer; font-family: inherit;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .reveal-btn:hover { background: var(--accent); color: #fff; }
+  .mushra.revealed .reveal-btn { background: var(--accent); color: #fff; }
+  .reveal-btn .hi { width: 13px; height: 13px; }
+
+  /* MOBILE — stack everything vertically below 640px */
+  @media (max-width: 640px) {
+    .mushra { padding: 20px; }
+    .mushra .head-row { gap: 8px; }
+    .mushra .head-row .progress { font-size: 11.5px; }
+    .ref-row { grid-template-columns: 48px 1fr; padding: 12px 14px; }
+    .ref-row .info .meta { font-size: 11px; }
+
+    .stim-row {
+      grid-template-columns: 48px 1fr auto;
+      grid-template-areas:
+        "play stim score"
+        "slider slider slider"
+        "scale  scale  scale";
+      gap: 10px; padding: 12px 14px;
+    }
+    .stim-row .play-btn { width: 48px; height: 48px; font-size: 18px; }
+    .stim-row .stim-block { text-align: left; }
+    .stim-row .stim-label { font-size: 16px; }
+    .stim-row .slider-wrap { grid-area: slider; }
+    .stim-row .scale-marks { grid-area: scale; margin-top: -2px; font-size: 9.5px; }
+    .stim-row .score-readout { font-size: 17px; min-width: 0; }
+
+    .mushra-actions { flex-direction: column; align-items: stretch; gap: 10px; }
+    .mushra-actions > div { display: flex; gap: 8px; }
+    .mushra-actions button { width: 100%; padding: 12px 18px; font-size: 15px; }
+    .mushra-actions .ghost { width: auto; }
+  }
 
   /* Action bar */
   .mushra-actions {
@@ -353,6 +414,13 @@ sitemap: true
 
     <div class="stim-grid" id="stim-grid"></div>
 
+    <div class="reveal-row">
+      <button class="reveal-btn" id="reveal-btn" type="button">
+        {% include hover_icon.html name="brain" %}
+        <span id="reveal-label">{{ m.mismatch.reveal_button | default: "Reveal the mismatch" }}</span>
+      </button>
+    </div>
+
     <div class="mushra-actions">
       <span class="hint" id="hint">Rate each clip 0–100 relative to the reference.</span>
       <div style="display:flex;gap:8px;align-items:center;">
@@ -410,6 +478,7 @@ sitemap: true
 <script id="mushra-config" type="application/json">{
   "title": {{ m.title | jsonify }},
   "scale": {{ m.scale | jsonify }},
+  "mismatch": {{ m.mismatch | jsonify }},
   "trials": {{ m.trials | jsonify }}
 }</script>
 
@@ -517,15 +586,31 @@ sitemap: true
     const stims = (t.stimuli || []).slice().sort((a, b) => a.label.localeCompare(b.label));
 
     stimGrid.innerHTML = '';
+    const unit = (config.mismatch && config.mismatch.unit) || '';
     stims.forEach(s => {
       const initial = (scores[t.id] && scores[t.id][s.label] != null) ? scores[t.id][s.label] : null;
       const row = document.createElement('div');
       row.className = 'stim-row' + (initial == null ? ' unset' : '');
       row.dataset.url = s.file;
       row.dataset.label = s.label;
+
+      // Mismatch tag (revealed via the Reveal button)
+      let mmText = '';
+      let mmCls = '';
+      if (s.mean_mismatch != null) {
+        const v = s.mean_mismatch;
+        // Format with sign + 2 dp; show 0 as "0.00"
+        mmText = (v > 0 ? '+' : '') + v.toFixed(2) + (unit ? ' ' + unit : '');
+      }
+      if (s.hidden_ref) mmCls = 'hidden-ref';
+      if (s.anchor)     mmCls = 'anchor';
+
       row.innerHTML = `
         <button class="play-btn" aria-label="Play ${s.label}">▶</button>
-        <div class="stim-label">${s.label}</div>
+        <div class="stim-block">
+          <div class="stim-label">${s.label}</div>
+          ${mmText ? `<div class="mismatch-tag ${mmCls}" title="${(config.mismatch && config.mismatch.label) || 'Mean mismatch'}">${mmText}</div>` : ''}
+        </div>
         <div class="slider-wrap">
           <input type="range" min="0" max="100" step="1" value="${initial != null ? initial : 50}" ${initial == null ? 'data-unset="1"' : ''}>
           <div class="scale-marks">
@@ -613,6 +698,16 @@ sitemap: true
   // Probe the first reference file to detect a missing-audio scenario early
   const probe = new Audio(trials[0].reference);
   probe.addEventListener('error', () => { missingWarn.style.display = 'block'; });
+
+  // Reveal button — toggles mismatch tags across all stimuli
+  const revealBtn = document.getElementById('reveal-btn');
+  const revealLbl = document.getElementById('reveal-label');
+  revealBtn.addEventListener('click', () => {
+    const isOn = mushraSection.classList.toggle('revealed');
+    revealLbl.textContent = isOn
+      ? ((config.mismatch && config.mismatch.hide_button) || 'Hide the mismatch')
+      : ((config.mismatch && config.mismatch.reveal_button) || 'Reveal the mismatch');
+  });
 
   renderTrial();
 })();

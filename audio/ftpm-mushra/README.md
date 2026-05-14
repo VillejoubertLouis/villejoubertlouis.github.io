@@ -7,7 +7,7 @@ This folder holds the audio stimuli used by the MUSHRA listening test on
 
 ```
 audio/ftpm-mushra/
-├── piano/
+├── music/
 │   ├── reference.mp3   # unprocessed / anchor reference
 │   ├── A.mp3           # hidden reference (same audio as reference.mp3)
 │   ├── B.mp3           # test stimulus 1
@@ -25,7 +25,7 @@ Filenames must match the `file:` paths in
 
 ## Uploading from the GitHub web UI
 
-1. Navigate to `audio/ftpm-mushra/piano/` in github.com
+1. Navigate to `audio/ftpm-mushra/music/` in github.com
 2. Click **Add file → Upload files**
 3. Drag your `.mp3` / `.wav` / `.ogg` files in (filenames matter — see above)
 4. Commit. The MUSHRA player at `/articles/ftpm-sound-quality/` picks them up
