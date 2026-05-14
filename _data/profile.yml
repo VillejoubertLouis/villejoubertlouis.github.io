@@ -243,8 +243,8 @@ articles:
     date: "Apr 2026"
     category: "Research"
     accent: "pink"
-    excerpt: "Frequency-to-place mismatch degrades sound quality, but listeners are not passive — they adapt. The interesting question is how fast, how completely, and whether the adaptation is the same for speech and music. Early observations and a roadmap for measuring it properly."
-    url: "#"
+    excerpt: "Frequency-to-place mismatch degrades sound quality, but listeners are not passive — they adapt. Try the interactive MUSHRA listening test from our JASA 2026 study, then read the findings."
+    url: "/articles/ftpm-sound-quality/"
 
   - title: "What is it like to hear with an implant? Try it yourself."
     date: "Mar 2026"

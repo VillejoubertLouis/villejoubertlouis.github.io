@@ -1,0 +1,622 @@
+---
+permalink: /articles/ftpm-sound-quality/
+layout: null
+sitemap: true
+---
+{% assign p = site.data.profile %}{% assign r = site.data.research.perception %}{% assign m = site.data.mushra_ftpm %}{% assign edit_mushra = "https://github.com/" | append: site.repository | append: "/edit/master/_data/mushra_ftpm.yml" %}{% assign upload_audio = "https://github.com/" | append: site.repository | append: "/upload/master/audio/ftpm-mushra" %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ m.title | strip_html }} · {{ p.identity.name }}</title>
+<meta name="description" content="Try a short MUSHRA listening test on cochlear-implant sound quality.">
+<link rel="icon" type="image/png" href="/images/favicon-192x192.png">
+<style>
+  :root {
+    --ink: #11141b;
+    --muted: #6a727e;
+    --rule: #e5e7ec;
+    --bg: #f7f8fa;
+    --paper: #ffffff;
+    --accent: #c43a6f;
+    --accent-soft: #f3eef1;
+    --good: #2a8e3a;
+    --warn: #d18b1c;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    color: var(--ink); background: var(--bg);
+    line-height: 1.65; font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Top strip */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 14px;
+    padding: 10px 24px;
+    background: rgba(247,248,250,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px; color: var(--muted);
+  }
+  .topbar a { color: var(--muted); display: inline-flex; align-items: center; gap: 5px; }
+  .topbar a:hover { color: var(--ink); text-decoration: none; }
+  .topbar .crumb { margin-left: auto; font-family: ui-monospace, Menlo, monospace; letter-spacing: 0.08em; }
+
+  .wrap { max-width: 980px; margin: 0 auto; padding: 48px 24px 100px; }
+
+  /* Article header */
+  .head {
+    margin-bottom: 32px;
+  }
+  .head .lbl {
+    font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin-bottom: 12px;
+  }
+  .head h1 {
+    font-size: clamp(30px, 4.5vw, 44px); letter-spacing: -0.02em; font-weight: 600;
+    line-height: 1.1; margin: 0 0 14px; max-width: 30ch;
+  }
+  .head .headline { color: #2a2c33; font-size: 17px; max-width: 65ch; margin: 0 0 18px; line-height: 1.55; }
+  .head .meta {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    font-size: 13px; color: var(--muted);
+  }
+  .head .badge {
+    background: var(--accent-soft); color: var(--accent);
+    padding: 4px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 500;
+  }
+
+  /* Article body */
+  .body { max-width: 70ch; }
+  .body p { margin: 0 0 14px; font-size: 16.5px; line-height: 1.7; color: #2a2c33; }
+  .body h2 {
+    margin: 40px 0 14px; font-size: 22px; font-weight: 600;
+    letter-spacing: -0.01em; line-height: 1.25;
+  }
+  .body strong { color: var(--ink); }
+
+  /* MUSHRA widget */
+  .mushra {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 18px;
+    padding: 28px 32px; margin: 36px 0;
+    box-shadow: 0 12px 36px rgba(196,58,111,0.06);
+  }
+  .mushra .head-row {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 16px; flex-wrap: wrap;
+  }
+  .mushra .head-row .lbl {
+    background: var(--accent-soft); color: var(--accent);
+    padding: 5px 12px; border-radius: 999px;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .mushra .head-row .progress {
+    font-size: 12.5px; color: var(--muted);
+    font-family: ui-monospace, Menlo, monospace;
+  }
+  .mushra .head-row .progress strong { color: var(--ink); }
+  .mushra h2.trial-h {
+    margin: 6px 0 6px; font-size: 22px; font-weight: 600;
+    letter-spacing: -0.015em; line-height: 1.2;
+  }
+  .mushra .trial-desc {
+    margin: 0 0 22px; color: var(--muted); font-size: 14.5px; line-height: 1.55; max-width: 64ch;
+  }
+
+  /* Reference player — large, prominent */
+  .ref-row {
+    background: var(--bg); border: 1px solid var(--rule); border-radius: 14px;
+    padding: 16px 18px; display: grid; grid-template-columns: 44px 1fr; gap: 16px; align-items: center;
+    margin-bottom: 18px;
+  }
+  .ref-row.playing { border-color: var(--accent); }
+  .play-btn {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--accent); color: #fff; border: none;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 16px; font-family: inherit;
+    transition: transform 0.18s, background 0.18s;
+    flex: none;
+  }
+  .play-btn:hover { transform: scale(1.05); }
+  .play-btn:disabled { background: #cbd1da; cursor: not-allowed; transform: none; }
+  .play-btn[data-playing="true"] { background: var(--ink); }
+  .ref-row .info { display: flex; flex-direction: column; gap: 4px; }
+  .ref-row .info .name {
+    font-weight: 600; font-size: 14.5px;
+  }
+  .ref-row .info .meta {
+    font-size: 12px; color: var(--muted);
+    font-family: ui-monospace, Menlo, monospace; letter-spacing: 0.04em;
+  }
+  .ref-row .scrub { grid-column: 1 / -1; }
+  .scrub-bar {
+    height: 4px; background: var(--rule); border-radius: 999px; overflow: hidden;
+    margin-top: 6px;
+  }
+  .scrub-bar .fill {
+    height: 100%; background: var(--accent); width: 0%;
+    transition: width 0.1s linear;
+  }
+
+  /* Stimulus grid */
+  .stim-grid {
+    display: grid; gap: 12px;
+    grid-template-columns: 1fr;
+  }
+  .stim-row {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 14px;
+    padding: 14px 18px;
+    display: grid;
+    grid-template-columns: 44px 60px 1fr 80px;
+    gap: 14px; align-items: center;
+  }
+  .stim-row.playing { border-color: var(--accent); background: #fffafc; }
+  .stim-row .stim-label {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 18px; font-weight: 700; color: var(--accent);
+    text-align: center;
+  }
+  .stim-row .slider-wrap { position: relative; }
+  .stim-row input[type=range] {
+    width: 100%; accent-color: var(--accent);
+    background: transparent;
+  }
+  .stim-row .scale-marks {
+    display: flex; justify-content: space-between;
+    font-size: 10px; color: var(--muted);
+    font-family: ui-monospace, Menlo, monospace; letter-spacing: 0.04em;
+    margin-top: 4px;
+    pointer-events: none;
+  }
+  .stim-row .score-readout {
+    text-align: right;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 18px; font-weight: 600; color: var(--ink);
+    min-width: 60px;
+  }
+  .stim-row.unset .score-readout { color: var(--muted); }
+
+  /* Action bar */
+  .mushra-actions {
+    margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--rule);
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  }
+  .mushra-actions .hint { font-size: 12.5px; color: var(--muted); }
+  .mushra-actions button {
+    background: var(--accent); color: #fff; border: none; border-radius: 999px;
+    padding: 10px 22px; font-size: 14px; font-weight: 500;
+    cursor: pointer; font-family: inherit;
+    transition: background 0.18s, transform 0.18s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .mushra-actions button:hover { background: #a92e5b; transform: translateY(-1px); }
+  .mushra-actions button.ghost {
+    background: transparent; color: var(--muted); border: 1px solid var(--rule);
+  }
+  .mushra-actions button.ghost:hover { background: var(--bg); color: var(--ink); transform: none; }
+  .mushra-actions button:disabled { background: #cbd1da; cursor: not-allowed; transform: none; }
+
+  /* Missing-audio fallback */
+  .missing-audio {
+    background: #fff8e1; border: 1px dashed #f0d28a; color: #6e4a0a;
+    padding: 14px 18px; border-radius: 12px; font-size: 13.5px; line-height: 1.55;
+    margin-bottom: 14px;
+  }
+  .missing-audio strong { color: #5b3c08; }
+  .missing-audio code {
+    background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 4px;
+    font-family: ui-monospace, Menlo, monospace; font-size: 12.5px;
+  }
+  .missing-audio a { color: #b8740a; text-decoration: underline; }
+
+  /* Summary at end */
+  .summary {
+    background: linear-gradient(135deg, var(--accent-soft) 0%, #fff 100%);
+    border: 1px solid var(--accent-soft); border-radius: 18px;
+    padding: 28px 32px; margin: 36px 0;
+    display: none;
+  }
+  .summary.visible { display: block; }
+  .summary h3 { margin: 0 0 10px; font-size: 22px; color: var(--accent); }
+  .summary p { margin: 0 0 10px; font-size: 15px; color: #2a2c33; line-height: 1.6; }
+  .summary table {
+    width: 100%; border-collapse: collapse; margin-top: 14px;
+    font-size: 14px;
+  }
+  .summary table th, .summary table td {
+    text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule);
+  }
+  .summary table th {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted);
+    font-weight: 600;
+  }
+  .summary table td.score {
+    text-align: right; font-family: ui-monospace, Menlo, monospace; font-weight: 600;
+  }
+  .summary table tr.hidden-ref td:first-child::after { content: " (hidden ref)"; color: var(--good); font-weight: 500; }
+  .summary table tr.anchor td:first-child::after { content: " (anchor)"; color: var(--warn); font-weight: 500; }
+  .summary .actions { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .summary .actions button {
+    background: var(--paper); color: var(--ink); border: 1px solid var(--rule); border-radius: 999px;
+    padding: 8px 16px; font-size: 13px; cursor: pointer; font-family: inherit;
+  }
+  .summary .actions button:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Findings & publications below */
+  .findings-list {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+    margin: 18px 0;
+  }
+  @media (max-width: 720px) {
+    .findings-list { grid-template-columns: 1fr; }
+    .stim-row { grid-template-columns: 36px 44px 1fr; gap: 10px; }
+    .stim-row .score-readout { grid-column: 1 / -1; text-align: left; padding-top: 4px; }
+  }
+  .find-card {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .find-card .n {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent); color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 600; font-family: ui-monospace, Menlo, monospace; font-size: 13px;
+    margin-bottom: 6px;
+  }
+  .find-card h4 { margin: 0 0 4px; font-size: 15.5px; }
+  .find-card p { margin: 0; color: #3a3d44; font-size: 13.5px; line-height: 1.55; }
+
+  .pub {
+    padding: 14px 0; border-top: 1px solid var(--rule);
+  }
+  .pub:last-of-type { border-bottom: 1px solid var(--rule); }
+  .pub h3 { margin: 0 0 4px; font-size: 16px; line-height: 1.35; font-weight: 500; }
+  .pub .pmeta { color: var(--muted); font-size: 13px; }
+
+  .colofoot {
+    margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--rule);
+    color: var(--muted); font-size: 12.5px;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  .colofoot a { color: var(--muted); }
+  .colofoot a:hover { color: var(--accent); text-decoration: none; }
+
+{% include hover_icon_css.html %}
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <a href="/">{% include hover_icon.html name="open" %} Back to home</a>
+  <a href="/#pane-news">News</a>
+  <span class="crumb">/articles/ftpm-sound-quality</span>
+</nav>
+
+<main class="wrap">
+
+  <header class="head">
+    <div class="lbl">Research · Interactive listening test</div>
+    <h1>{{ m.title }}</h1>
+    <p class="headline">{{ r.headline }}</p>
+    <div class="meta">
+      <span class="badge">{{ r.status }}</span>
+      <span>· {{ r.date_range }}</span>
+      <span>· ~5 min</span>
+    </div>
+  </header>
+
+  <article class="body">
+
+    <p>{{ m.intro }}</p>
+
+    <h2>Why this matters</h2>
+    {% for para in r.background %}<p>{{ para }}</p>{% endfor %}
+  </article>
+
+  <!-- ============ MUSHRA WIDGET ============ -->
+  <section class="mushra" id="mushra" aria-label="MUSHRA listening test">
+
+    <div class="head-row">
+      <span class="lbl">{% include hover_icon.html name="wave" %} Listening test</span>
+      <span class="progress">Trial <strong id="trial-cur">1</strong> of <strong id="trial-total">{{ m.trials.size }}</strong></span>
+    </div>
+
+    <div id="missing-warn" class="missing-audio" style="display:none;">
+      <strong>Audio files not yet uploaded.</strong>
+      The page is wired up but the <code>/audio/ftpm-mushra/</code> folder doesn't
+      have the stimuli yet. Drop your <code>.mp3</code>/<code>.wav</code> files in
+      via <a href="{{ upload_audio }}" target="_blank" rel="noopener">the GitHub upload UI</a>
+      and they'll show up here in ~60 s.
+    </div>
+
+    <h2 class="trial-h" id="trial-label"></h2>
+    <p class="trial-desc" id="trial-desc"></p>
+
+    <div class="ref-row" id="ref-row">
+      <button class="play-btn" id="ref-play" aria-label="Play reference">▶</button>
+      <div class="info">
+        <div class="name">Reference</div>
+        <div class="meta">click to play / pause · use headphones</div>
+        <div class="scrub"><div class="scrub-bar"><div class="fill" id="ref-fill"></div></div></div>
+      </div>
+    </div>
+
+    <div class="stim-grid" id="stim-grid"></div>
+
+    <div class="mushra-actions">
+      <span class="hint" id="hint">Rate each clip 0–100 relative to the reference.</span>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="ghost" id="reset-btn">Reset trial</button>
+        <button id="next-btn">Next trial →</button>
+      </div>
+    </div>
+
+  </section>
+
+  <section class="summary" id="summary">
+    <h3>Your scores</h3>
+    <p>Stored locally in your browser only. A real CI study would average scores across many listeners — this is a single-shot demo.</p>
+    <table id="summary-table"><thead><tr><th>Trial</th><th>Stimulus</th><th class="score">Score</th></tr></thead><tbody></tbody></table>
+    <div class="actions">
+      <button id="copy-csv">Copy as CSV</button>
+      <button id="restart">Try again</button>
+    </div>
+  </section>
+
+  <article class="body">
+
+    <h2>How the experiment works</h2>
+    {% for mth in r.methods %}<p><strong>{{ mth.title }}</strong> — {{ mth.body }}</p>{% endfor %}
+
+    <h2>What the study found</h2>
+    <div class="findings-list">
+      {% for f in r.findings %}
+        <div class="find-card">
+          <div class="n">{{ f.icon }}</div>
+          <h4>{{ f.title }}</h4>
+          <p>{{ f.body }}</p>
+        </div>
+      {% endfor %}
+    </div>
+
+    <h2>References</h2>
+    {% for pub in r.publications %}
+      <div class="pub">
+        <h3><a href="{{ pub.url }}">{{ pub.title }}</a></h3>
+        <div class="pmeta">{{ pub.authors }} — <em>{{ pub.venue }}</em>, {{ pub.year }}.</div>
+      </div>
+    {% endfor %}
+
+  </article>
+
+  <footer class="colofoot">
+    <div>{{ p.identity.name }} · <a href="mailto:{{ p.identity.email }}">{{ p.identity.email }}</a></div>
+    <div><a href="{{ edit_mushra }}" target="_blank" rel="noopener">Edit MUSHRA config (admin)</a></div>
+  </footer>
+
+</main>
+
+<!-- Serialise the YAML config to JSON for the JS to consume -->
+<script id="mushra-config" type="application/json">{
+  "title": {{ m.title | jsonify }},
+  "scale": {{ m.scale | jsonify }},
+  "trials": {{ m.trials | jsonify }}
+}</script>
+
+<script>
+(() => {
+  const config = JSON.parse(document.getElementById('mushra-config').textContent);
+  const trials = config.trials || [];
+  if (!trials.length) return;
+
+  // State
+  let trialIdx = 0;
+  let scores = {};            // { trialId: { stimLabel: score } }
+  const audios = {};          // cached HTMLAudioElement per URL
+  let nowPlaying = null;      // url currently playing
+
+  // Elements
+  const trialCurEl = document.getElementById('trial-cur');
+  const trialLblEl = document.getElementById('trial-label');
+  const trialDescEl = document.getElementById('trial-desc');
+  const stimGrid = document.getElementById('stim-grid');
+  const refPlay = document.getElementById('ref-play');
+  const refFill = document.getElementById('ref-fill');
+  const refRow = document.getElementById('ref-row');
+  const nextBtn = document.getElementById('next-btn');
+  const resetBtn = document.getElementById('reset-btn');
+  const summary = document.getElementById('summary');
+  const summaryBody = document.querySelector('#summary-table tbody');
+  const missingWarn = document.getElementById('missing-warn');
+  const mushraSection = document.getElementById('mushra');
+
+  function getAudio(url) {
+    if (audios[url]) return audios[url];
+    const a = new Audio(url);
+    a.preload = 'auto';
+    a.addEventListener('ended', () => {
+      if (nowPlaying === url) {
+        nowPlaying = null;
+        refreshPlayStates();
+      }
+    });
+    a.addEventListener('error', () => {
+      // Mark this row as missing
+      mushraSection.dataset.hasError = '1';
+      missingWarn.style.display = 'block';
+    });
+    audios[url] = a;
+    return a;
+  }
+
+  function stopAll() {
+    Object.values(audios).forEach(a => { a.pause(); a.currentTime = 0; });
+    nowPlaying = null;
+    refFill.style.width = '0%';
+  }
+
+  function togglePlay(url) {
+    if (nowPlaying === url) {
+      audios[url].pause(); audios[url].currentTime = 0; nowPlaying = null;
+    } else {
+      stopAll();
+      const a = getAudio(url);
+      a.play().catch(() => {
+        mushraSection.dataset.hasError = '1';
+        missingWarn.style.display = 'block';
+      });
+      nowPlaying = url;
+    }
+    refreshPlayStates();
+  }
+
+  function refreshPlayStates() {
+    refPlay.dataset.playing = (nowPlaying === currentTrial().reference) ? 'true' : 'false';
+    refPlay.textContent = (nowPlaying === currentTrial().reference) ? '■' : '▶';
+    refRow.classList.toggle('playing', nowPlaying === currentTrial().reference);
+    document.querySelectorAll('.stim-row').forEach(row => {
+      const url = row.dataset.url;
+      const isPlaying = nowPlaying === url;
+      row.classList.toggle('playing', isPlaying);
+      const btn = row.querySelector('.play-btn');
+      btn.dataset.playing = isPlaying ? 'true' : 'false';
+      btn.textContent = isPlaying ? '■' : '▶';
+    });
+  }
+
+  // Animate scrub bar
+  setInterval(() => {
+    if (!nowPlaying || !audios[nowPlaying]) return;
+    const a = audios[nowPlaying];
+    if (!a.duration) return;
+    const pct = (a.currentTime / a.duration) * 100;
+    refFill.style.width = pct + '%';
+  }, 100);
+
+  function currentTrial() { return trials[trialIdx]; }
+
+  function renderTrial() {
+    const t = currentTrial();
+    trialCurEl.textContent = (trialIdx + 1);
+    trialLblEl.textContent = t.label;
+    trialDescEl.textContent = t.description || '';
+    refPlay.onclick = () => togglePlay(t.reference);
+    stopAll();
+
+    // Shuffle stimulus display order (keep labels A-F deterministic but reorder rows)
+    const stims = (t.stimuli || []).slice().sort((a, b) => a.label.localeCompare(b.label));
+
+    stimGrid.innerHTML = '';
+    stims.forEach(s => {
+      const initial = (scores[t.id] && scores[t.id][s.label] != null) ? scores[t.id][s.label] : null;
+      const row = document.createElement('div');
+      row.className = 'stim-row' + (initial == null ? ' unset' : '');
+      row.dataset.url = s.file;
+      row.dataset.label = s.label;
+      row.innerHTML = `
+        <button class="play-btn" aria-label="Play ${s.label}">▶</button>
+        <div class="stim-label">${s.label}</div>
+        <div class="slider-wrap">
+          <input type="range" min="0" max="100" step="1" value="${initial != null ? initial : 50}" ${initial == null ? 'data-unset="1"' : ''}>
+          <div class="scale-marks">
+            ${config.scale.labels.map(l => `<span>${l.text}</span>`).join('')}
+          </div>
+        </div>
+        <div class="score-readout">${initial != null ? initial : '—'}</div>
+      `;
+      const btn = row.querySelector('.play-btn');
+      btn.addEventListener('click', () => togglePlay(s.file));
+      const slider = row.querySelector('input[type=range]');
+      const readout = row.querySelector('.score-readout');
+      slider.addEventListener('input', () => {
+        delete slider.dataset.unset;
+        row.classList.remove('unset');
+        readout.textContent = slider.value;
+        if (!scores[t.id]) scores[t.id] = {};
+        scores[t.id][s.label] = +slider.value;
+      });
+      stimGrid.appendChild(row);
+    });
+
+    // Update next-btn label
+    nextBtn.textContent = (trialIdx === trials.length - 1) ? 'See your scores →' : 'Next trial →';
+    refreshPlayStates();
+  }
+
+  resetBtn.addEventListener('click', () => {
+    const t = currentTrial();
+    if (scores[t.id]) delete scores[t.id];
+    stopAll();
+    renderTrial();
+  });
+
+  nextBtn.addEventListener('click', () => {
+    stopAll();
+    if (trialIdx < trials.length - 1) {
+      trialIdx++;
+      renderTrial();
+      window.scrollTo({ top: mushraSection.offsetTop - 80, behavior: 'smooth' });
+    } else {
+      showSummary();
+    }
+  });
+
+  function showSummary() {
+    summary.classList.add('visible');
+    summaryBody.innerHTML = '';
+    trials.forEach(t => {
+      t.stimuli.forEach(s => {
+        const sc = (scores[t.id] && scores[t.id][s.label] != null) ? scores[t.id][s.label] : '—';
+        const tr = document.createElement('tr');
+        if (s.hidden_ref) tr.classList.add('hidden-ref');
+        if (s.anchor) tr.classList.add('anchor');
+        tr.innerHTML = `<td>${t.label}</td><td>${s.label}</td><td class="score">${sc}</td>`;
+        summaryBody.appendChild(tr);
+      });
+    });
+    window.scrollTo({ top: summary.offsetTop - 80, behavior: 'smooth' });
+  }
+
+  document.getElementById('restart').addEventListener('click', () => {
+    trialIdx = 0; scores = {};
+    summary.classList.remove('visible');
+    renderTrial();
+    window.scrollTo({ top: mushraSection.offsetTop - 80, behavior: 'smooth' });
+  });
+
+  document.getElementById('copy-csv').addEventListener('click', () => {
+    const rows = [['trial', 'stimulus', 'score', 'kind']];
+    trials.forEach(t => t.stimuli.forEach(s => {
+      const sc = (scores[t.id] && scores[t.id][s.label] != null) ? scores[t.id][s.label] : '';
+      const kind = s.hidden_ref ? 'hidden_ref' : (s.anchor ? 'anchor' : 'test');
+      rows.push([t.id, s.label, sc, kind]);
+    }));
+    const csv = rows.map(r => r.join(',')).join('\n');
+    navigator.clipboard.writeText(csv).then(() => {
+      const b = document.getElementById('copy-csv');
+      const orig = b.textContent;
+      b.textContent = 'Copied ✓';
+      setTimeout(() => { b.textContent = orig; }, 1500);
+    });
+  });
+
+  // Probe the first reference file to detect a missing-audio scenario early
+  const probe = new Audio(trials[0].reference);
+  probe.addEventListener('error', () => { missingWarn.style.display = 'block'; });
+
+  renderTrial();
+})();
+</script>
+
+</body>
+</html>

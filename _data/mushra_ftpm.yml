@@ -1,0 +1,68 @@
+# =============================================================================
+#  mushra_ftpm.yml — MUSHRA listening-test config for the FTPM article
+# =============================================================================
+#
+# HOW TO UPLOAD AUDIO FILES FROM GITHUB:
+#   1. In the GitHub web UI, navigate to /audio/ftpm-mushra/<sample-id>/
+#   2. Click "Add file" → "Upload files"
+#   3. Drag the .mp3 (or .wav, .ogg) files in. File names must match the
+#      `file:` fields below (e.g. reference.mp3, A.mp3, B.mp3, ...)
+#   4. Commit. The page at /articles/ftpm-sound-quality/ picks them up
+#      automatically — no code change needed.
+#
+# To add a new TRIAL (e.g. a new music sample): copy one of the trial blocks
+# below, change `id`, `label`, and the file paths, and put your audio at the
+# matching location.
+#
+# Notes:
+# - `hidden_ref: true`  → this stimulus is the unprocessed reference,
+#                         hidden so the listener should also rate it ~100.
+# - `anchor: true`      → low-quality anchor (typically heavy LPF).
+#                         Listeners should rate it very low.
+# =============================================================================
+
+title: "MUSHRA — Frequency-to-place mismatch &amp; sound quality"
+
+intro: |
+  Below is a short listening test using stimuli from the JASA 2026 study on
+  frequency-to-place mismatch. <strong>Listen to the reference first</strong>,
+  then for each unlabelled clip (A, B, C, …) drag the slider to indicate how
+  similar it sounds to the reference: <strong>0 = bad, 100 = essentially
+  identical to the reference</strong>. Use headphones for the best experience.
+  This is a demo — your responses are stored locally in your browser and never
+  sent anywhere.
+
+scale:
+  labels:
+    - { v: 0,   text: "Bad" }
+    - { v: 20,  text: "Poor" }
+    - { v: 40,  text: "Fair" }
+    - { v: 60,  text: "Good" }
+    - { v: 80,  text: "Excellent" }
+    - { v: 100, text: "Reference" }
+
+# Each trial is one block. The MUSHRA widget shows them one at a time.
+trials:
+  - id: "piano-realistic"
+    label: "Piano · realistic FTPM"
+    description: "A solo piano excerpt processed with a realistic frequency-to-place mismatch profile. Compare each labelled clip to the reference and rate its similarity."
+    reference: "/audio/ftpm-mushra/piano/reference.mp3"
+    stimuli:
+      - { label: "A", file: "/audio/ftpm-mushra/piano/A.mp3", hidden_ref: true }
+      - { label: "B", file: "/audio/ftpm-mushra/piano/B.mp3" }
+      - { label: "C", file: "/audio/ftpm-mushra/piano/C.mp3" }
+      - { label: "D", file: "/audio/ftpm-mushra/piano/D.mp3" }
+      - { label: "E", file: "/audio/ftpm-mushra/piano/E.mp3" }
+      - { label: "F", file: "/audio/ftpm-mushra/piano/F.mp3", anchor: true }
+
+  - id: "speech-realistic"
+    label: "Speech · realistic FTPM"
+    description: "An English sentence processed with the same family of mismatch profiles. Same task — rate each clip's similarity to the reference."
+    reference: "/audio/ftpm-mushra/speech/reference.mp3"
+    stimuli:
+      - { label: "A", file: "/audio/ftpm-mushra/speech/A.mp3", hidden_ref: true }
+      - { label: "B", file: "/audio/ftpm-mushra/speech/B.mp3" }
+      - { label: "C", file: "/audio/ftpm-mushra/speech/C.mp3" }
+      - { label: "D", file: "/audio/ftpm-mushra/speech/D.mp3" }
+      - { label: "E", file: "/audio/ftpm-mushra/speech/E.mp3" }
+      - { label: "F", file: "/audio/ftpm-mushra/speech/F.mp3", anchor: true }
