@@ -1,0 +1,217 @@
+---
+permalink: /variants/v5.html
+sitemap: false
+---
+{% assign p = site.data.profile %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>V5 · Tile Mosaic · {{ p.identity.name }}</title>
+<style>
+  :root {
+    --ink: #161821;
+    --muted: #6b7280;
+    --rule: #e6e8ee;
+    --bg: #fafbfd;
+    --paper: #ffffff;
+    --accent: #2962ff;
+    --tag-bg: #eef2fb;
+    --research: #2962ff;
+    --project: #38a169;
+    --publication: #d6336c;
+    --about: #b45309;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    color: var(--ink); background: var(--bg);
+    line-height: 1.55; font-size: 15.5px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .switcher {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 24px;
+    background: rgba(250,251,253,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+  }
+  .switcher a.idx { color: var(--muted); margin-right: auto; }
+  .switcher .nums { display: flex; gap: 4px; }
+  .switcher .nums a {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted); border: 1px solid transparent;
+    font-variant-numeric: tabular-nums;
+  }
+  .switcher .nums a.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .switcher .nums a:hover { color: var(--ink); text-decoration: none; }
+  .switcher .nums a.active:hover { color: #fff; }
+  .switcher .name { color: var(--muted); margin-left: 12px; font-size: 12px; }
+
+  /* Identity strip */
+  .head {
+    background: var(--paper); border-bottom: 1px solid var(--rule);
+    padding: 32px;
+    display: grid; grid-template-columns: 96px 1fr; gap: 24px; align-items: center;
+  }
+  .head .avatar { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; }
+  .head h1 { font-size: 26px; margin: 0 0 6px; letter-spacing: -0.015em; font-weight: 600; }
+  .head .role { color: var(--muted); margin: 0 0 12px; font-size: 14.5px; }
+  .head p { margin: 0 0 8px; font-size: 14.5px; max-width: 75ch; color: #2c3140; }
+  .head .links { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; margin-top: 10px; }
+  .head .links a { color: var(--muted); display: inline-flex; align-items: center; gap: 5px; }
+  .head .links a:hover { color: var(--accent); text-decoration: none; }
+  .head .links a .hi { width: 15px; height: 15px; }
+
+  .body { max-width: 1280px; margin: 0 auto; padding: 32px 24px 80px; }
+
+  /* Filter chips */
+  .filters {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px;
+    padding-bottom: 18px; border-bottom: 1px solid var(--rule);
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border-radius: 999px;
+    background: var(--paper); border: 1px solid var(--rule);
+    font-size: 13px; color: var(--ink); cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .chip:hover { border-color: var(--accent); }
+  .chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .chip .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  .chip .count {
+    background: rgba(0,0,0,0.06); padding: 1px 7px; border-radius: 999px;
+    font-size: 11px; font-variant-numeric: tabular-nums;
+  }
+  .chip.active .count { background: rgba(255,255,255,0.18); }
+
+  /* Mosaic grid */
+  .mosaic {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+  }
+  .tile {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 14px;
+    padding: 22px; display: flex; flex-direction: column; gap: 10px;
+    transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+  }
+  .tile:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,0.05); border-color: #ccd4e3; }
+  .tile .ttop {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); font-family: ui-monospace, Menlo, monospace;
+  }
+  .tile .ttop .kind {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 8px; border-radius: 999px;
+    font-weight: 600; font-size: 10.5px;
+  }
+  .tile .ttop .kind.research    { background: #eaf0ff; color: var(--research); }
+  .tile .ttop .kind.project     { background: #e4f5eb; color: var(--project); }
+  .tile .ttop .kind.publication { background: #fce6ef; color: var(--publication); }
+  .tile h3 { margin: 0; font-size: 16.5px; letter-spacing: -0.005em; line-height: 1.35; font-weight: 600; }
+  .tile p { margin: 0; color: #4a5060; font-size: 14px; line-height: 1.55; }
+  .tile .footer {
+    margin-top: auto; display: flex; align-items: center; justify-content: space-between;
+    font-size: 12px; color: var(--muted); padding-top: 6px;
+  }
+  .tile .footer .stack { font-family: ui-monospace, Menlo, monospace; }
+  .tile.research { border-left: 3px solid var(--research); }
+  .tile.project  { border-left: 3px solid var(--project); }
+  .tile.publication { border-left: 3px solid var(--publication); }
+
+  /* Anchored sections for chip navigation */
+  .anchor { padding-top: 24px; }
+  .section-h {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em;
+    color: var(--muted); margin: 36px 0 16px; font-weight: 600;
+  }
+  .section-h:first-of-type { margin-top: 0; }
+
+  @media (max-width: 720px) {
+    .head { grid-template-columns: 1fr; text-align: left; }
+    .head .avatar { width: 80px; height: 80px; }
+  }
+
+{% include hover_icon_css.html %}
+</style>
+</head>
+<body>
+
+{% include variant_switcher.html active=5 label="V5 · Tile Mosaic" %}
+
+<header class="head">
+  <img class="avatar" src="{{ p.identity.avatar }}" alt="{{ p.identity.name }}">
+  <div>
+    <h1>{{ p.identity.name }}</h1>
+    <p class="role">{{ p.identity.role }} · {{ p.identity.affiliation }}</p>
+    <p>{{ p.bio[0] | strip_html }}</p>
+    <div class="links">
+      {% for l in p.links %}<a href="{{ l.url }}">{% include hover_icon.html name=l.icon %}<span>{{ l.label }}</span></a>{% endfor %}
+    </div>
+  </div>
+</header>
+
+<main class="body">
+
+  <div class="filters">
+    {% assign total = p.themes.size | plus: p.projects.size | plus: p.publications.size %}
+    <a class="chip active" href="#all"><span class="dot" style="background:var(--ink)"></span>All <span class="count">{{ total }}</span></a>
+    <a class="chip" href="#research"><span class="dot" style="background:var(--research)"></span>Research <span class="count">{{ p.themes.size }}</span></a>
+    <a class="chip" href="#projects"><span class="dot" style="background:var(--project)"></span>Projects <span class="count">{{ p.projects.size }}</span></a>
+    <a class="chip" href="#publications"><span class="dot" style="background:var(--publication)"></span>Publications <span class="count">{{ p.publications.size }}</span></a>
+  </div>
+
+  <section id="research" class="anchor">
+    <div class="section-h">Research themes</div>
+    <div class="mosaic">
+      {% for t in p.themes %}
+        <article class="tile research">
+          <div class="ttop"><span class="kind research">● Research</span><span>Theme {{ forloop.index | prepend: "0" | slice: -2, 2 }}</span></div>
+          <h3>{{ t.title }}</h3>
+          <p>{{ t.body | strip_html | truncate: 200 }}</p>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section id="projects" class="anchor">
+    <div class="section-h">Projects &amp; software</div>
+    <div class="mosaic">
+      {% for proj in p.projects %}
+        <article class="tile project">
+          <div class="ttop"><span class="kind project">● Project</span><span>{{ proj.date_label }}</span></div>
+          <h3>{% if proj.url and proj.url != "" %}<a href="{{ proj.url }}" style="color:inherit">{{ proj.title }}</a>{% else %}{{ proj.title }}{% endif %}</h3>
+          <p>{{ proj.blurb }}</p>
+          <div class="footer"><span>{{ proj.tag }}</span><span class="stack">{{ proj.stack }}</span></div>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section id="publications" class="anchor">
+    <div class="section-h">Publications</div>
+    <div class="mosaic">
+      {% for pub in p.publications %}
+        <article class="tile publication">
+          <div class="ttop"><span class="kind publication">● Publication</span><span>{{ pub.date_label }}</span></div>
+          <h3><a href="{{ pub.url }}" style="color:inherit">{{ pub.title }}</a></h3>
+          <p><em>{{ pub.authors }}</em></p>
+          <div class="footer"><span>{{ pub.venue }}</span><span class="stack">{{ pub.citation }}</span></div>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+
+</main>
+
+</body>
+</html>

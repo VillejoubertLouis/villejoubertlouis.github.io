@@ -1,0 +1,313 @@
+---
+permalink: /variants/v3.html
+sitemap: false
+---
+{% assign p = site.data.profile %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>V3 · Editorial Cover · {{ p.identity.name }}</title>
+<style>
+  :root {
+    --ink: #14110d;
+    --muted: #5c564a;
+    --rule: #d8d3c5;
+    --bg: #f6f3eb;
+    --paper: #ffffff;
+    --accent: #b13c2d;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--ink); background: var(--bg);
+    line-height: 1.6; font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .serif { font-family: "Charter", "Iowan Old Style", "Palatino Linotype", "Sitka Text", Cambria, Georgia, serif; }
+
+  /* Switcher */
+  .switcher {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 24px;
+    background: rgba(246,243,235,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+  }
+  .switcher a.idx { color: var(--muted); margin-right: auto; }
+  .switcher .nums { display: flex; gap: 4px; }
+  .switcher .nums a {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted); border: 1px solid transparent;
+    font-variant-numeric: tabular-nums;
+  }
+  .switcher .nums a.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .switcher .nums a:hover { color: var(--ink); text-decoration: none; }
+  .switcher .nums a.active:hover { color: var(--bg); }
+  .switcher .name { color: var(--muted); margin-left: 12px; font-size: 12px; }
+
+  /* Cover hero */
+  .cover {
+    position: relative;
+    height: 88vh; min-height: 540px;
+    background: linear-gradient(135deg, #2b1f17 0%, #4d3624 50%, #6b4a30 100%);
+    color: #fff;
+    overflow: hidden;
+  }
+  .cover .photo {
+    position: absolute; top: 0; right: 0; height: 100%; width: 50%;
+    background-image: url('/images/Profile_Picture_2.png');
+    background-size: cover; background-position: center;
+    filter: contrast(1.05);
+  }
+  .cover .photo::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(90deg, rgba(43,31,23,1) 0%, rgba(43,31,23,0.35) 30%, transparent 70%);
+  }
+  .cover .copy {
+    position: relative; z-index: 2;
+    padding: 80px 8vw; max-width: 920px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    height: 100%;
+  }
+  .cover .masthead {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 12px; letter-spacing: 0.32em; text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+  }
+  .cover .masthead .vol { color: rgba(255,255,255,0.5); }
+  .cover h1.disp {
+    font-size: clamp(56px, 8vw, 124px);
+    line-height: 0.92; letter-spacing: -0.025em; font-weight: 500;
+    margin: 0; max-width: 14ch;
+  }
+  .cover .deck {
+    margin-top: 20px; font-size: clamp(18px, 1.6vw, 22px);
+    max-width: 30ch; color: rgba(255,255,255,0.86);
+    line-height: 1.4;
+  }
+  .cover .meta {
+    font-size: 13px; letter-spacing: 0.04em;
+    color: rgba(255,255,255,0.7);
+    display: flex; flex-wrap: wrap; gap: 18px; align-items: center;
+  }
+  .cover .meta a { color: rgba(255,255,255,0.85); display: inline-flex; align-items: center; gap: 5px; }
+  .cover .meta a:hover { color: #fff; text-decoration: none; }
+  .cover .meta a .hi { width: 14px; height: 14px; }
+
+  /* Body */
+  .body { max-width: 1100px; margin: 0 auto; padding: 80px 24px 100px; }
+
+  .lead-2col {
+    display: grid; grid-template-columns: 260px 1fr; gap: 64px;
+    margin-bottom: 80px;
+  }
+  .lead-2col h2 {
+    font-family: "Charter", Georgia, serif;
+    font-size: 26px; letter-spacing: -0.01em; font-weight: 500; margin: 0;
+  }
+  .lead-2col .h-meta {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted); margin: 6px 0 0;
+  }
+  .lead-2col p { margin: 0 0 16px; font-size: 16.5px; color: #1f1c17; line-height: 1.7; }
+  .lead-2col p:first-child::first-letter {
+    font-family: "Charter", Georgia, serif;
+    font-size: 4em; line-height: 0.85; float: left;
+    padding: 8px 10px 0 0; font-weight: 600; color: var(--accent);
+  }
+
+  /* Section heading */
+  .sec-h {
+    font-family: "Charter", Georgia, serif;
+    font-size: 32px; letter-spacing: -0.01em; font-weight: 500;
+    margin: 0 0 6px;
+    display: flex; align-items: baseline; gap: 12px;
+  }
+  .sec-h .num {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 13px; color: var(--accent); letter-spacing: 0.16em;
+  }
+  .sec-sub {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted); margin: 0 0 24px;
+  }
+
+  /* Themes — feature articles */
+  .feature {
+    padding: 36px 0; border-top: 1px solid var(--rule);
+    display: grid; grid-template-columns: 260px 1fr; gap: 64px;
+  }
+  .feature h3 {
+    font-family: "Charter", Georgia, serif;
+    font-size: 24px; line-height: 1.2; letter-spacing: -0.01em;
+    font-weight: 500; margin: 0 0 10px;
+  }
+  .feature .tag {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent);
+  }
+  .feature p { margin: 0; font-size: 15.5px; color: #2a2620; line-height: 1.65; }
+
+  /* Cards (projects) */
+  .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 24px; }
+  .card {
+    background: var(--paper); padding: 22px; border-radius: 4px;
+    border: 1px solid var(--rule);
+    transition: transform 0.18s, box-shadow 0.18s;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(0,0,0,0.05); }
+  .card .ctop {
+    display: flex; align-items: baseline; justify-content: space-between;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 8px;
+  }
+  .card .ctop .tag { color: var(--accent); }
+  .card h3 { font-size: 17px; margin: 0 0 8px; letter-spacing: -0.01em; font-weight: 600; }
+  .card p { margin: 0; color: #2a2620; font-size: 14px; line-height: 1.6; }
+  .card .stack {
+    font-family: ui-monospace, Menlo, monospace; font-size: 12px;
+    color: var(--muted); margin-top: 12px;
+  }
+
+  /* Pubs row */
+  .pubs { margin-top: 24px; }
+  .pub {
+    padding: 22px 0; border-top: 1px solid var(--rule);
+    display: grid; grid-template-columns: 120px 1fr; gap: 32px;
+  }
+  .pub:last-child { border-bottom: 1px solid var(--rule); }
+  .pub .pmeta {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .pub h3 {
+    font-family: "Charter", Georgia, serif;
+    font-size: 20px; line-height: 1.3; font-weight: 500;
+    margin: 0 0 6px;
+  }
+  .pub .pauth { color: var(--muted); font-size: 14px; }
+  .pub .pvenue { font-style: italic; color: #2a2620; font-size: 14px; margin-top: 2px; }
+
+  /* Footer */
+  .colophon {
+    margin-top: 80px; padding-top: 32px;
+    border-top: 1px solid var(--rule);
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 12px; letter-spacing: 0.06em;
+    color: var(--muted);
+    display: flex; flex-wrap: wrap; gap: 18px; justify-content: space-between;
+  }
+  .colophon a { color: var(--muted); display: inline-flex; align-items: center; gap: 5px; }
+  .colophon a:hover { color: var(--accent); text-decoration: none; }
+  .colophon a .hi { width: 13px; height: 13px; }
+
+  @media (max-width: 880px) {
+    .cover { height: auto; min-height: 0; padding-bottom: 30vh; }
+    .cover .photo { width: 100%; height: 60vh; top: auto; bottom: 0; }
+    .cover .photo::after { background: linear-gradient(180deg, rgba(43,31,23,1) 0%, rgba(43,31,23,0.35) 50%, transparent 100%); }
+    .cover .copy { padding: 60px 24px; height: auto; gap: 40px; }
+    .lead-2col, .feature { grid-template-columns: 1fr; gap: 18px; }
+    .card-grid { grid-template-columns: 1fr; }
+    .pub { grid-template-columns: 1fr; gap: 8px; }
+  }
+
+{% include hover_icon_css.html %}
+</style>
+</head>
+<body>
+
+{% include variant_switcher.html active=3 label="V3 · Editorial Cover" %}
+
+<section class="cover">
+  <div class="photo"></div>
+  <div class="copy">
+    <div>
+      <div class="masthead"><span class="vol">VOL · 01 · 2026</span> &nbsp; · &nbsp; THE COVER</div>
+      <h1 class="disp serif">{{ p.identity.name }}.</h1>
+      <p class="deck">On cochlear-implant perception, psychoacoustics, and the listening tests that connect the two.</p>
+    </div>
+    <div class="meta">
+      {% for l in p.links %}<a href="{{ l.url }}">{% include hover_icon.html name=l.icon %}{{ l.label }}</a>{% endfor %}
+    </div>
+  </div>
+</section>
+
+<main class="body">
+
+  <div class="lead-2col">
+    <div>
+      <h2 class="serif">A profile.</h2>
+      <p class="h-meta">{{ p.identity.role }}<br>{{ p.identity.affiliation }}</p>
+    </div>
+    <div>
+      {% for para in p.bio %}<p>{{ para | strip_html }}</p>{% endfor %}
+    </div>
+  </div>
+
+  <h2 class="sec-h serif"><span class="num">01 ·</span> Research</h2>
+  <p class="sec-sub">Three open questions</p>
+
+  {% for t in p.themes %}
+    <article class="feature">
+      <div>
+        <div class="tag">Theme {{ forloop.index | prepend: "0" | slice: -2, 2 }}</div>
+      </div>
+      <div>
+        <h3>{{ t.title }}</h3>
+        <p>{{ t.body | strip_html | strip_newlines }}</p>
+      </div>
+    </article>
+  {% endfor %}
+
+  <h2 class="sec-h serif" style="margin-top:80px;"><span class="num">02 ·</span> Projects &amp; software</h2>
+  <p class="sec-sub">Tools and platforms supporting the work</p>
+
+  <div class="card-grid">
+    {% for proj in p.projects %}
+      <div class="card">
+        <div class="ctop"><span class="tag">{{ proj.tag }}</span><span>{{ proj.date_label }}</span></div>
+        <h3>{% if proj.url and proj.url != "" %}<a href="{{ proj.url }}">{{ proj.title }}</a>{% else %}{{ proj.title }}{% endif %}</h3>
+        <p>{{ proj.blurb }}</p>
+        <div class="stack">{{ proj.stack }}</div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <h2 class="sec-h serif" style="margin-top:80px;"><span class="num">03 ·</span> Publications</h2>
+  <p class="sec-sub">Peer-reviewed outputs</p>
+
+  <div class="pubs">
+    {% for pub in p.publications %}
+      <div class="pub">
+        <div class="pmeta">{{ pub.date_label }}<br>{{ pub.short_venue }}</div>
+        <div>
+          <h3><a href="{{ pub.url }}">{{ pub.title }}</a></h3>
+          <div class="pauth">{{ pub.authors }}</div>
+          <div class="pvenue">{{ pub.venue }} {{ pub.citation }}</div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <footer class="colophon">
+    <div>{{ p.identity.name }} · {{ p.identity.location }} · <a href="mailto:{{ p.identity.email }}">{% include hover_icon.html name="mail" %}{{ p.identity.email }}</a></div>
+    <div>EDITORIAL COVER · Vol. 01 · 2026</div>
+  </footer>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,327 @@
+---
+permalink: /variants/v2.html
+sitemap: false
+---
+{% assign p = site.data.profile %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>V2 · Studio Dark · {{ p.identity.name }}</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --panel: #11172a;
+    --panel-2: #161d35;
+    --ink: #e1e7f5;
+    --muted: #6e7a93;
+    --rule: #1c2440;
+    --cyan: #00d4ff;
+    --coral: #ff6b6b;
+    --amber: #ffd166;
+    --green: #56e39f;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    background:
+      radial-gradient(ellipse at top, #11193b 0%, var(--bg) 60%),
+      var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    font-size: 15.5px;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  a { color: var(--cyan); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .mono { font-family: "JetBrains Mono", "SF Mono", Menlo, monospace; }
+
+  .switcher {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 24px;
+    background: rgba(10, 14, 26, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+  }
+  .switcher a.idx { color: var(--muted); margin-right: auto; }
+  .switcher a.idx:hover { color: var(--ink); text-decoration: none; }
+  .switcher .nums { display: flex; gap: 4px; }
+  .switcher .nums a {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted);
+  }
+  .switcher .nums a:hover { color: var(--ink); text-decoration: none; }
+  .switcher .nums a.active { background: var(--cyan); color: var(--bg); font-weight: 600; }
+  .switcher .name { color: var(--muted); margin-left: 12px; font-size: 12px; font-family: "JetBrains Mono", monospace; }
+
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 64px 24px 100px; }
+
+  /* Hero with equalizer decoration */
+  .hero {
+    position: relative;
+    padding: 32px 36px 36px;
+    background: linear-gradient(180deg, rgba(0,212,255,0.04) 0%, transparent 100%);
+    border: 1px solid var(--rule);
+    border-radius: 18px;
+    overflow: hidden;
+    margin-bottom: 40px;
+  }
+  .hero .corner {
+    position: absolute; top: 14px; right: 18px;
+    color: var(--muted); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+  }
+  .hero .corner .rec { color: var(--coral); margin-right: 6px; animation: blink 1.4s infinite; }
+  @keyframes blink { 0%, 60% { opacity: 1; } 70%, 100% { opacity: 0.25; } }
+
+  .hero h1 { font-size: 44px; margin: 16px 0 8px; letter-spacing: -0.025em; font-weight: 600; }
+  .hero .role { color: var(--muted); margin: 0 0 18px; font-size: 16px; }
+
+  .hero-top { display: flex; align-items: center; gap: 24px; }
+  .hero-top .avatar {
+    width: 88px; height: 88px; border-radius: 50%; object-fit: cover; display: block;
+    border: 2px solid var(--cyan);
+    box-shadow: 0 0 0 4px rgba(0,212,255,0.12);
+  }
+
+  /* Animated EQ bars */
+  .eq {
+    display: flex; align-items: flex-end; gap: 3px; height: 60px;
+    margin: 22px 0 18px;
+  }
+  .eq span {
+    width: 4px; background: var(--cyan); border-radius: 2px;
+    animation: bounce 1.2s ease-in-out infinite;
+    opacity: 0.85;
+  }
+  .eq span:nth-child(odd)  { background: var(--cyan); }
+  .eq span:nth-child(3n)   { background: var(--amber); }
+  .eq span:nth-child(5n)   { background: var(--coral); }
+  @keyframes bounce {
+    0%, 100% { height: 12%; }
+    25% { height: 80%; }
+    50% { height: 30%; }
+    75% { height: 100%; }
+  }
+  /* Stagger by setting animation-delay per nth-child */
+  .eq span:nth-child(1)  { animation-delay: 0s; }
+  .eq span:nth-child(2)  { animation-delay: -0.1s; }
+  .eq span:nth-child(3)  { animation-delay: -0.2s; }
+  .eq span:nth-child(4)  { animation-delay: -0.3s; }
+  .eq span:nth-child(5)  { animation-delay: -0.4s; }
+  .eq span:nth-child(6)  { animation-delay: -0.5s; }
+  .eq span:nth-child(7)  { animation-delay: -0.6s; }
+  .eq span:nth-child(8)  { animation-delay: -0.7s; }
+  .eq span:nth-child(9)  { animation-delay: -0.8s; }
+  .eq span:nth-child(10) { animation-delay: -0.9s; }
+  .eq span:nth-child(11) { animation-delay: -1.0s; }
+  .eq span:nth-child(12) { animation-delay: -1.1s; }
+  .eq span:nth-child(13) { animation-delay: -0.05s; }
+  .eq span:nth-child(14) { animation-delay: -0.15s; }
+  .eq span:nth-child(15) { animation-delay: -0.25s; }
+  .eq span:nth-child(16) { animation-delay: -0.35s; }
+  .eq span:nth-child(17) { animation-delay: -0.45s; }
+  .eq span:nth-child(18) { animation-delay: -0.55s; }
+  .eq span:nth-child(19) { animation-delay: -0.65s; }
+  .eq span:nth-child(20) { animation-delay: -0.75s; }
+  .eq span:nth-child(21) { animation-delay: -0.85s; }
+  .eq span:nth-child(22) { animation-delay: -0.95s; }
+  .eq span:nth-child(23) { animation-delay: -0.05s; }
+  .eq span:nth-child(24) { animation-delay: -0.45s; }
+  .eq span:nth-child(25) { animation-delay: -0.65s; }
+  .eq span:nth-child(26) { animation-delay: -0.25s; }
+  .eq span:nth-child(27) { animation-delay: -0.85s; }
+  .eq span:nth-child(28) { animation-delay: -0.35s; }
+
+  .hero p.body { color: #cdd5e8; max-width: 60ch; margin: 0 0 14px; }
+  .hero .links { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 18px; font-size: 13.5px; }
+  .hero .links a { color: var(--muted); display: inline-flex; align-items: center; gap: 6px; transition: color 0.18s; }
+  .hero .links a:hover { color: var(--cyan); text-decoration: none; }
+  .hero .links a .hi { width: 18px; height: 18px; }
+
+  .sec-h .hi { width: 14px; height: 14px; color: var(--cyan); }
+  .track .play .hi { width: 18px; height: 18px; color: var(--cyan); }
+  .foot a .hi { width: 14px; height: 14px; }
+  .foot > div { display: inline-flex; align-items: center; gap: 6px; }
+
+{% include hover_icon_css.html %}
+
+  .sec-h {
+    display: flex; align-items: center; gap: 14px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted); margin: 48px 0 20px;
+  }
+  .sec-h::before, .sec-h::after { content: ""; flex: 1; height: 1px; background: var(--rule); }
+
+  /* Theme "tracks" */
+  .track {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    padding: 20px 22px;
+    margin-bottom: 14px;
+    display: grid; grid-template-columns: 44px 1fr 220px; gap: 18px; align-items: center;
+  }
+  .track .play {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(0,212,255,0.08);
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .track h3 { margin: 0 0 4px; font-size: 16.5px; letter-spacing: -0.005em; }
+  .track .ttag {
+    font-family: "JetBrains Mono", monospace; font-size: 10.5px; color: var(--muted);
+    letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 4px;
+  }
+  .track p { margin: 0; color: #b9c1d8; font-size: 13.5px; line-height: 1.55; }
+  .track .waveform {
+    display: flex; align-items: center; height: 36px; gap: 1.5px;
+  }
+  .track .waveform span {
+    width: 2px; background: var(--muted); border-radius: 1px;
+    opacity: 0.5;
+  }
+
+  /* Projects as mixer channels */
+  .mixer { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .channel {
+    background: var(--panel); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .channel .ctop { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .channel .tag { font-family: "JetBrains Mono", monospace; font-size: 10.5px; padding: 2px 8px; border-radius: 4px; letter-spacing: 0.12em; }
+  .channel .tag.os { background: rgba(0,212,255,0.12); color: var(--cyan); }
+  .channel .tag.rc { background: rgba(255,209,102,0.12); color: var(--amber); }
+  .channel .tag.pe { background: rgba(86,227,159,0.12); color: var(--green); }
+  .channel .tag.df { background: rgba(110,122,147,0.18); color: var(--muted); }
+  .channel .date { font-family: "JetBrains Mono", monospace; font-size: 11.5px; color: var(--muted); }
+  .channel h3 { margin: 0 0 6px; font-size: 16px; }
+  .channel p { margin: 0 0 10px; color: #b9c1d8; font-size: 13.5px; line-height: 1.55; }
+  .channel .stack { color: var(--muted); font-family: "JetBrains Mono", monospace; font-size: 12px; }
+
+  /* Publications as tracklist */
+  .tracklist .item {
+    display: grid; grid-template-columns: 30px 1fr auto; gap: 16px;
+    padding: 14px 0; border-bottom: 1px solid var(--rule); align-items: center;
+  }
+  .tracklist .item:first-child { border-top: 1px solid var(--rule); }
+  .tracklist .item .n { color: var(--muted); font-family: "JetBrains Mono", monospace; font-size: 13px; }
+  .tracklist .item .what .ttl { font-size: 15.5px; margin-bottom: 4px; }
+  .tracklist .item .what .meta { color: var(--muted); font-size: 12.5px; }
+  .tracklist .item .dur { color: var(--muted); font-family: "JetBrains Mono", monospace; font-size: 12px; }
+
+  .foot {
+    margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--rule);
+    color: var(--muted); font-size: 13px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px;
+  }
+  .foot a { color: var(--muted); }
+  .foot a:hover { color: var(--cyan); }
+
+  @media (max-width: 720px) {
+    .track { grid-template-columns: 44px 1fr; }
+    .track .waveform { display: none; }
+    .mixer { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+{% include variant_switcher.html active=2 label="V2 · Studio Dark" %}
+
+<main class="wrap">
+
+  <section class="hero">
+    <div class="corner mono"><span class="rec">●</span> CAMBRIDGE · CLINICAL NEUROSCIENCE · 2026</div>
+    <div class="hero-top">
+      <img class="avatar" src="{{ p.identity.avatar }}" alt="{{ p.identity.name }}">
+      <div>
+        <h1>{{ p.identity.name }}</h1>
+        <p class="role">{{ p.identity.role }} · {{ p.identity.affiliation }}</p>
+      </div>
+    </div>
+
+    <div class="eq">
+      <!-- 28 bars -->
+      {% for i in (1..28) %}<span></span>{% endfor %}
+    </div>
+
+    {% for para in p.bio %}<p class="body">{{ para | strip_html }}</p>{% endfor %}
+
+    <div class="links">
+      {% for l in p.links %}<a href="{{ l.url }}">{% include hover_icon.html name=l.icon %}<span>{{ l.label }}</span></a>{% endfor %}
+    </div>
+  </section>
+
+  <div class="sec-h">{% include hover_icon.html name="brain" %} / research</div>
+
+  {% for t in p.themes %}
+    <div class="track">
+      <div class="play">{% include hover_icon.html name="play" %}</div>
+      <div>
+        <div class="ttag mono">{{ forloop.index | prepend: "0" | slice: -2, 2 }} · {{ t.id | upcase }}</div>
+        <h3>{{ t.title }}</h3>
+        <p>{{ t.body | strip_html | truncate: 220 }}</p>
+      </div>
+      <div class="waveform">
+        {% comment %} Pseudo-waveform: 60 bars with pseudo-random-ish heights via index math {% endcomment %}
+        {% for n in (1..60) %}
+          {% assign h = n | modulo: 9 | times: 4 | plus: 6 %}
+          {% if forloop.index | modulo: 2 == 0 %}{% assign h = h | plus: 8 %}{% endif %}
+          <span style="height: {{ h }}%; background: {% if forloop.index | modulo: 7 == 0 %}var(--cyan){% else %}var(--muted){% endif %};"></span>
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+
+  <div class="sec-h">{% include hover_icon.html name="file" %} / projects</div>
+
+  <div class="mixer">
+    {% for proj in p.projects %}
+      {% assign tagcls = "df" %}
+      {% if proj.tag contains "Open" %}{% assign tagcls = "os" %}{% endif %}
+      {% if proj.tag contains "Research" %}{% assign tagcls = "rc" %}{% endif %}
+      {% if proj.tag contains "Personal" %}{% assign tagcls = "pe" %}{% endif %}
+      <div class="channel">
+        <div class="ctop">
+          <span class="tag {{ tagcls }} mono">{{ proj.tag | upcase }}</span>
+          <span class="date mono">{{ proj.date_label }}</span>
+        </div>
+        <h3>{% if proj.url and proj.url != "" %}<a href="{{ proj.url }}">{{ proj.title }}</a>{% else %}{{ proj.title }}{% endif %}</h3>
+        <p>{{ proj.blurb }}</p>
+        <div class="stack">$ {{ proj.stack }}</div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="sec-h">{% include hover_icon.html name="book" %} / publications</div>
+
+  <div class="tracklist">
+    {% for pub in p.publications %}
+      <div class="item">
+        <div class="n mono">{{ forloop.index | prepend: "0" | slice: -2, 2 }}</div>
+        <div class="what">
+          <div class="ttl"><a href="{{ pub.url }}">{{ pub.title }}</a></div>
+          <div class="meta">{{ pub.authors }} — <em>{{ pub.venue }}</em>, {{ pub.citation }}</div>
+        </div>
+        <div class="dur mono">{{ pub.date_label }}</div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <footer class="foot">
+    <div>{{ p.identity.name }} · <a href="mailto:{{ p.identity.email }}">{% include hover_icon.html name="mail" %}{{ p.identity.email }}</a> · {{ p.identity.location }}</div>
+    <div class="mono">{% include hover_icon.html name="wave" %} // {{ p.identity.short_affiliation }}</div>
+  </footer>
+
+</main>
+
+</body>
+</html>

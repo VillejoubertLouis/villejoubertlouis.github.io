@@ -1,0 +1,385 @@
+---
+layout: null
+permalink: /
+sitemap: true
+---
+{% assign p = site.data.profile %}{% assign edit_profile = "https://github.com/" | append: site.repository | append: "/edit/main/_data/profile.yml" %}{% assign edit_research = "https://github.com/" | append: site.repository | append: "/edit/main/_data/research.yml" %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ p.identity.name }} · {{ p.identity.role }}</title>
+<meta name="description" content="{{ p.identity.tagline }}">
+<link rel="icon" type="image/png" href="/images/favicon-192x192.png">
+<style>
+  :root {
+    --ink: #11141b;
+    --muted: #6a727e;
+    --rule: #e5e7ec;
+    --bg: #f7f8fa;
+    --paper: #ffffff;
+    --accent: #c43a6f;
+    --tag-bg: #f3eef1;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    color: var(--ink); background: var(--bg);
+    line-height: 1.6; font-size: 15.5px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .app { max-width: 1100px; margin: 32px auto; padding: 0 24px 80px; }
+
+  /* Identity card */
+  .head {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 18px;
+    padding: 28px 32px;
+    display: grid; grid-template-columns: 110px 1fr; gap: 28px; align-items: center;
+    margin-bottom: 18px;
+  }
+  .head .avatar { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; }
+  .head h1 { font-size: 26px; margin: 0 0 6px; letter-spacing: -0.015em; font-weight: 600; }
+  .head .role { color: var(--muted); font-size: 14.5px; margin: 0 0 14px; }
+  .head .links { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13.5px; }
+  .head .links a { color: var(--muted); display: inline-flex; align-items: center; gap: 5px; }
+  .head .links a:hover { color: var(--accent); text-decoration: none; }
+  .head .links a .hi { width: 15px; height: 15px; }
+
+  /* Tab control */
+  .tabs {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 18px;
+    overflow: hidden;
+  }
+  .tabbar {
+    display: flex; gap: 0; padding: 8px;
+    border-bottom: 1px solid var(--rule);
+    background: var(--bg);
+    overflow-x: auto;
+  }
+  .tabbar a {
+    flex: none;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 16px; border-radius: 10px;
+    color: var(--muted); font-weight: 500; font-size: 14px; text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+  }
+  .tabbar a:hover { background: rgba(0,0,0,0.04); color: var(--ink); }
+  .tabbar a .count {
+    background: rgba(0,0,0,0.06); padding: 1px 7px; border-radius: 999px;
+    font-size: 11px; color: var(--muted);
+  }
+  .tabbar a.active { background: var(--accent); color: #fff; }
+  .tabbar a.active .count { background: rgba(255,255,255,0.2); color: #fff; }
+  .tabbar a .hi { width: 16px; height: 16px; }
+
+  /* Panes */
+  .panes { padding: 32px; }
+  .pane { display: none; }
+  .pane:target { display: block; }
+  #pane-about { display: block; }
+  body:has(.pane:target) #pane-about { display: none; }
+  body:has(#pane-about:target) #pane-about { display: block; }
+
+  .pane h2 {
+    font-size: 22px; letter-spacing: -0.01em; font-weight: 600;
+    margin: 0 0 6px;
+  }
+  .pane .h-sub {
+    font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.2em;
+    color: var(--muted); margin: 0 0 20px;
+  }
+
+  .pane.bio p {
+    font-size: 16px; line-height: 1.7; color: #2a2c33; margin: 0 0 14px; max-width: 65ch;
+  }
+  .pane .badges { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .pane .badges span {
+    background: var(--bg); border: 1px solid var(--rule);
+    padding: 4px 10px; border-radius: 999px; font-size: 11.5px; color: #2a2c33;
+  }
+
+  /* Themes */
+  .theme {
+    padding: 18px 0; border-top: 1px solid var(--rule);
+    display: grid; grid-template-columns: 60px 1fr; gap: 24px;
+  }
+  .theme:last-child { border-bottom: 1px solid var(--rule); }
+  .theme .num { font-size: 18px; font-weight: 600; color: var(--accent); font-family: ui-monospace, Menlo, monospace; }
+  .theme h3 { margin: 0 0 6px; font-size: 17px; line-height: 1.35; }
+  .theme p { margin: 0 0 12px; color: #3a3d44; font-size: 14.5px; line-height: 1.6; }
+  .theme .know-more {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 4px; font-size: 13px; font-weight: 500;
+    color: var(--accent);
+    padding: 6px 12px; border-radius: 999px;
+    background: var(--tag-bg);
+    transition: background 0.18s, transform 0.18s;
+  }
+  .theme .know-more:hover { background: var(--accent); color: #fff; text-decoration: none; transform: translateX(2px); }
+  .theme .know-more .hi { width: 14px; height: 14px; }
+
+  /* News (timeline-like) */
+  .news-feed { position: relative; padding-left: 24px; }
+  .news-feed::before {
+    content: ""; position: absolute; left: 6px; top: 8px; bottom: 8px;
+    width: 2px; background: var(--rule);
+  }
+  .news-item {
+    position: relative; padding: 14px 0 18px 22px;
+    border-bottom: 1px dashed var(--rule);
+  }
+  .news-item:last-child { border-bottom: none; }
+  .news-item::before {
+    content: "";
+    position: absolute; left: -22px; top: 22px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--paper); border: 3px solid var(--accent);
+    z-index: 1;
+  }
+  .news-item[data-kind="paper"]::before     { border-color: #c43a6f; }
+  .news-item[data-kind="talk"]::before      { border-color: #6a45c2; }
+  .news-item[data-kind="milestone"]::before { border-color: #2a8e3a; }
+  .news-item[data-kind="project"]::before   { border-color: #1f80c0; }
+  .news-item[data-kind="site"]::before      { border-color: #f59e0b; }
+  .news-item .head-row {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px;
+  }
+  .news-item .date {
+    font-family: ui-monospace, Menlo, monospace; font-size: 11.5px;
+    color: var(--muted); letter-spacing: 0.06em;
+  }
+  .news-item .chip {
+    display: inline-flex; align-items: center;
+    padding: 2px 9px; border-radius: 999px;
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    font-family: ui-monospace, Menlo, monospace;
+  }
+  .news-item[data-kind="paper"] .chip     { background: #fce5e5; color: #c43a6f; }
+  .news-item[data-kind="talk"] .chip      { background: #ede7fa; color: #6a45c2; }
+  .news-item[data-kind="milestone"] .chip { background: #e2f3e6; color: #2a8e3a; }
+  .news-item[data-kind="project"] .chip   { background: #e1f0fa; color: #1f80c0; }
+  .news-item[data-kind="site"] .chip      { background: #fdf0d8; color: #b87808; }
+  .news-item h3 {
+    margin: 0 0 6px; font-size: 16.5px; line-height: 1.35;
+    font-weight: 600; letter-spacing: -0.005em;
+  }
+  .news-item p { margin: 0; font-size: 14px; line-height: 1.55; color: #3a3d44; }
+  .news-item .more {
+    display: inline-flex; align-items: center; gap: 4px;
+    margin-top: 6px; font-size: 12.5px; color: var(--accent);
+  }
+  .news-item .more .hi { width: 12px; height: 12px; }
+
+  /* Project cards */
+  .proj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .proj-card {
+    background: var(--bg); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 18px;
+  }
+  .proj-card .top {
+    display: flex; justify-content: space-between; font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
+    font-family: ui-monospace, Menlo, monospace; margin-bottom: 8px;
+  }
+  .proj-card .top .tag { color: var(--accent); }
+  .proj-card h3 { margin: 0 0 6px; font-size: 16px; line-height: 1.35; }
+  .proj-card p { margin: 0 0 8px; color: #3a3d44; font-size: 13.5px; line-height: 1.55; }
+  .proj-card .stack { color: var(--muted); font-size: 12px; font-family: ui-monospace, Menlo, monospace; }
+
+  /* Pubs */
+  .pub {
+    padding: 16px 0; border-top: 1px solid var(--rule);
+  }
+  .pub:last-child { border-bottom: 1px solid var(--rule); }
+  .pub .pmeta { color: var(--muted); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; font-family: ui-monospace, Menlo, monospace; margin-bottom: 4px; }
+  .pub h3 { margin: 0 0 6px; font-size: 16.5px; line-height: 1.35; font-weight: 500; }
+  .pub .pauth { color: var(--muted); font-size: 13.5px; }
+  .pub .pvenue { font-size: 13.5px; color: #3a3d44; font-style: italic; }
+
+  /* "+ Add" GitHub link */
+  .add-row {
+    margin-top: 22px; padding-top: 18px; border-top: 1px dashed var(--rule);
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .add-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 14px; border-radius: 999px;
+    background: var(--tag-bg); color: var(--accent);
+    font-size: 13px; font-weight: 500;
+    border: 1px dashed var(--accent);
+    transition: background 0.15s, color 0.15s;
+  }
+  .add-btn:hover { background: var(--accent); color: #fff; text-decoration: none; }
+  .add-btn .plus { font-weight: 700; font-size: 15px; }
+  .add-hint {
+    font-size: 12.5px; color: var(--muted);
+    font-family: ui-monospace, Menlo, monospace; letter-spacing: 0.04em;
+  }
+
+  /* Footer */
+  .colofoot {
+    margin-top: 24px; padding: 18px 24px;
+    color: var(--muted); font-size: 12.5px;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  .colofoot a { color: var(--muted); display: inline-flex; align-items: center; gap: 5px; }
+  .colofoot a:hover { color: var(--accent); text-decoration: none; }
+  .colofoot a .hi { width: 13px; height: 13px; }
+
+  @media (max-width: 720px) {
+    .head { grid-template-columns: 1fr; text-align: left; }
+    .head .avatar { width: 80px; height: 80px; }
+    .tabbar { padding: 6px; overflow-x: auto; }
+    .tabbar a { padding: 8px 12px; font-size: 13px; flex: none; }
+    .panes { padding: 20px; }
+    .proj-grid { grid-template-columns: 1fr; }
+  }
+
+{% include hover_icon_css.html %}
+</style>
+</head>
+<body>
+
+<main class="app">
+
+  <section class="head">
+    <img class="avatar" src="{{ p.identity.avatar }}" alt="{{ p.identity.name }}">
+    <div>
+      <h1>{{ p.identity.name }}</h1>
+      <p class="role">{{ p.identity.role }} · {{ p.identity.affiliation }}</p>
+      <div class="links">
+        {% for l in p.links %}<a href="{{ l.url }}">{% include hover_icon.html name=l.icon %}<span>{{ l.label }}</span></a>{% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <div class="tabs">
+
+    <nav class="tabbar">
+      <a id="t-about" href="#pane-about" class="active">{% include hover_icon.html name="file" %} About</a>
+      <a id="t-news" href="#pane-news">{% include hover_icon.html name="clock" %} News <span class="count">{{ p.recent.size }}</span></a>
+      <a id="t-research" href="#pane-research">{% include hover_icon.html name="brain" %} Research <span class="count">{{ p.themes.size }}</span></a>
+      <a id="t-projects" href="#pane-projects">{% include hover_icon.html name="file" %} Projects <span class="count">{{ p.projects.size }}</span></a>
+      <a id="t-publications" href="#pane-publications">{% include hover_icon.html name="book" %} Publications <span class="count">{{ p.publications.size }}</span></a>
+    </nav>
+
+    <div class="panes">
+
+      <section id="pane-about" class="pane bio">
+        <h2>About</h2>
+        <p class="h-sub">Brief introduction</p>
+        {% for para in p.bio %}<p>{{ para }}</p>{% endfor %}
+        <div class="badges">
+          {% for b in p.badges %}<span>{{ b }}</span>{% endfor %}
+        </div>
+      </section>
+
+      <section id="pane-news" class="pane">
+        <h2>News</h2>
+        <p class="h-sub">Recent updates</p>
+        <div class="news-feed">
+          {% for r in p.recent %}
+            <article class="news-item" data-kind="{{ r.kind }}">
+              <div class="head-row">
+                <span class="date">{{ r.date }}</span>
+                <span class="chip">{{ r.kind }}</span>
+              </div>
+              <h3>{{ r.title }}</h3>
+              <p>{{ r.body }}</p>
+              {% if r.url and r.url != "" %}<a class="more" href="{{ r.url }}">Read more {% include hover_icon.html name="open" %}</a>{% endif %}
+            </article>
+          {% endfor %}
+        </div>
+        <div class="add-row">
+          <a class="add-btn" href="{{ edit_profile }}" target="_blank" rel="noopener"><span class="plus">+</span> Add a news item {% include hover_icon.html name="external" %}</a>
+          <span class="add-hint">opens <code>_data/profile.yml</code> in the GitHub editor · find <code>recent:</code> · paste a new block</span>
+        </div>
+      </section>
+
+      <section id="pane-research" class="pane">
+        <h2>Research</h2>
+        <p class="h-sub">Open questions</p>
+        {% for t in p.themes %}
+          <article class="theme">
+            <div class="num">{{ forloop.index | prepend: "0" | slice: -2, 2 }}</div>
+            <div>
+              <h3>{{ t.title }}</h3>
+              <p>{{ t.body | strip_html | strip_newlines }}</p>
+              <a class="know-more" href="/research/">Know more {% include hover_icon.html name="open" %}</a>
+            </div>
+          </article>
+        {% endfor %}
+        <div class="add-row">
+          <a class="add-btn" href="{{ edit_profile }}" target="_blank" rel="noopener"><span class="plus">+</span> Add a research theme {% include hover_icon.html name="external" %}</a>
+          <a class="add-btn" href="{{ edit_research }}" target="_blank" rel="noopener"><span class="plus">+</span> Add project detail {% include hover_icon.html name="external" %}</a>
+          <span class="add-hint">themes live in <code>profile.yml</code> · detail pages in <code>research.yml</code></span>
+        </div>
+      </section>
+
+      <section id="pane-projects" class="pane">
+        <h2>Projects &amp; software</h2>
+        <p class="h-sub">Tools and platforms</p>
+        <div class="proj-grid">
+          {% for proj in p.projects %}
+            <article class="proj-card">
+              <div class="top"><span class="tag">{{ proj.tag }}</span><span>{{ proj.date_label }}</span></div>
+              <h3>{% if proj.url and proj.url != "" %}<a href="{{ proj.url }}" style="color:inherit">{{ proj.title }}</a>{% else %}{{ proj.title }}{% endif %}</h3>
+              <p>{{ proj.blurb }}</p>
+              <div class="stack">{{ proj.stack }}</div>
+            </article>
+          {% endfor %}
+        </div>
+        <div class="add-row">
+          <a class="add-btn" href="{{ edit_profile }}" target="_blank" rel="noopener"><span class="plus">+</span> Add a project {% include hover_icon.html name="external" %}</a>
+          <span class="add-hint">find <code>projects:</code> in <code>profile.yml</code> · copy an existing entry · edit · commit</span>
+        </div>
+      </section>
+
+      <section id="pane-publications" class="pane">
+        <h2>Publications</h2>
+        <p class="h-sub">Peer-reviewed</p>
+        {% for pub in p.publications %}
+          <div class="pub">
+            <div class="pmeta">{{ pub.date_label }} · {{ pub.short_venue }}</div>
+            <h3><a href="{{ pub.url }}" style="color:inherit">{{ pub.title }}</a></h3>
+            <div class="pauth">{{ pub.authors }}</div>
+            <div class="pvenue">{{ pub.venue }} {{ pub.citation }}</div>
+          </div>
+        {% endfor %}
+        <div class="add-row">
+          <a class="add-btn" href="{{ edit_profile }}" target="_blank" rel="noopener"><span class="plus">+</span> Add a publication {% include hover_icon.html name="external" %}</a>
+          <span class="add-hint">find <code>publications:</code> in <code>profile.yml</code> · add title / authors / venue / DOI</span>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <footer class="colofoot">
+    <div>© {{ p.identity.name }} · {{ p.identity.location }} · last updated 2026-05-14</div>
+    <div>
+      <a href="https://github.com/{{ site.repository }}">{% include hover_icon.html name="github" %} Source on GitHub</a>
+      &nbsp;·&nbsp;
+      <a href="{{ edit_profile }}" target="_blank" rel="noopener">{% include hover_icon.html name="file" %} Edit profile.yml</a>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  function setActive() {
+    var hash = location.hash || '#pane-about';
+    document.querySelectorAll('.tabbar a').forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === hash);
+    });
+  }
+  window.addEventListener('hashchange', setActive);
+  setActive();
+</script>
+
+</body>
+</html>

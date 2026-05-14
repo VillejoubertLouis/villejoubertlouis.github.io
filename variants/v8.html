@@ -1,0 +1,181 @@
+---
+permalink: /variants/v8.html
+sitemap: false
+---
+{% assign p = site.data.profile %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>V8 · Centered Minimal · {{ p.identity.name }}</title>
+<style>
+  :root {
+    --ink: #111111;
+    --muted: #8a8a8a;
+    --rule: #ebebeb;
+    --bg: #ffffff;
+    --accent: #111111;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--ink); background: var(--bg);
+    line-height: 1.7; font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: var(--rule); transition: text-decoration-color 0.15s; }
+  a:hover { text-decoration-color: var(--ink); }
+
+  .switcher {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 24px;
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+  }
+  .switcher a.idx { color: var(--muted); margin-right: auto; text-decoration: none; }
+  .switcher .nums { display: flex; gap: 4px; }
+  .switcher .nums a {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted); text-decoration: none;
+    font-variant-numeric: tabular-nums;
+  }
+  .switcher .nums a.active { background: var(--ink); color: #fff; }
+  .switcher .nums a:hover { color: var(--ink); }
+  .switcher .nums a.active:hover { color: #fff; }
+  .switcher .name { color: var(--muted); margin-left: 12px; font-size: 12px; }
+
+  .wrap {
+    max-width: 640px; margin: 0 auto;
+    padding: 96px 24px 120px;
+    text-align: center;
+  }
+
+  .avatar {
+    width: 96px; height: 96px; border-radius: 50%; object-fit: cover;
+    margin: 0 auto 32px; display: block;
+  }
+  h1 { font-size: 30px; margin: 0 0 6px; letter-spacing: -0.015em; font-weight: 600; }
+  .role { color: var(--muted); font-size: 15px; margin: 0 0 40px; }
+
+  .bio { text-align: left; }
+  .bio p { margin: 0 0 18px; font-size: 16.5px; line-height: 1.7; }
+
+  hr.rule {
+    border: none; border-top: 1px solid var(--rule);
+    margin: 48px auto; width: 60px;
+  }
+
+  .sec-h {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.24em;
+    color: var(--muted); margin: 0 0 24px; font-weight: 600;
+  }
+
+  .list { text-align: left; }
+  .item {
+    padding: 14px 0; border-bottom: 1px solid var(--rule);
+  }
+  .item:first-child { border-top: 1px solid var(--rule); }
+  .item .when {
+    font-size: 12px; color: var(--muted); font-family: ui-monospace, Menlo, monospace;
+    letter-spacing: 0.06em; margin-bottom: 4px;
+  }
+  .item .ttl { font-size: 16px; line-height: 1.4; }
+  .item .meta { color: var(--muted); font-size: 13.5px; margin-top: 4px; }
+  .item .body { color: #2a2a2a; font-size: 14px; margin-top: 4px; line-height: 1.55; }
+  .item .stack { color: var(--muted); font-size: 12.5px; font-family: ui-monospace, Menlo, monospace; margin-top: 4px; }
+
+  .theme { padding: 14px 0; border-bottom: 1px solid var(--rule); text-align: left; }
+  .theme:first-child { border-top: 1px solid var(--rule); }
+  .theme h3 { margin: 0 0 6px; font-size: 16px; font-weight: 600; }
+  .theme p { margin: 0; font-size: 14.5px; color: #444; line-height: 1.6; }
+
+  .links {
+    margin-top: 32px;
+    display: flex; flex-wrap: wrap; gap: 18px; justify-content: center;
+    font-size: 14px;
+  }
+  .links a {
+    color: var(--muted); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 5px;
+    transition: color 0.15s;
+  }
+  .links a:hover { color: var(--ink); }
+  .links a .hi { width: 16px; height: 16px; }
+
+  .foot {
+    margin-top: 80px; font-size: 12.5px; color: var(--muted);
+    font-family: ui-monospace, Menlo, monospace; letter-spacing: 0.04em;
+  }
+
+{% include hover_icon_css.html %}
+</style>
+</head>
+<body>
+
+{% include variant_switcher.html active=8 label="V8 · Centered Minimal" %}
+
+<main class="wrap">
+
+  <img class="avatar" src="{{ p.identity.avatar }}" alt="{{ p.identity.name }}">
+  <h1>{{ p.identity.name }}</h1>
+  <p class="role">{{ p.identity.role }} · {{ p.identity.affiliation }}</p>
+
+  <div class="bio">
+    {% for para in p.bio %}<p>{{ para | strip_html }}</p>{% endfor %}
+  </div>
+
+  <div class="links">
+    {% for l in p.links %}<a href="{{ l.url }}">{% include hover_icon.html name=l.icon %}<span>{{ l.label }}</span></a>{% endfor %}
+  </div>
+
+  <hr class="rule">
+
+  <div class="sec-h">Research</div>
+  <div class="list">
+    {% for t in p.themes %}
+      <div class="theme">
+        <h3>{{ t.title }}</h3>
+        <p>{{ t.body | strip_html | strip_newlines | truncate: 240 }}</p>
+      </div>
+    {% endfor %}
+  </div>
+
+  <hr class="rule">
+
+  <div class="sec-h">Projects</div>
+  <div class="list">
+    {% for proj in p.projects %}
+      <div class="item">
+        <div class="when">{{ proj.date_label }} · {{ proj.tag }}</div>
+        <div class="ttl">{% if proj.url and proj.url != "" %}<a href="{{ proj.url }}">{{ proj.title }}</a>{% else %}{{ proj.title }}{% endif %}</div>
+        <div class="body">{{ proj.blurb }}</div>
+        <div class="stack">{{ proj.stack }}</div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <hr class="rule">
+
+  <div class="sec-h">Publications</div>
+  <div class="list">
+    {% for pub in p.publications %}
+      <div class="item">
+        <div class="when">{{ pub.date_label }}</div>
+        <div class="ttl"><a href="{{ pub.url }}">{{ pub.title }}</a></div>
+        <div class="meta">{{ pub.authors }}</div>
+        <div class="meta"><em>{{ pub.venue }}</em>, {{ pub.citation }}</div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="foot">{{ p.identity.location }}</div>
+
+</main>
+
+</body>
+</html>

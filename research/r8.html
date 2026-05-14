@@ -1,0 +1,366 @@
+---
+permalink: /research/r8.html
+sitemap: false
+---
+{% assign p = site.data.profile %}{% assign r = site.data.research.perception %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>R8 · Visual index · {{ r.title }}</title>
+<style>
+  :root {
+    --ink: #11141b;
+    --muted: #6a727e;
+    --rule: #e5e7ec;
+    --bg: #f7f8fa;
+    --paper: #ffffff;
+    --accent: #c43a6f;
+    --accent-soft: #f3eef1;
+    --tile-1: linear-gradient(135deg, #c43a6f 0%, #f56b95 100%);
+    --tile-2: linear-gradient(135deg, #4a7cc2 0%, #82b0e6 100%);
+    --tile-3: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+    --tile-4: linear-gradient(135deg, #2a8e3a 0%, #56e39f 100%);
+    --tile-5: linear-gradient(135deg, #6a45c2 0%, #b07ce8 100%);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    color: var(--ink); background: var(--bg);
+    line-height: 1.6; font-size: 15.5px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .switcher {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 24px;
+    background: rgba(247,248,250,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+  }
+  .switcher .idx a { color: var(--muted); text-decoration: none; }
+  .switcher .idx a:hover { color: var(--ink); }
+  .switcher .nums a {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted); font-variant-numeric: tabular-nums; text-decoration: none;
+  }
+  .switcher .nums a.active { background: var(--accent); color: #fff; }
+  .switcher .nums a:hover { color: var(--ink); }
+  .switcher .nums a.active:hover { color: #fff; }
+  .switcher .name { color: var(--muted); margin-left: 12px; font-size: 12px; }
+
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 36px 24px 80px; }
+
+  .head { margin-bottom: 28px; }
+  .head .crumb {
+    font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 8px;
+  }
+  .head h1 { font-size: clamp(28px, 4vw, 42px); margin: 0 0 10px; letter-spacing: -0.015em; font-weight: 500; line-height: 1.1; }
+  .head .headline { color: #3a3d44; max-width: 76ch; margin: 0 0 14px; font-size: 16px; line-height: 1.55; }
+  .head .meta { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--muted); align-items: center; }
+  .head .badge { background: var(--accent-soft); color: var(--accent); padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+  .head .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+  .head .tags span { background: var(--paper); border: 1px solid var(--rule); color: #2a2c33; padding: 3px 8px; border-radius: 8px; font-size: 11.5px; }
+
+  /* Mood-board grid (CSS Grid, varied sizes) */
+  .board {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-auto-rows: 180px;
+    gap: 12px;
+  }
+  .tile {
+    position: relative; overflow: hidden;
+    border-radius: 16px;
+    background: var(--paper); border: 1px solid var(--rule);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .tile:hover { transform: scale(1.015); box-shadow: 0 16px 40px rgba(0,0,0,0.1); z-index: 2; }
+
+  /* Sized variants */
+  .tile.span-2 { grid-column: span 2; }
+  .tile.span-3 { grid-column: span 3; }
+  .tile.span-4 { grid-column: span 4; }
+  .tile.span-6 { grid-column: span 6; }
+  .tile.row-2 { grid-row: span 2; }
+
+  /* Visual tiles */
+  .visual {
+    color: #fff;
+    display: flex; align-items: flex-end;
+    padding: 22px;
+  }
+  .visual.t1 { background: var(--tile-1); }
+  .visual.t2 { background: var(--tile-2); }
+  .visual.t3 { background: var(--tile-3); }
+  .visual.t4 { background: var(--tile-4); }
+  .visual.t5 { background: var(--tile-5); }
+  .visual::before {
+    content: ""; position: absolute; top: -30%; right: -30%;
+    width: 80%; height: 80%; border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+  }
+  .visual::after {
+    content: ""; position: absolute; bottom: -20%; left: -10%;
+    width: 50%; height: 50%; border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+  }
+  .visual .vlabel {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    margin-bottom: 8px; opacity: 0.85;
+  }
+  .visual .vtitle {
+    font-size: 22px; font-weight: 500; line-height: 1.15; letter-spacing: -0.01em;
+  }
+  .visual.span-4 .vtitle, .visual.span-6 .vtitle { font-size: 30px; max-width: 22ch; }
+
+  /* Text tiles */
+  .text-tile {
+    background: var(--paper); padding: 22px;
+    display: flex; flex-direction: column;
+  }
+  .text-tile .lbl {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px;
+  }
+  .text-tile h3 { margin: 0 0 8px; font-size: 17px; line-height: 1.3; letter-spacing: -0.005em; }
+  .text-tile p { margin: 0; color: #3a3d44; font-size: 13.5px; line-height: 1.55; overflow-y: auto; }
+  .text-tile .meta { margin-top: auto; padding-top: 8px; color: var(--muted); font-size: 12px; }
+
+  /* Figure tile */
+  .fig-tile {
+    background: var(--paper);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    text-align: center;
+  }
+  .fig-tile img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 6px; }
+  .fig-tile .placeholder {
+    width: 100%; height: 100%;
+    background: repeating-linear-gradient(45deg, #ebeef3 0 8px, #f4f6f9 8px 16px);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted); font-family: ui-monospace, Menlo, monospace; font-size: 12px; letter-spacing: 0.05em;
+  }
+  /* Overlay caption on figure tile on hover */
+  .fig-tile .overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.85) 100%);
+    display: flex; align-items: flex-end;
+    padding: 18px;
+    opacity: 0; transition: opacity 0.2s;
+    color: #fff; font-size: 13px; line-height: 1.5;
+  }
+  .fig-tile:hover .overlay { opacity: 1; }
+
+  /* Quote tile */
+  .quote-tile {
+    background: var(--accent-soft); color: var(--accent);
+    padding: 22px; display: flex; flex-direction: column; justify-content: center;
+    font-family: Georgia, serif;
+  }
+  .quote-tile .mark { font-size: 42px; line-height: 0.7; margin-bottom: 4px; }
+  .quote-tile p { margin: 0; font-size: 16px; line-height: 1.4; font-style: italic; }
+  .quote-tile .att { margin-top: auto; padding-top: 12px; font-size: 12px; color: var(--muted); font-family: ui-monospace, Menlo, monospace; font-style: normal; letter-spacing: 0.06em; text-transform: uppercase; }
+
+  /* Stat tile */
+  .stat-tile { background: var(--paper); padding: 22px; display: flex; flex-direction: column; justify-content: center; }
+  .stat-tile .big {
+    font-size: 48px; line-height: 1; letter-spacing: -0.03em; font-weight: 600;
+    color: var(--accent); font-family: ui-monospace, Menlo, monospace; margin-bottom: 6px;
+  }
+  .stat-tile .stat-label { color: var(--muted); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; }
+  .stat-tile .stat-desc { font-size: 13.5px; color: #3a3d44; margin-top: 8px; line-height: 1.5; }
+
+  /* Bottom matter (compact, below the board) */
+  .bottom { margin-top: 56px; }
+  .sec-h { font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--muted); margin: 32px 0 14px; font-weight: 600; }
+
+  .pub { padding: 14px 0; border-top: 1px solid var(--rule); }
+  .pub:last-of-type { border-bottom: 1px solid var(--rule); }
+  .pub h3 { margin: 0 0 4px; font-size: 16px; font-weight: 500; }
+  .pub .pmeta { color: var(--muted); font-size: 13px; }
+
+  .resources { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; margin-top: 12px; }
+  .resource { background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; padding: 12px 14px; display: inline-flex; align-items: center; gap: 8px; color: var(--ink); font-size: 13.5px; }
+  .resource .hi { width: 16px; height: 16px; color: var(--accent); }
+  .resource:hover { border-color: var(--accent); text-decoration: none; }
+  .resource.disabled { opacity: 0.55; }
+
+  @media (max-width: 980px) {
+    .board { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 200px; }
+    .tile.span-2, .tile.span-3, .tile.span-4, .tile.span-6 { grid-column: span 2; }
+  }
+
+{% include hover_icon_css.html %}
+</style>
+</head>
+<body>
+
+{% include research_switcher.html active=8 label="R8 · Visual index" %}
+
+<main class="wrap">
+
+  <header class="head">
+    <div class="crumb">Research project · Perception · Visual index</div>
+    <h1>{{ r.title }}</h1>
+    <p class="headline">{{ r.headline }}</p>
+    <div class="meta">
+      <span class="badge">{{ r.status }}</span>
+      <span>· {{ r.date_range }}</span>
+      <span>· {{ r.reading_time }}</span>
+      <div class="tags">
+        {% for t in r.tags %}<span>{{ t }}</span>{% endfor %}
+      </div>
+    </div>
+  </header>
+
+  <section class="board">
+
+    <!-- Hero question tile -->
+    <div class="tile visual t1 span-4 row-2">
+      <div style="position:relative;z-index:1;max-width:30ch;">
+        <div class="vlabel">↻ The question</div>
+        <div class="vtitle">{{ r.question | truncate: 140 }}</div>
+      </div>
+    </div>
+
+    <!-- Stat: papers -->
+    <div class="tile stat-tile span-2">
+      <div class="stat-label">Peer-reviewed</div>
+      <div class="big">{{ r.publications.size }}</div>
+      <div class="stat-desc">Papers — journal &amp; conference</div>
+    </div>
+
+    <!-- Status -->
+    <div class="tile stat-tile span-2">
+      <div class="stat-label">Status</div>
+      <div class="big" style="font-size:28px;">JASA</div>
+      <div class="stat-desc">{{ r.status }}</div>
+    </div>
+
+    <!-- Figure 1 (electrode array) -->
+    <div class="tile fig-tile span-3">
+      <img src="{{ r.figures[0].src }}" alt="{{ r.figures[0].alt }}">
+      <div class="overlay">{{ r.figures[0].caption }}</div>
+    </div>
+
+    <!-- Finding 1 -->
+    <div class="tile visual t2 span-3">
+      <div style="position:relative;z-index:1;max-width:30ch;">
+        <div class="vlabel">Finding · 01</div>
+        <div class="vtitle">{{ r.findings[0].title }}</div>
+      </div>
+    </div>
+
+    <!-- Text: background paragraph -->
+    <div class="tile text-tile span-3">
+      <div class="lbl">Background</div>
+      <h3>Why this matters</h3>
+      <p>{{ r.background[0] | strip_html | truncate: 280 }}</p>
+    </div>
+
+    <!-- Figure 2 (placeholder pipeline) -->
+    <div class="tile fig-tile span-3">
+      <div class="placeholder">[ {{ r.figures[1].label }} ]</div>
+      <div class="overlay">{{ r.figures[1].caption }}</div>
+    </div>
+
+    <!-- Method tiles -->
+    {% for m in r.methods %}
+      {% assign sz = "span-2" %}
+      <div class="tile text-tile {{ sz }}">
+        <div class="lbl">Method · 0{{ forloop.index }}</div>
+        <h3>{{ m.title }}</h3>
+        <p>{{ m.body | truncate: 200 }}</p>
+      </div>
+    {% endfor %}
+
+    <!-- Quote -->
+    <div class="tile quote-tile span-3">
+      <div class="mark">"</div>
+      <p>Music quality degrades faster than speech intelligibility — a dissociation that matters in the clinic.</p>
+      <div class="att">— {{ r.findings[0].title }}</div>
+    </div>
+
+    <!-- Finding 2 -->
+    <div class="tile visual t3 span-3">
+      <div style="position:relative;z-index:1;max-width:30ch;">
+        <div class="vlabel">Finding · 02</div>
+        <div class="vtitle">{{ r.findings[1].title }}</div>
+      </div>
+    </div>
+
+    <!-- Finding 3 -->
+    <div class="tile visual t4 span-3">
+      <div style="position:relative;z-index:1;max-width:30ch;">
+        <div class="vlabel">Finding · 03</div>
+        <div class="vtitle">{{ r.findings[2].title }}</div>
+      </div>
+    </div>
+
+    <!-- Stat: dates -->
+    <div class="tile stat-tile span-3">
+      <div class="stat-label">Project window</div>
+      <div class="big" style="font-size:30px;">{{ r.date_range }}</div>
+      <div class="stat-desc">From pilot through submission, plus follow-on work.</div>
+    </div>
+
+    <!-- Figure 3 -->
+    <div class="tile fig-tile span-3">
+      <div class="placeholder">[ {{ r.figures[2].label }} ]</div>
+      <div class="overlay">{{ r.figures[2].caption }}</div>
+    </div>
+
+    <!-- Next steps as visual -->
+    <div class="tile visual t5 span-3">
+      <div style="position:relative;z-index:1;max-width:30ch;">
+        <div class="vlabel">Where this goes</div>
+        <div class="vtitle">{{ r.next_steps[0] | truncate: 80 }}</div>
+      </div>
+    </div>
+
+    <!-- Background paragraph 2 -->
+    <div class="tile text-tile span-6">
+      <div class="lbl">Background · cont.</div>
+      <h3>The clinical gap</h3>
+      <p>{{ r.background[1] | strip_html | truncate: 380 }}</p>
+    </div>
+
+  </section>
+
+  <div class="bottom">
+    <h2 class="sec-h">Publications</h2>
+    {% for pub in r.publications %}
+      <div class="pub">
+        <h3><a href="{{ pub.url }}">{{ pub.title }}</a></h3>
+        <div class="pmeta">{{ pub.authors }} — <em>{{ pub.venue }}</em>, {{ pub.year }}.</div>
+      </div>
+    {% endfor %}
+
+    <h2 class="sec-h">Resources</h2>
+    <div class="resources">
+      {% for res in r.resources %}
+        {% if res.url and res.url != "" %}
+          <a class="resource" href="{{ res.url }}">{% include hover_icon.html name=res.icon %}<span>{{ res.label }}</span></a>
+        {% else %}
+          <span class="resource disabled">{% include hover_icon.html name=res.icon %}<span>{{ res.label }}</span></span>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,257 @@
+---
+permalink: /variants/v7.html
+sitemap: false
+---
+{% assign p = site.data.profile %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>V7 · Index / TOC · {{ p.identity.name }}</title>
+<style>
+  :root {
+    --ink: #0e1015;
+    --muted: #6b7280;
+    --rule: #e3e5ec;
+    --bg: #ffffff;
+    --accent: #3a2c75;
+    --highlight: #f1eff8;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    color: var(--ink); background: var(--bg);
+    line-height: 1.6; font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .switcher {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 24px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+  }
+  .switcher a.idx { color: var(--muted); margin-right: auto; }
+  .switcher .nums { display: flex; gap: 4px; }
+  .switcher .nums a {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .switcher .nums a.active { background: var(--ink); color: #fff; }
+  .switcher .nums a:hover { color: var(--ink); text-decoration: none; }
+  .switcher .nums a.active:hover { color: #fff; }
+  .switcher .name { color: var(--muted); margin-left: 12px; font-size: 12px; }
+
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 56px 24px 80px; }
+
+  /* Brief identity strip — never the focus */
+  .strip {
+    display: flex; align-items: center; gap: 16px;
+    padding-bottom: 28px; margin-bottom: 8px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .strip .avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; }
+  .strip h1 { font-size: 22px; margin: 0; letter-spacing: -0.01em; font-weight: 600; }
+  .strip .role { color: var(--muted); margin: 2px 0 0; font-size: 14px; }
+  .strip .links { margin-left: auto; display: flex; gap: 14px; font-size: 13px; }
+  .strip .links a { color: var(--muted); display: inline-flex; align-items: center; gap: 5px; }
+  .strip .links a:hover { color: var(--accent); text-decoration: none; }
+  .strip .links a .hi { width: 15px; height: 15px; }
+
+  /* Big TOC */
+  .toc { margin: 36px 0 80px; }
+  .toc .toc-h {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em;
+    color: var(--muted); font-weight: 600; margin-bottom: 18px;
+  }
+  .toc-item {
+    display: grid; grid-template-columns: 80px 1fr auto;
+    align-items: baseline; gap: 32px;
+    padding: 26px 0; border-top: 1px solid var(--rule);
+    color: inherit;
+    transition: background 0.15s, padding 0.18s;
+    text-decoration: none;
+  }
+  .toc-item:hover { background: var(--highlight); padding-left: 16px; padding-right: 16px; }
+  .toc-item:hover { text-decoration: none; }
+  .toc-item .num {
+    font-size: 38px; font-weight: 500; letter-spacing: -0.02em;
+    color: var(--accent); font-variant-numeric: tabular-nums;
+    line-height: 1; font-family: "Charter", Georgia, serif;
+  }
+  .toc-item .ttl {
+    font-size: 28px; line-height: 1.15; letter-spacing: -0.015em; font-weight: 500;
+    margin: 0;
+  }
+  .toc-item .ttl .sub { display: block; color: var(--muted); font-size: 14px; font-weight: 400; margin-top: 6px; }
+  .toc-item .count {
+    color: var(--muted); font-size: 13px; font-family: ui-monospace, Menlo, monospace;
+    letter-spacing: 0.04em;
+  }
+  .toc-item:last-of-type { border-bottom: 1px solid var(--rule); }
+
+  /* Section bodies */
+  .section { padding-top: 80px; scroll-margin-top: 72px; }
+  .section .sec-no {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 12px; letter-spacing: 0.16em; color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .section h2 {
+    font-size: 36px; letter-spacing: -0.02em; font-weight: 500;
+    margin: 0 0 28px; line-height: 1.1;
+  }
+
+  .body-text { max-width: 65ch; font-size: 16.5px; line-height: 1.7; }
+  .body-text p { margin: 0 0 14px; }
+
+  .theme {
+    padding: 22px 0; border-top: 1px solid var(--rule);
+    display: grid; grid-template-columns: 60px 1fr; gap: 24px;
+  }
+  .theme .tnum {
+    font-family: "Charter", Georgia, serif;
+    font-size: 20px; color: var(--accent); font-weight: 500;
+  }
+  .theme h3 { margin: 0 0 8px; font-size: 18px; line-height: 1.3; }
+  .theme p { margin: 0; color: #2c2f37; font-size: 15px; line-height: 1.6; }
+
+  .proj-list { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .proj-tile {
+    border: 1px solid var(--rule); border-radius: 12px;
+    padding: 22px; background: #fafafd;
+  }
+  .proj-tile .top {
+    display: flex; justify-content: space-between; font-size: 11px;
+    color: var(--muted); letter-spacing: 0.14em; text-transform: uppercase;
+    font-family: ui-monospace, Menlo, monospace;
+    margin-bottom: 8px;
+  }
+  .proj-tile .top .tag { color: var(--accent); }
+  .proj-tile h3 { margin: 0 0 8px; font-size: 16px; line-height: 1.35; }
+  .proj-tile p { margin: 0 0 8px; font-size: 13.5px; color: #3a3d44; line-height: 1.55; }
+  .proj-tile .stack { font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: var(--muted); }
+
+  .pub { padding: 22px 0; border-top: 1px solid var(--rule); }
+  .pub:last-child { border-bottom: 1px solid var(--rule); }
+  .pub .pmeta { color: var(--muted); font-size: 12.5px; font-family: ui-monospace, Menlo, monospace; letter-spacing: 0.08em; }
+  .pub h3 { margin: 6px 0 4px; font-size: 19px; line-height: 1.35; letter-spacing: -0.01em; font-weight: 500; }
+  .pub .pauth { color: var(--muted); font-size: 14px; }
+  .pub .pvenue { font-size: 14px; color: #2c2f37; font-style: italic; }
+
+  @media (max-width: 760px) {
+    .toc-item { grid-template-columns: 60px 1fr; gap: 16px; }
+    .toc-item .count { grid-column: 2; }
+    .toc-item .num { font-size: 28px; }
+    .toc-item .ttl { font-size: 22px; }
+    .proj-list { grid-template-columns: 1fr; }
+    .strip .links { display: none; }
+  }
+
+{% include hover_icon_css.html %}
+</style>
+</head>
+<body>
+
+{% include variant_switcher.html active=7 label="V7 · Index / TOC" %}
+
+<main class="wrap">
+
+  <div class="strip">
+    <img class="avatar" src="{{ p.identity.avatar }}" alt="{{ p.identity.name }}">
+    <div>
+      <h1>{{ p.identity.name }}</h1>
+      <p class="role">{{ p.identity.role }} · {{ p.identity.affiliation }}</p>
+    </div>
+    <div class="links">
+      {% for l in p.links %}<a href="{{ l.url }}">{% include hover_icon.html name=l.icon %}<span>{{ l.label }}</span></a>{% endfor %}
+    </div>
+  </div>
+
+  <nav class="toc">
+    <div class="toc-h">Contents</div>
+    <a class="toc-item" href="#s-about">
+      <span class="num">01</span>
+      <span class="ttl">About <span class="sub">Brief introduction and how I think about the work.</span></span>
+      <span class="count">1 part</span>
+    </a>
+    <a class="toc-item" href="#s-research">
+      <span class="num">02</span>
+      <span class="ttl">Research <span class="sub">Three open questions on cochlear-implant perception.</span></span>
+      <span class="count">{{ p.themes.size }} themes</span>
+    </a>
+    <a class="toc-item" href="#s-projects">
+      <span class="num">03</span>
+      <span class="ttl">Projects <span class="sub">Tools, platforms, and research code.</span></span>
+      <span class="count">{{ p.projects.size }} items</span>
+    </a>
+    <a class="toc-item" href="#s-publications">
+      <span class="num">04</span>
+      <span class="ttl">Publications <span class="sub">Peer-reviewed journal and conference outputs.</span></span>
+      <span class="count">{{ p.publications.size }} items</span>
+    </a>
+  </nav>
+
+  <section id="s-about" class="section">
+    <div class="sec-no">01</div>
+    <h2>About</h2>
+    <div class="body-text">
+      {% for para in p.bio %}<p>{{ para | strip_html }}</p>{% endfor %}
+    </div>
+  </section>
+
+  <section id="s-research" class="section">
+    <div class="sec-no">02</div>
+    <h2>Research</h2>
+    {% for t in p.themes %}
+      <article class="theme">
+        <div class="tnum">{{ forloop.index | prepend: "0" | slice: -2, 2 }}</div>
+        <div>
+          <h3>{{ t.title }}</h3>
+          <p>{{ t.body | strip_html | strip_newlines }}</p>
+        </div>
+      </article>
+    {% endfor %}
+  </section>
+
+  <section id="s-projects" class="section">
+    <div class="sec-no">03</div>
+    <h2>Projects &amp; software</h2>
+    <div class="proj-list">
+      {% for proj in p.projects %}
+        <div class="proj-tile">
+          <div class="top"><span class="tag">{{ proj.tag }}</span><span>{{ proj.date_label }}</span></div>
+          <h3>{% if proj.url and proj.url != "" %}<a href="{{ proj.url }}" style="color:inherit">{{ proj.title }}</a>{% else %}{{ proj.title }}{% endif %}</h3>
+          <p>{{ proj.blurb }}</p>
+          <div class="stack">{{ proj.stack }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section id="s-publications" class="section">
+    <div class="sec-no">04</div>
+    <h2>Publications</h2>
+    {% for pub in p.publications %}
+      <div class="pub">
+        <div class="pmeta">{{ pub.date_label }} · {{ pub.short_venue }}</div>
+        <h3><a href="{{ pub.url }}">{{ pub.title }}</a></h3>
+        <div class="pauth">{{ pub.authors }}</div>
+        <div class="pvenue">{{ pub.venue }} {{ pub.citation }}</div>
+      </div>
+    {% endfor %}
+  </section>
+
+</main>
+
+</body>
+</html>

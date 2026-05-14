@@ -1,0 +1,383 @@
+---
+permalink: /research/r9.html
+sitemap: false
+---
+{% assign p = site.data.profile %}{% assign r = site.data.research.perception %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>R9 · Timeline carousel · {{ r.title }}</title>
+<style>
+  :root {
+    --ink: #11141b;
+    --muted: #6a727e;
+    --rule: #e5e7ec;
+    --bg: #f7f8fa;
+    --paper: #ffffff;
+    --accent: #c43a6f;
+    --accent-soft: #f3eef1;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    color: var(--ink); background: var(--bg);
+    line-height: 1.6; font-size: 15.5px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .switcher {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 24px;
+    background: rgba(247,248,250,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+  }
+  .switcher .idx a { color: var(--muted); text-decoration: none; }
+  .switcher .idx a:hover { color: var(--ink); }
+  .switcher .nums a {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted); font-variant-numeric: tabular-nums; text-decoration: none;
+  }
+  .switcher .nums a.active { background: var(--accent); color: #fff; }
+  .switcher .nums a:hover { color: var(--ink); }
+  .switcher .nums a.active:hover { color: #fff; }
+  .switcher .name { color: var(--muted); margin-left: 12px; font-size: 12px; }
+
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 36px 24px 80px; }
+
+  .head { margin-bottom: 28px; }
+  .head .crumb {
+    font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 8px;
+  }
+  .head h1 { font-size: clamp(28px, 4vw, 42px); margin: 0 0 10px; letter-spacing: -0.015em; font-weight: 500; line-height: 1.1; }
+  .head .headline { color: #3a3d44; max-width: 76ch; margin: 0 0 14px; font-size: 16px; line-height: 1.55; }
+  .head .meta { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--muted); align-items: center; }
+  .head .badge { background: var(--accent-soft); color: var(--accent); padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+
+  /* Timeline */
+  .timeline-shell {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 20px;
+    padding: 32px 28px 24px; margin: 16px 0 32px;
+  }
+  .timeline-shell .lbl {
+    font-family: ui-monospace, Menlo, monospace; font-size: 11.5px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin-bottom: 16px;
+  }
+
+  .scrub {
+    position: relative;
+    padding: 12px 4px 60px;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .scrub::-webkit-scrollbar { height: 8px; }
+  .scrub::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 8px; }
+
+  .track {
+    position: relative;
+    min-width: 100%;
+    display: flex; gap: 0;
+    padding: 24px 0 0;
+  }
+  .track::before {
+    content: ""; position: absolute; top: 50px; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--rule) 0%, var(--accent) 50%, var(--rule) 100%);
+  }
+
+  .node {
+    flex: none; width: 280px; padding: 0 12px;
+    scroll-snap-align: center;
+    cursor: pointer;
+    text-align: center;
+  }
+  .node .dot {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--paper); border: 3px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-family: ui-monospace, Menlo, monospace; font-size: 13px;
+    color: var(--accent);
+    margin: 0 auto 14px;
+    position: relative; z-index: 2;
+    transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
+  }
+  .node:hover .dot, .node.active .dot {
+    background: var(--accent); color: #fff;
+    transform: scale(1.15);
+    box-shadow: 0 0 0 6px var(--accent-soft);
+  }
+  .node .when {
+    font-family: ui-monospace, Menlo, monospace; font-size: 11px;
+    letter-spacing: 0.14em; color: var(--muted); margin-bottom: 4px;
+  }
+  .node h3 {
+    font-size: 14px; line-height: 1.3; margin: 0 0 4px;
+    font-weight: 600;
+  }
+  .node .blurb { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+
+  /* Detail panel below timeline */
+  .detail {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 20px;
+    padding: 28px 30px; min-height: 280px;
+    position: relative;
+  }
+  .detail .step {
+    display: none;
+    animation: fadein 0.32s cubic-bezier(.2,.7,.2,1);
+  }
+  .detail .step.active { display: block; }
+  @keyframes fadein {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .detail .step .lbl {
+    font-family: ui-monospace, Menlo, monospace; font-size: 11.5px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin-bottom: 8px;
+  }
+  .detail .step h2 { margin: 0 0 12px; font-size: 24px; letter-spacing: -0.015em; font-weight: 600; line-height: 1.15; }
+  .detail .step p { margin: 0 0 12px; color: #2a2c33; font-size: 15.5px; line-height: 1.65; }
+  .detail .step .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 12px; }
+  .detail .step .card {
+    background: var(--bg); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .detail .step .card h4 { margin: 0 0 4px; font-size: 14.5px; }
+  .detail .step .card p { margin: 0; color: #3a3d44; font-size: 13.5px; line-height: 1.55; }
+  .detail .step .fig { text-align: center; margin: 16px 0; }
+  .detail .step .fig img { max-width: 100%; max-height: 240px; border-radius: 8px; }
+  .detail .step .fig .placeholder { height: 200px; border-radius: 8px; background: repeating-linear-gradient(45deg, #ebeef3 0 8px, #f4f6f9 8px 16px); display: flex; align-items: center; justify-content: center; color: var(--muted); font-family: ui-monospace, Menlo, monospace; font-size: 12px; }
+  .detail .step .fig .cap { font-size: 12.5px; color: var(--muted); margin-top: 10px; font-style: italic; }
+
+  /* Stats below */
+  .stats-bar {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;
+    margin-top: 40px;
+  }
+  .stat {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .stat .stat-lbl { font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 6px; }
+  .stat .stat-val { font-size: 22px; font-weight: 600; color: var(--accent); font-family: ui-monospace, Menlo, monospace; letter-spacing: -0.01em; }
+
+  /* Bottom matter */
+  .sec-h { font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--muted); margin: 40px 0 16px; font-weight: 600; }
+  .pub { padding: 14px 0; border-top: 1px solid var(--rule); }
+  .pub:last-of-type { border-bottom: 1px solid var(--rule); }
+  .pub h3 { margin: 0 0 4px; font-size: 16px; font-weight: 500; }
+  .pub .pmeta { color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 720px) {
+    .node { width: 240px; }
+    .detail .step .grid-2 { grid-template-columns: 1fr; }
+  }
+
+{% include hover_icon_css.html %}
+</style>
+</head>
+<body>
+
+{% include research_switcher.html active=9 label="R9 · Timeline carousel" %}
+
+<main class="wrap">
+
+  <header class="head">
+    <div class="crumb">Research project · Perception · Timeline</div>
+    <h1>{{ r.title }}</h1>
+    <p class="headline">{{ r.headline }}</p>
+    <div class="meta">
+      <span class="badge">{{ r.status }}</span>
+      <span>· {{ r.date_range }}</span>
+      <span>· {{ r.reading_time }}</span>
+    </div>
+  </header>
+
+  <section class="timeline-shell">
+    <div class="lbl">{% include hover_icon.html name="clock" %} Click a milestone to see what happened</div>
+
+    <div class="scrub" id="scrub">
+      <div class="track">
+        <div class="node active" data-i="0">
+          <div class="dot">01</div>
+          <div class="when">2023</div>
+          <h3>The question</h3>
+          <div class="blurb">Pilot listening tests · scoping</div>
+        </div>
+        <div class="node" data-i="1">
+          <div class="dot">02</div>
+          <div class="when">2023 → 2024</div>
+          <h3>Build the simulator</h3>
+          <div class="blurb">Vocoder pipeline · calibration</div>
+        </div>
+        <div class="node" data-i="2">
+          <div class="dot">03</div>
+          <div class="when">2024</div>
+          <h3>Main study</h3>
+          <div class="blurb">Speech &amp; music listening tests</div>
+        </div>
+        <div class="node" data-i="3">
+          <div class="dot">04</div>
+          <div class="when">2024 → 2025</div>
+          <h3>Analysis</h3>
+          <div class="blurb">Mixed-effects models · figures</div>
+        </div>
+        <div class="node" data-i="4">
+          <div class="dot">05</div>
+          <div class="when">Sep 2025</div>
+          <h3>Forum Acusticum</h3>
+          <div class="blurb">First public presentation</div>
+        </div>
+        <div class="node" data-i="5">
+          <div class="dot">06</div>
+          <div class="when">Apr 2026</div>
+          <h3>JASA published</h3>
+          <div class="blurb">Out in the journal</div>
+        </div>
+        <div class="node" data-i="6">
+          <div class="dot">07</div>
+          <div class="when">2026 →</div>
+          <h3>Next</h3>
+          <div class="blurb">CI users · clinical screen</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="detail">
+
+    <div class="step active" data-i="0">
+      <div class="lbl">2023 · Milestone 01</div>
+      <h2>The question</h2>
+      <p>{{ r.question }}</p>
+      <p>Pilot listening tests with normal-hearing volunteers established that mismatch had a measurable effect, but the scale and where it bites — speech versus music — was unclear. That informal observation became this project.</p>
+    </div>
+
+    <div class="step" data-i="1">
+      <div class="lbl">2023 → 2024 · Milestone 02</div>
+      <h2>Build the simulator</h2>
+      <p>{{ r.methods[0].body }}</p>
+      <p>The whole pipeline — synthesis, presentation, response capture — runs in the browser. That made later cross-site collaborations and online pilots possible without redistributing software.</p>
+      <div class="fig">
+        <div class="placeholder">[ {{ r.figures[1].label }} ]</div>
+        <div class="cap">{{ r.figures[1].caption }}</div>
+      </div>
+    </div>
+
+    <div class="step" data-i="2">
+      <div class="lbl">2024 · Milestone 03</div>
+      <h2>Main study</h2>
+      <p>{{ r.methods[1].body }}</p>
+      <div class="grid-2">
+        <div class="card">
+          <h4>Speech</h4>
+          <p>Sentence-in-noise scores under five mismatch conditions per listener.</p>
+        </div>
+        <div class="card">
+          <h4>Music</h4>
+          <p>MUSHRA-style ratings of piano clips processed through the same conditions.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="step" data-i="3">
+      <div class="lbl">2024 → 2025 · Milestone 04</div>
+      <h2>Analysis</h2>
+      <p>{{ r.methods[2].body }}</p>
+      <div class="fig">
+        <div class="placeholder">[ {{ r.figures[2].label }} ]</div>
+        <div class="cap">{{ r.figures[2].caption }}</div>
+      </div>
+    </div>
+
+    <div class="step" data-i="4">
+      <div class="lbl">Sep 2025 · Milestone 05</div>
+      <h2>Forum Acusticum / EuroNoise 2025</h2>
+      <p>First public presentation of the work, framed for a clinical-facing audience. Focus: <em>how frequency-based processing might help clinicians improve sound quality perception</em>.</p>
+      <div class="pub">
+        <h3><a href="https://doi.org/10.61782/fa.2025.0432">{{ r.publications[1].title }}</a></h3>
+        <div class="pmeta">{{ r.publications[1].authors }} — <em>{{ r.publications[1].venue }}</em></div>
+      </div>
+    </div>
+
+    <div class="step" data-i="5">
+      <div class="lbl">Apr 2026 · Milestone 06</div>
+      <h2>Paper out in JASA</h2>
+      <p>Full study published in <em>The Journal of the Acoustical Society of America</em> — open access. This is the project's most complete statement so far.</p>
+      <div class="pub">
+        <h3><a href="https://doi.org/10.1121/10.0043470">{{ r.publications[0].title }}</a></h3>
+        <div class="pmeta">{{ r.publications[0].authors }} — <em>{{ r.publications[0].venue }}</em>, {{ r.publications[0].citation }}</div>
+      </div>
+      <div class="grid-2">
+        {% for f in r.findings %}
+          <div class="card">
+            <h4>Finding · {{ f.icon }} — {{ f.title }}</h4>
+            <p>{{ f.body | truncate: 140 }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="step" data-i="6">
+      <div class="lbl">2026 → · Milestone 07</div>
+      <h2>What's next</h2>
+      <div class="grid-2">
+        {% for n in r.next_steps %}
+          <div class="card">
+            <h4>→ Step {{ forloop.index }}</h4>
+            <p>{{ n }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </section>
+
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-lbl">Project window</div><div class="stat-val">{{ r.date_range }}</div></div>
+    <div class="stat"><div class="stat-lbl">Status</div><div class="stat-val">JASA 2026</div></div>
+    <div class="stat"><div class="stat-lbl">Outputs</div><div class="stat-val">{{ r.publications.size }} papers</div></div>
+    <div class="stat"><div class="stat-lbl">Collaborators</div><div class="stat-val">{{ r.collaborators.size }} people</div></div>
+  </div>
+
+  <h2 class="sec-h">All publications</h2>
+  {% for pub in r.publications %}
+    <div class="pub">
+      <h3><a href="{{ pub.url }}">{{ pub.title }}</a></h3>
+      <div class="pmeta">{{ pub.authors }} — <em>{{ pub.venue }}</em>, {{ pub.year }}.</div>
+    </div>
+  {% endfor %}
+
+</main>
+
+<script>
+  const nodes = document.querySelectorAll('.node');
+  const steps = document.querySelectorAll('.detail .step');
+
+  function goTo(i) {
+    nodes.forEach((n, j) => n.classList.toggle('active', j === i));
+    steps.forEach((s, j) => s.classList.toggle('active', j === i));
+    nodes[i].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }
+
+  nodes.forEach((n, i) => n.addEventListener('click', () => goTo(i)));
+
+  document.addEventListener('keydown', (e) => {
+    const cur = [...nodes].findIndex(n => n.classList.contains('active'));
+    if (e.key === 'ArrowRight') goTo(Math.min(nodes.length - 1, cur + 1));
+    if (e.key === 'ArrowLeft') goTo(Math.max(0, cur - 1));
+  });
+</script>
+
+</body>
+</html>

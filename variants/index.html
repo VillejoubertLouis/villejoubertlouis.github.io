@@ -1,0 +1,368 @@
+---
+permalink: /variants/
+sitemap: false
+---
+{% assign p = site.data.profile %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>12 designs · {{ p.identity.name }}</title>
+<style>
+  :root {
+    --ink: #161821;
+    --muted: #5b6470;
+    --rule: #e6e6e6;
+    --bg: #fafafa;
+    --paper: #ffffff;
+    --accent: #1f5fae;
+    --tag: #f1f4f9;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    background: var(--bg); color: var(--ink); line-height: 1.55;
+    font-size: 15px; -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  header.top {
+    background: var(--paper); border-bottom: 1px solid var(--rule);
+    padding: 28px 32px;
+  }
+  header.top h1 { margin: 0 0 6px; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+  header.top p { margin: 0; color: var(--muted); font-size: 14.5px; max-width: 70ch; }
+  header.top .actions { margin-top: 14px; display: flex; gap: 16px; font-size: 13.5px; flex-wrap: wrap; }
+  header.top .actions a { color: var(--accent); display: inline-flex; align-items: center; gap: 5px; }
+  header.top .actions a .hi { width: 14px; height: 14px; }
+
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 36px 24px 80px; }
+
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 24px;
+    font-size: 12.5px; color: var(--muted);
+  }
+  .legend .grp { display: inline-flex; align-items: center; gap: 6px; }
+  .legend .dot { width: 9px; height: 9px; border-radius: 50%; }
+  .legend .dot.light { background: #fafafa; border: 1px solid #c0c0c0; }
+  .legend .dot.dark { background: #11141b; }
+  .legend .dot.mix { background: linear-gradient(135deg, #fafafa 0%, #fafafa 50%, #11141b 50%); border: 1px solid #c0c0c0; }
+  .legend .dot.anchor { background: #f6c84a; }
+
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 14px;
+    padding: 20px; display: flex; flex-direction: column; gap: 12px;
+    transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+    position: relative;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(0,0,0,0.07); border-color: #c8d1e4; }
+
+  .card .anchor-badge {
+    position: absolute; top: 14px; right: 14px;
+    background: #fff7df; color: #856200; padding: 2px 8px; border-radius: 999px;
+    font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600;
+  }
+
+  .card .vnum {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 11px; color: var(--muted); letter-spacing: 0.16em; text-transform: uppercase;
+  }
+  .card h2 {
+    margin: 0; font-size: 18px; letter-spacing: -0.01em;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card h2 .hi { width: 17px; height: 17px; color: var(--accent); }
+  .card p { margin: 0; color: #333; font-size: 13.5px; line-height: 1.55; }
+  .card .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .card .tags span {
+    background: var(--tag); padding: 2px 8px; border-radius: 8px;
+    font-size: 11px; color: #2a3340;
+  }
+  .card .tags span.dark { background: #111620; color: #e1e7f5; }
+  .card .tags span.mix { background: linear-gradient(90deg, #fafafa 0%, #fafafa 50%, #111620 50%); color: #111; }
+
+  .preview {
+    border: 1px solid var(--rule); border-radius: 8px; overflow: hidden;
+    height: 96px; position: relative; background: var(--paper);
+  }
+  .preview .barH {
+    position: absolute; top: 0; left: 0; right: 0; height: 11px;
+    background: #f2f3f5; display: flex; align-items: center; padding: 0 8px; gap: 3px;
+  }
+  .preview .barH i { width: 5px; height: 5px; border-radius: 50%; background: #d3d5db; }
+  .preview .body { position: absolute; inset: 11px 0 0 0; padding: 8px 10px; font-size: 8px; line-height: 1.2; color: #444; }
+
+  /* Preview variants */
+  .pv-1 .body { background: #fff; }
+  .pv-1 .body::before { content: ""; display: inline-block; width: 18px; height: 18px; border-radius: 50%; background: #d4def0; vertical-align: middle; margin-right: 6px; }
+  .pv-1 .body::after { content: "Louis V.\AClean light sidebar"; white-space: pre; vertical-align: middle; }
+
+  .pv-2 { background: #0a0e1a; }
+  .pv-2 .barH { background: #11172a; }
+  .pv-2 .barH i { background: #1c2440; }
+  .pv-2 .body { color: #00d4ff; font-family: ui-monospace, Menlo, monospace; }
+  .pv-2 .body::before { content: "● CAMBRIDGE"; display: block; margin-bottom: 4px; letter-spacing: 0.1em; }
+  .pv-2 .body::after {
+    content: "▌▎▍▌▎▊▍▎▌▊▎▍▌▎▊▍▎▌▊▎▍▌▎▊▍▎▌";
+    color: #00d4ff; letter-spacing: -1px; font-size: 7px;
+  }
+
+  .pv-3 { background: linear-gradient(135deg, #2b1f17 0%, #6b4a30 100%); color: #fff; }
+  .pv-3 .barH { background: rgba(0,0,0,0.3); }
+  .pv-3 .barH i { background: rgba(255,255,255,0.3); }
+  .pv-3 .body { font-family: Georgia, serif; font-size: 14px; font-weight: 500; padding: 6px 10px; line-height: 0.95; }
+  .pv-3 .body::before { content: "Louis\AVillejoubert."; white-space: pre; color: #fff; letter-spacing: -0.02em; }
+
+  .pv-4 { background: #0c1018; }
+  .pv-4 .barH { background: #131826; }
+  .pv-4 .barH i { background: #1d2435; }
+  .pv-4 .body { color: #e6ebf5; }
+  .pv-4 .body::before { content: ""; display: inline-block; width: 16px; height: 16px; border-radius: 50%; background: #1a2236; border: 1px solid #5ec0ff; vertical-align: middle; margin-right: 6px; }
+  .pv-4 .body::after { content: "Louis V.\ASidebar · inverted"; white-space: pre; vertical-align: middle; }
+
+  .pv-5 .body { padding: 4px 8px; }
+  .pv-5 .body::before {
+    content: "";
+    background-image:
+      linear-gradient(135deg, #2962ff 25%, transparent 25%),
+      linear-gradient(135deg, #d6336c 25%, transparent 25%),
+      linear-gradient(135deg, #38a169 25%, transparent 25%);
+    display: block;
+    background-size: 33% 100%, 33% 100%, 33% 100%;
+    background-position: 0 0, 50% 0, 100% 0;
+    background-repeat: no-repeat;
+    height: 70px;
+    border-radius: 4px;
+    opacity: 0.85;
+  }
+
+  .pv-6 .body { padding: 0; display: grid; grid-template-columns: 35% 1fr; height: 100%; }
+  .pv-6 .body::before { content: ""; background: linear-gradient(180deg, #f2f4f8 0%, #ebeef3 100%); height: 100%; }
+  .pv-6 .body::after { content: "RESUME\AEducation\AExperience\APublications"; white-space: pre; background: #fff; padding: 5px 8px; font-size: 7px; line-height: 1.4; color: #0a4d8a; font-family: ui-monospace, Menlo, monospace; }
+
+  .pv-7 .body { font-family: Georgia, serif; padding: 6px 10px; }
+  .pv-7 .body::before { content: "01 · About\A02 · Research\A03 · Projects\A04 · Publications"; white-space: pre; color: #3a2c75; font-size: 9px; line-height: 1.5; }
+
+  .pv-8 .body { text-align: center; padding: 12px 10px; }
+  .pv-8 .body::before { content: ""; display: block; width: 22px; height: 22px; border-radius: 50%; background: #ebebeb; margin: 0 auto 4px; }
+  .pv-8 .body::after { content: "Louis Villejoubert\A———\Aabout · research"; white-space: pre; font-size: 8px; color: #111; line-height: 1.4; }
+
+  .pv-9 .body { padding: 0; display: grid; grid-template-columns: 1fr 1fr; height: 100%; }
+  .pv-9 .body::before { content: "light"; padding: 8px; background: #fafaf6; color: #6b6358; font-size: 7px; }
+  .pv-9 .body::after { content: "dark"; padding: 8px; background: #111620; color: #6cc5ff; font-size: 7px; font-family: ui-monospace, Menlo, monospace; }
+
+  .pv-10 { background: #fbf7ec; }
+  .pv-10 .barH { background: #f4f0e6; }
+  .pv-10 .body { font-family: Georgia, serif; padding: 5px 10px; }
+  .pv-10 .body::before { content: "The Villejoubert."; display: block; font-size: 12px; font-weight: 600; padding-bottom: 2px; border-bottom: 2px double #14110d; margin-bottom: 4px; letter-spacing: -0.02em; }
+  .pv-10 .body::after { content: "Vol. I  ·  No. 1  ·  2026"; font-size: 7px; color: #6c6457; letter-spacing: 0.18em; text-transform: uppercase; }
+
+  .pv-11 .body { padding: 0; display: grid; grid-template-columns: 35% 1fr; height: 100%; }
+  .pv-11 .body::before {
+    content: "· About\A· Research\A· Projects\A· Pubs";
+    white-space: pre;
+    background: linear-gradient(180deg, #f1f4f8 0%, #fafafa 100%);
+    padding: 6px; font-size: 8px; line-height: 1.45;
+    color: #246d4d;
+  }
+  .pv-11 .body::after { content: "Sticky pill nav\Aon the left."; white-space: pre; padding: 6px 8px; font-size: 7px; color: #6c727f; }
+
+  .pv-12 .body { padding: 0; display: grid; grid-template-rows: auto 1fr; height: 100%; }
+  .pv-12 .body::before {
+    content: "About · Research · Projects · Pubs";
+    background: #f7f8fa; padding: 5px 8px;
+    color: #c43a6f; font-size: 8px; font-weight: 600;
+    border-bottom: 1px solid #e5e7ec;
+  }
+  .pv-12 .body::after {
+    content: "Tabs swap content.";
+    padding: 6px 8px; font-size: 8px; color: #6a727e;
+  }
+
+  .card .openrow {
+    display: flex; align-items: center; justify-content: space-between; margin-top: auto;
+    padding-top: 6px;
+  }
+  .card .openrow a.open {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--ink); color: #fff; padding: 7px 14px; border-radius: 8px;
+    font-size: 13px; font-weight: 500; text-decoration: none;
+    transition: background 0.15s;
+  }
+  .card .openrow a.open:hover { background: var(--accent); }
+  .card .openrow a.open .hi { width: 13px; height: 13px; }
+  .card .openrow .note { color: var(--muted); font-size: 12px; }
+
+  .edit-callout {
+    margin-top: 36px; padding: 20px 24px;
+    background: #fffbe7; border: 1px solid #f2e9bd; border-radius: 14px;
+    color: #5e4b08; font-size: 14px;
+  }
+  .edit-callout strong { color: #3d3104; }
+  .edit-callout code {
+    background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 4px;
+    font-family: ui-monospace, Menlo, monospace; font-size: 13px;
+  }
+
+  .credit {
+    margin-top: 16px; font-size: 12.5px; color: var(--muted); text-align: center;
+  }
+  .credit a { color: var(--muted); border-bottom: 1px dotted currentColor; }
+  .credit a:hover { color: var(--ink); text-decoration: none; }
+
+{% include hover_icon_css.html %}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <h1>12 designs for {{ p.identity.name }}</h1>
+  <p>V1 (light sidebar showcase) and V2 (dark studio) are the two anchor directions. V3–V12 mix and remix them along different axes — colour, layout, density, organisation. Each design renders the same content from <code>_data/profile.yml</code>; edit once, every variant updates.</p>
+  <div class="actions">
+    <a href="/">{% include hover_icon.html name="open" %} Back to live site</a>
+    <a href="https://github.com/VillejoubertLouis/villejoubertlouis.github.io/blob/main/_data/profile.yml">{% include hover_icon.html name="file" %} Edit content (profile.yml)</a>
+    <a href="https://itshover.com/icons">{% include hover_icon.html name="external" %} Hover icon kit</a>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="legend">
+    <span class="grp"><span class="dot anchor"></span>Anchor design</span>
+    <span class="grp"><span class="dot light"></span>Light theme</span>
+    <span class="grp"><span class="dot dark"></span>Dark theme</span>
+    <span class="grp"><span class="dot mix"></span>Mixes both</span>
+  </div>
+
+  <div class="grid">
+
+    <article class="card">
+      <span class="anchor-badge">Anchor</span>
+      <span class="vnum">V1 / Showcase</span>
+      <div class="preview pv-1"><div class="barH"><i></i><i></i><i></i></div><div class="body"></div></div>
+      <h2>{% include hover_icon.html name="brain" %} King-style showcase</h2>
+      <p>The original. Profile sidebar + horizontal research carousel + alternating image/text cards. Light, clean, sans-serif.</p>
+      <div class="tags"><span>Light</span><span>Sidebar</span><span>Carousel</span></div>
+      <div class="openrow"><a class="open" href="/variants/v1.html">{% include hover_icon.html name="open" %} Open V1</a><span class="note">Anchor · light</span></div>
+    </article>
+
+    <article class="card">
+      <span class="anchor-badge">Anchor</span>
+      <span class="vnum">V2 / Studio Dark</span>
+      <div class="preview pv-2"><div class="barH"><i></i><i></i><i></i></div><div class="body"></div></div>
+      <h2>{% include hover_icon.html name="wave" %} Studio dark</h2>
+      <p>Deep navy with cyan accents and an animated equaliser strip. Generic studio aesthetic — not specifically audio-coded.</p>
+      <div class="tags"><span class="dark">Dark</span><span>Animated</span><span>Mono accents</span></div>
+      <div class="openrow"><a class="open" href="/variants/v2.html">{% include hover_icon.html name="open" %} Open V2</a><span class="note">Anchor · dark</span></div>
+    </article>
+
+    <article class="card">
+      <span class="vnum">V3 / Editorial</span>
+      <div class="preview pv-3"><div class="barH"><i></i><i></i><i></i></div><div class="body"></div></div>
+      <h2>{% include hover_icon.html name="book" %} Editorial cover</h2>
+      <p>Magazine-cover hero: full-bleed photo + huge serif headline + masthead. Below: numbered sections in a tight column with drop caps.</p>
+      <div class="tags"><span>Serif</span><span>Photo hero</span><span>Editorial</span></div>
+      <div class="openrow"><a class="open" href="/variants/v3.html">{% include hover_icon.html name="open" %} Open V3</a><span class="note">For: outreach, public-facing</span></div>
+    </article>
+
+    <article class="card">
+      <span class="vnum">V4 / Mirror Dark</span>
+      <div class="preview pv-4"><div class="barH"><i></i><i></i><i></i></div><div class="body"></div></div>
+      <h2>{% include hover_icon.html name="brain" %} Mirror dark</h2>
+      <p>V1's layout inverted to dark. Same sidebar profile, carousel, alternating cards — but on a deep navy palette with cyan accents.</p>
+      <div class="tags"><span class="dark">Dark</span><span>Sidebar</span><span>Carousel</span></div>
+      <div class="openrow"><a class="open" href="/variants/v4.html">{% include hover_icon.html name="open" %} Open V4</a><span class="note">Like V1, but dark</span></div>
+    </article>
+
+    <article class="card">
+      <span class="vnum">V5 / Tile Mosaic</span>
+      <div class="preview pv-5"><div class="barH"><i></i><i></i><i></i></div><div class="body"></div></div>
+      <h2>{% include hover_icon.html name="external" %} Tile mosaic</h2>
+      <p>Uniform tile grid with filter chips at the top (All · Research · Projects · Publications). Each item gets equal weight.</p>
+      <div class="tags"><span>Grid</span><span>Filterable</span><span>Scannable</span></div>
+      <div class="openrow"><a class="open" href="/variants/v5.html">{% include hover_icon.html name="open" %} Open V5</a><span class="note">For: portfolio reviewers</span></div>
+    </article>
+
+    <article class="card">
+      <span class="vnum">V6 / Compact CV</span>
+      <div class="preview pv-6"><div class="barH"><i></i><i></i><i></i></div><div class="body"></div></div>
+      <h2>{% include hover_icon.html name="file" %} Compact CV</h2>
+      <p>Single-page resume. Sidebar with contact, methods, badges; main column with research, publications, projects. Print-friendly.</p>
+      <div class="tags"><span>Dense</span><span>Resume</span><span>Print-OK</span></div>
+      <div class="openrow"><a class="open" href="/variants/v6.html">{% include hover_icon.html name="open" %} Open V6</a><span class="note">For: applications, deadlines</span></div>
+    </article>
+
+    <article class="card">
+      <span class="vnum">V7 / Index TOC</span>
+      <div class="preview pv-7"><div class="barH"><i></i><i></i><i></i></div><div class="body"></div></div>
+      <h2>{% include hover_icon.html name="book" %} Index / table of contents</h2>
+      <p>Big numbered TOC up top (01 About · 02 Research · 03 Projects · 04 Publications). Anchors to each section below.</p>
+      <div class="tags"><span>Numbered</span><span>Anchor nav</span><span>Calm</span></div>
+      <div class="openrow"><a class="open" href="/variants/v7.html">{% include hover_icon.html name="open" %} Open V7</a><span class="note">For: serious readers</span></div>
+    </article>
+
+    <article class="card">
+      <span class="vnum">V8 / Minimal</span>
+      <div class="preview pv-8"><div class="barH"><i></i><i></i><i></i></div><div class="body"></div></div>
+      <h2>{% include hover_icon.html name="file" %} Centered minimal</h2>
+      <p>Pure typography. Single centered column, no sidebar, no chrome. Just hierarchy and whitespace.</p>
+      <div class="tags"><span>Minimal</span><span>Centered</span><span>No chrome</span></div>
+      <div class="openrow"><a class="open" href="/variants/v8.html">{% include hover_icon.html name="open" %} Open V8</a><span class="note">For: tasteful restraint</span></div>
+    </article>
+
+    <article class="card">
+      <span class="vnum">V9 / Split</span>
+      <div class="preview pv-9"><div class="barH"><i></i><i></i><i></i></div><div class="body"></div></div>
+      <h2>{% include hover_icon.html name="external" %} Split half-half</h2>
+      <p>Page literally split in two: light profile (sticky) on the left, dark scrolling content on the right. Mixes V1 and V2 side by side.</p>
+      <div class="tags"><span class="mix">Mix</span><span>Sticky</span><span>Contrast</span></div>
+      <div class="openrow"><a class="open" href="/variants/v9.html">{% include hover_icon.html name="open" %} Open V9</a><span class="note">Light + dark together</span></div>
+    </article>
+
+    <article class="card">
+      <span class="vnum">V10 / Newspaper</span>
+      <div class="preview pv-10"><div class="barH"><i></i><i></i><i></i></div><div class="body"></div></div>
+      <h2>{% include hover_icon.html name="book" %} Newspaper columns</h2>
+      <p>Editorial broadsheet. Multi-column body, serif headlines, double-rule masthead, classified-ad-style project listings.</p>
+      <div class="tags"><span>Serif</span><span>Multi-col</span><span>Print-feel</span></div>
+      <div class="openrow"><a class="open" href="/variants/v10.html">{% include hover_icon.html name="open" %} Open V10</a><span class="note">Distinctive · literary</span></div>
+    </article>
+
+    <article class="card">
+      <span class="vnum">V11 / Floating Pills</span>
+      <div class="preview pv-11"><div class="barH"><i></i><i></i><i></i></div><div class="body"></div></div>
+      <h2>{% include hover_icon.html name="link" %} Floating pills sidebar</h2>
+      <p>Sticky pill navigation on the left jumps to sections in the right column. Docs-site feel — easy to scan, easy to navigate.</p>
+      <div class="tags"><span>Light</span><span>Sticky nav</span><span>Docs-style</span></div>
+      <div class="openrow"><a class="open" href="/variants/v11.html">{% include hover_icon.html name="open" %} Open V11</a><span class="note">For: thorough visitors</span></div>
+    </article>
+
+    <article class="card">
+      <span class="vnum">V12 / Tabbed</span>
+      <div class="preview pv-12"><div class="barH"><i></i><i></i><i></i></div><div class="body"></div></div>
+      <h2>{% include hover_icon.html name="external" %} Tabbed sections</h2>
+      <p>App-like tabs — About / Research / Projects / Publications. Hash-routed, single page, no scrolling required.</p>
+      <div class="tags"><span>SPA-feel</span><span>Tabs</span><span>Hash-route</span></div>
+      <div class="openrow"><a class="open" href="/variants/v12.html">{% include hover_icon.html name="open" %} Open V12</a><span class="note">For: pick-your-section visitors</span></div>
+    </article>
+
+  </div>
+
+  <div class="credit">
+    Animated icons throughout the variants are adapted from <a href="https://itshover.com/icons">itshover.com/icons</a>. Hover any icon to see the animation.
+  </div>
+
+  <div class="edit-callout">
+    <strong>Single source of truth.</strong> Every variant renders from <code>_data/profile.yml</code>. Edit bio, badges, links, themes, projects, publications, timeline, or recent feed once — all 12 designs update on save. To promote one of these to the live homepage, just say which.
+  </div>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,373 @@
+---
+permalink: /research/r3.html
+sitemap: false
+---
+{% assign p = site.data.profile %}{% assign r = site.data.research.perception %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>R3 · Internal tabs · {{ r.title }}</title>
+<style>
+  :root {
+    --ink: #11141b;
+    --muted: #6a727e;
+    --rule: #e5e7ec;
+    --bg: #f7f8fa;
+    --paper: #ffffff;
+    --accent: #c43a6f;
+    --accent-soft: #f3eef1;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    color: var(--ink); background: var(--bg);
+    line-height: 1.6; font-size: 15.5px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .switcher {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 24px;
+    background: rgba(247,248,250,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+  }
+  .switcher .idx a { color: var(--muted); text-decoration: none; }
+  .switcher .idx a:hover { color: var(--ink); }
+  .switcher .nums a {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted); font-variant-numeric: tabular-nums; text-decoration: none;
+  }
+  .switcher .nums a.active { background: var(--accent); color: #fff; }
+  .switcher .nums a:hover { color: var(--ink); }
+  .switcher .nums a.active:hover { color: #fff; }
+  .switcher .name { color: var(--muted); margin-left: 12px; font-size: 12px; }
+
+  .wrap { max-width: 1100px; margin: 32px auto 80px; padding: 0 24px; }
+
+  /* Header card */
+  .head {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 18px;
+    padding: 32px 36px; margin-bottom: 16px;
+  }
+  .head .crumb {
+    font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 10px;
+  }
+  .head h1 {
+    font-size: clamp(28px, 4vw, 38px); line-height: 1.1; letter-spacing: -0.02em;
+    font-weight: 600; margin: 0 0 14px; max-width: 26ch;
+  }
+  .head .headline { font-size: 16px; color: #3a3d44; max-width: 70ch; margin: 0 0 18px; line-height: 1.55; }
+  .head .meta-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; font-size: 13px; color: var(--muted); }
+  .head .badge {
+    background: var(--accent-soft); color: var(--accent);
+    padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500;
+  }
+  .head .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .head .tags span {
+    background: var(--bg); border: 1px solid var(--rule); color: #2a2c33;
+    padding: 3px 8px; border-radius: 8px; font-size: 11.5px;
+  }
+
+  /* Tabbed control */
+  .tabs {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 18px;
+    overflow: hidden;
+  }
+  .tabbar {
+    display: flex; gap: 0; padding: 8px;
+    border-bottom: 1px solid var(--rule);
+    background: var(--bg);
+    overflow-x: auto;
+  }
+  .tabbar a {
+    flex: none;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 16px; border-radius: 10px;
+    color: var(--muted); font-weight: 500; font-size: 14px; text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+  }
+  .tabbar a:hover { background: rgba(0,0,0,0.04); color: var(--ink); }
+  .tabbar a.active { background: var(--accent); color: #fff; }
+  .tabbar a .hi { width: 16px; height: 16px; }
+  .tabbar a .count {
+    background: rgba(0,0,0,0.06); padding: 1px 7px; border-radius: 999px;
+    font-size: 11px; color: var(--muted);
+  }
+  .tabbar a.active .count { background: rgba(255,255,255,0.2); color: #fff; }
+
+  .panes { padding: 32px 36px; }
+  .pane { display: none; }
+  .pane:target { display: block; }
+  #pane-bg { display: block; } /* default */
+  body:has(.pane:target) #pane-bg { display: none; }
+  body:has(#pane-bg:target) #pane-bg { display: block; }
+
+  .pane h2 { font-size: 22px; letter-spacing: -0.01em; font-weight: 600; margin: 0 0 6px; }
+  .pane .h-sub {
+    font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.2em;
+    color: var(--muted); margin: 0 0 20px;
+  }
+
+  .pane p { font-size: 16px; line-height: 1.7; color: #2a2c33; margin: 0 0 14px; }
+
+  /* Method/finding rows */
+  .row {
+    padding: 18px 0; border-top: 1px solid var(--rule);
+    display: grid; grid-template-columns: 44px 1fr; gap: 18px; align-items: start;
+  }
+  .row:last-child { border-bottom: 1px solid var(--rule); }
+  .row .badge-num {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--accent-soft); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-family: ui-monospace, Menlo, monospace;
+  }
+  .row h3 { margin: 0 0 6px; font-size: 17px; line-height: 1.3; }
+  .row p { margin: 0; color: #2a2c33; font-size: 14.5px; line-height: 1.6; }
+
+  /* Figures gallery (background tab) */
+  .figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 12px; }
+  .fig-card {
+    background: var(--bg); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 14px; text-align: center;
+  }
+  .fig-card img { max-width: 100%; border-radius: 6px; }
+  .fig-card .placeholder {
+    height: 140px; border-radius: 6px;
+    background: repeating-linear-gradient(45deg, #ebeef3 0 8px, #f4f6f9 8px 16px);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted); font-size: 12.5px; font-family: ui-monospace, Menlo, monospace; letter-spacing: 0.05em;
+  }
+  .fig-card .cap {
+    font-size: 12.5px; color: var(--muted); margin-top: 10px; font-style: italic;
+  }
+
+  /* Pubs / resources tab */
+  .pub {
+    padding: 18px 0; border-top: 1px solid var(--rule);
+    display: grid; grid-template-columns: 120px 1fr; gap: 24px;
+  }
+  .pub:last-child { border-bottom: 1px solid var(--rule); }
+  .pub .pmeta { color: var(--muted); font-size: 12.5px; font-family: ui-monospace, Menlo, monospace; letter-spacing: 0.06em; }
+  .pub h3 { margin: 0 0 4px; font-size: 16.5px; font-weight: 500; line-height: 1.35; }
+  .pub .pauth { color: var(--muted); font-size: 13.5px; }
+  .pub .pvenue { font-size: 13.5px; color: #2a2c33; font-style: italic; margin-top: 2px; }
+
+  .resources {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 10px; margin-top: 10px;
+  }
+  .resource {
+    background: var(--bg); border: 1px solid var(--rule); border-radius: 10px;
+    padding: 14px 16px; display: inline-flex; align-items: center; gap: 10px;
+    color: var(--ink); font-size: 14px;
+    transition: border-color 0.18s, transform 0.18s;
+  }
+  .resource:hover { border-color: var(--accent); transform: translateY(-1px); text-decoration: none; }
+  .resource.disabled { opacity: 0.6; cursor: default; }
+  .resource .hi { width: 17px; height: 17px; color: var(--accent); }
+
+  .collab-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+  .person {
+    background: var(--bg); border: 1px solid var(--rule); border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .person .name { font-weight: 600; font-size: 14.5px; }
+  .person .role { color: var(--muted); font-size: 12.5px; }
+
+  .next-list {
+    list-style: none; padding: 0; margin: 0;
+  }
+  .next-list li {
+    padding: 14px 0 14px 36px; border-top: 1px solid var(--rule);
+    position: relative; font-size: 15px; color: #2a2c33; line-height: 1.6;
+  }
+  .next-list li:last-child { border-bottom: 1px solid var(--rule); }
+  .next-list li::before {
+    content: "→"; position: absolute; left: 6px; top: 14px;
+    color: var(--accent); font-weight: 600;
+  }
+
+  /* Quiz box (decorative reminder that one exists in r7) */
+  .callout {
+    background: var(--accent-soft); border: 1px solid #f0d8e1; border-radius: 12px;
+    padding: 14px 18px; margin-top: 24px;
+    display: flex; gap: 12px; align-items: center;
+    color: #6e1b40; font-size: 14px;
+  }
+  .callout .hi { width: 18px; height: 18px; color: var(--accent); }
+
+  @media (max-width: 720px) {
+    .head, .panes { padding: 22px; }
+    .tabbar { padding: 6px; }
+    .tabbar a { padding: 8px 12px; font-size: 13px; }
+    .pub { grid-template-columns: 1fr; gap: 8px; }
+  }
+
+{% include hover_icon_css.html %}
+</style>
+</head>
+<body>
+
+{% include research_switcher.html active=3 label="R3 · Internal tabs" %}
+
+<main class="wrap">
+
+  <header class="head">
+    <div class="crumb">Research project · Perception</div>
+    <h1>{{ r.title }}</h1>
+    <p class="headline">{{ r.headline }}</p>
+    <div class="meta-row">
+      <span class="badge">{{ r.status }}</span>
+      <span>· {{ r.date_range }}</span>
+      <span>· {{ r.reading_time }}</span>
+      <div class="tags">
+        {% for t in r.tags %}<span>{{ t }}</span>{% endfor %}
+      </div>
+    </div>
+  </header>
+
+  <div class="tabs">
+
+    <nav class="tabbar">
+      <a id="t-bg" href="#pane-bg" class="active">{% include hover_icon.html name="file" %} Background</a>
+      <a id="t-q" href="#pane-q">{% include hover_icon.html name="brain" %} Question</a>
+      <a id="t-m" href="#pane-m">{% include hover_icon.html name="external" %} Methods <span class="count">{{ r.methods.size }}</span></a>
+      <a id="t-f" href="#pane-f">{% include hover_icon.html name="heart" %} Findings <span class="count">{{ r.findings.size }}</span></a>
+      <a id="t-n" href="#pane-n">{% include hover_icon.html name="clock" %} Next <span class="count">{{ r.next_steps.size }}</span></a>
+      <a id="t-r" href="#pane-r">{% include hover_icon.html name="book" %} Resources</a>
+    </nav>
+
+    <div class="panes">
+
+      <section id="pane-bg" class="pane">
+        <h2>Background</h2>
+        <p class="h-sub">Why this matters</p>
+        {% for para in r.background %}<p>{{ para }}</p>{% endfor %}
+
+        <h3 style="margin-top:32px;font-size:14px;text-transform:uppercase;letter-spacing:0.16em;color:var(--muted);">Figures</h3>
+        <div class="figs">
+          {% for f in r.figures %}
+            <div class="fig-card">
+              {% if f.kind == "image" %}
+                <img src="{{ f.src }}" alt="{{ f.alt }}">
+              {% else %}
+                <div class="placeholder">[ {{ f.label }} ]</div>
+              {% endif %}
+              <div class="cap">{{ f.caption }}</div>
+            </div>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section id="pane-q" class="pane">
+        <h2>The question</h2>
+        <p class="h-sub">What we set out to answer</p>
+        <p style="font-size:19px;line-height:1.55;color:#1a1c22;">{{ r.question }}</p>
+        <div class="callout">
+          {% include hover_icon.html name="brain" %}
+          <span>Curious about the experiment? <a href="/research/r7.html">Try the mini quiz in R7</a> — same kind of choices listeners faced.</span>
+        </div>
+      </section>
+
+      <section id="pane-m" class="pane">
+        <h2>Methods</h2>
+        <p class="h-sub">How we measured it</p>
+        {% for m in r.methods %}
+          <div class="row">
+            <div class="badge-num">{{ forloop.index }}</div>
+            <div>
+              <h3>{{ m.title }}</h3>
+              <p>{{ m.body }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      </section>
+
+      <section id="pane-f" class="pane">
+        <h2>Findings</h2>
+        <p class="h-sub">What the data showed</p>
+        {% for f in r.findings %}
+          <div class="row">
+            <div class="badge-num">{{ f.icon }}</div>
+            <div>
+              <h3>{{ f.title }}</h3>
+              <p>{{ f.body }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      </section>
+
+      <section id="pane-n" class="pane">
+        <h2>Where this goes next</h2>
+        <p class="h-sub">Open questions and concrete plans</p>
+        <ul class="next-list">
+          {% for n in r.next_steps %}<li>{{ n }}</li>{% endfor %}
+        </ul>
+      </section>
+
+      <section id="pane-r" class="pane">
+        <h2>Resources</h2>
+        <p class="h-sub">Papers, code, collaborators</p>
+
+        <h3 style="margin-top:8px;font-size:14px;text-transform:uppercase;letter-spacing:0.16em;color:var(--muted);">Publications</h3>
+        {% for pub in r.publications %}
+          <div class="pub">
+            <div class="pmeta">{{ pub.year }}<br>{{ pub.kind }}</div>
+            <div>
+              <h3><a href="{{ pub.url }}">{{ pub.title }}</a></h3>
+              <div class="pauth">{{ pub.authors }}</div>
+              <div class="pvenue">{{ pub.venue }} · doi:{{ pub.doi }}</div>
+            </div>
+          </div>
+        {% endfor %}
+
+        <h3 style="margin-top:32px;font-size:14px;text-transform:uppercase;letter-spacing:0.16em;color:var(--muted);">Collaborators</h3>
+        <div class="collab-grid">
+          {% for c in r.collaborators %}
+            <div class="person">
+              <div class="name">{% if c.web and c.web != "" %}<a href="{{ c.web }}">{{ c.name }}</a>{% else %}{{ c.name }}{% endif %}</div>
+              <div class="role">{{ c.role }}</div>
+            </div>
+          {% endfor %}
+        </div>
+
+        <h3 style="margin-top:32px;font-size:14px;text-transform:uppercase;letter-spacing:0.16em;color:var(--muted);">Links</h3>
+        <div class="resources">
+          {% for res in r.resources %}
+            {% if res.url and res.url != "" %}
+              <a class="resource" href="{{ res.url }}">{% include hover_icon.html name=res.icon %}<span>{{ res.label }}</span></a>
+            {% else %}
+              <span class="resource disabled">{% include hover_icon.html name=res.icon %}<span>{{ res.label }}</span></span>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+</main>
+
+<script>
+  function setActive() {
+    var hash = location.hash || '#pane-bg';
+    document.querySelectorAll('.tabbar a').forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === hash);
+    });
+  }
+  window.addEventListener('hashchange', setActive);
+  setActive();
+</script>
+
+</body>
+</html>

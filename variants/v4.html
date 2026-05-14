@@ -1,0 +1,250 @@
+---
+permalink: /variants/v4.html
+sitemap: false
+---
+{% assign p = site.data.profile %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>V4 · Mirror Dark · {{ p.identity.name }}</title>
+<style>
+  :root {
+    --bg: #0c1018;
+    --panel: #131826;
+    --rule: #1d2435;
+    --ink: #e6ebf5;
+    --muted: #7a849c;
+    --accent: #5ec0ff;
+    --amber: #f2c66d;
+    --tag-bg: #1a2236;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    color: var(--ink); background: var(--bg);
+    line-height: 1.6; font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .switcher {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 24px;
+    background: rgba(12,16,24,0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+  }
+  .switcher a.idx { color: var(--muted); margin-right: auto; }
+  .switcher .nums { display: flex; gap: 4px; }
+  .switcher .nums a {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted); border: 1px solid var(--rule);
+    font-variant-numeric: tabular-nums;
+  }
+  .switcher .nums a.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .switcher .nums a:hover { border-color: var(--accent); color: var(--ink); text-decoration: none; }
+  .switcher .nums a.active:hover { color: var(--bg); }
+  .switcher .name { color: var(--muted); margin-left: 12px; font-size: 12px; }
+
+  .wrap { max-width: 980px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  /* Hero — V1 layout, dark */
+  .hero { display: grid; grid-template-columns: 220px 1fr; gap: 48px; align-items: start; margin-bottom: 64px; }
+  .hero .avatar img { width: 220px; height: 220px; border-radius: 50%; object-fit: cover; display: block;
+    border: 2px solid var(--rule); box-shadow: 0 0 0 6px rgba(94,192,255,0.06); }
+  .hero .badges { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .hero .badges span {
+    background: var(--tag-bg); color: var(--ink); padding: 4px 9px; border-radius: 10px;
+    font-size: 11px; font-weight: 500;
+    border: 1px solid var(--rule);
+  }
+  .hero h1 { font-size: 36px; margin: 0 0 6px; letter-spacing: -0.02em; line-height: 1.1; }
+  .hero .role { color: var(--muted); margin: 0 0 22px; font-size: 17px; }
+  .hero p { margin: 0 0 14px; font-size: 16.5px; color: #cdd5e8; }
+  .hero .links { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 18px; font-size: 14px; }
+  .hero .links a { color: var(--muted); display: inline-flex; align-items: center; gap: 6px; transition: color 0.18s; }
+  .hero .links a:hover { color: var(--accent); text-decoration: none; }
+  .hero .links a .hi { width: 18px; height: 18px; }
+
+  .sec-h {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.18em;
+    color: var(--muted); margin: 0 0 18px; font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sec-h .hi { width: 14px; height: 14px; color: var(--accent); }
+
+  /* Carousel */
+  .carousel {
+    display: grid; grid-auto-flow: column; grid-auto-columns: 280px;
+    gap: 16px; overflow-x: auto; padding-bottom: 16px;
+    scroll-snap-type: x mandatory;
+    margin-bottom: 64px;
+  }
+  .carousel::-webkit-scrollbar { height: 6px; }
+  .carousel::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 3px; }
+  .card {
+    scroll-snap-align: start;
+    background: var(--panel);
+    border: 1px solid var(--rule); border-radius: 14px;
+    padding: 20px; transition: transform 0.18s, border-color 0.18s;
+  }
+  .card:hover { transform: translateY(-2px); border-color: var(--accent); }
+  .card .yr { color: var(--accent); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; font-family: ui-monospace, Menlo, monospace; }
+  .card h3 { margin: 8px 0 10px; font-size: 16px; line-height: 1.35; letter-spacing: -0.01em; color: var(--ink); }
+  .card p { margin: 0; font-size: 13.5px; color: #b0bacd; line-height: 1.55; }
+  .card .v { margin-top: 12px; font-size: 12px; color: var(--muted); }
+
+  /* Alternating */
+  .qsec { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; margin-bottom: 56px; }
+  .qsec.flip { direction: rtl; }
+  .qsec.flip > * { direction: ltr; }
+  .qsec h2 { font-size: 26px; letter-spacing: -0.02em; margin: 0 0 14px; line-height: 1.2; }
+  .qsec p { font-size: 16px; line-height: 1.65; color: #c5cde0; margin: 0 0 12px; }
+  .qsec .figure {
+    background: var(--panel); border: 1px solid var(--rule); border-radius: 14px;
+    padding: 24px; text-align: center;
+  }
+  .qsec .figure img { max-width: 100%; height: auto; border-radius: 6px; filter: brightness(0.92); }
+  .qsec .figure .cap { color: var(--muted); font-size: 12px; margin-top: 10px; }
+  .qsec .placeholder {
+    height: 240px; border-radius: 12px;
+    background: linear-gradient(135deg, #1a2236 0%, #283454 100%);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted); font-size: 13px; letter-spacing: 0.04em;
+    border: 1px dashed var(--rule);
+  }
+
+  /* Projects */
+  .proj-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-bottom: 64px; }
+  .proj {
+    background: var(--panel); border: 1px solid var(--rule); border-radius: 14px;
+    padding: 22px;
+  }
+  .proj .ptop { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+  .proj .ptag {
+    background: var(--tag-bg); color: var(--amber); padding: 3px 8px; border-radius: 8px;
+    font-size: 11px; font-family: ui-monospace, Menlo, monospace;
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .proj .pdate { color: var(--muted); font-size: 12px; font-family: ui-monospace, Menlo, monospace; }
+  .proj h3 { margin: 0 0 8px; font-size: 17px; letter-spacing: -0.01em; }
+  .proj p { margin: 0 0 12px; color: #c5cde0; font-size: 14.5px; line-height: 1.55; }
+  .proj .stack { color: var(--muted); font-size: 12.5px; font-family: ui-monospace, Menlo, monospace; }
+
+  /* Pubs */
+  .pubs { border-top: 1px solid var(--rule); padding-top: 32px; }
+  .pub { padding: 18px 0; border-bottom: 1px solid var(--rule); }
+  .pub:last-child { border-bottom: none; }
+  .pub .pyr { color: var(--accent); font-size: 13px; font-family: ui-monospace, Menlo, monospace; }
+  .pub .ptitle { margin: 4px 0; font-size: 17px; font-weight: 500; line-height: 1.4; }
+  .pub .pauth { color: var(--muted); font-size: 13.5px; margin: 4px 0; }
+  .pub .pvenue { font-size: 13.5px; color: #c5cde0; font-style: italic; }
+
+  @media (max-width: 760px) {
+    .hero { grid-template-columns: 1fr; gap: 24px; }
+    .hero .avatar img { width: 140px; height: 140px; }
+    .qsec { grid-template-columns: 1fr; gap: 20px; }
+    .qsec.flip { direction: ltr; }
+    .proj-grid { grid-template-columns: 1fr; }
+  }
+
+{% include hover_icon_css.html %}
+</style>
+</head>
+<body>
+
+{% include variant_switcher.html active=4 label="V4 · Mirror Dark" %}
+
+<main class="wrap">
+
+  <section class="hero">
+    <div>
+      <div class="avatar"><img src="{{ p.identity.avatar }}" alt="{{ p.identity.name }}"></div>
+      <div class="badges">
+        {% for b in p.badges %}<span>{{ b }}</span>{% endfor %}
+      </div>
+    </div>
+    <div>
+      <h1>{{ p.identity.name }}</h1>
+      <p class="role">{{ p.identity.role }} · {{ p.identity.affiliation }}</p>
+      {% for para in p.bio %}<p>{{ para }}</p>{% endfor %}
+      <div class="links">
+        {% for l in p.links %}<a href="{{ l.url }}">{% include hover_icon.html name=l.icon %}<span>{{ l.label }}</span></a>{% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <h2 class="sec-h">{% include hover_icon.html name="brain" %} Featured research</h2>
+  <div class="carousel">
+    {% for pub in p.publications %}
+      <div class="card">
+        <div class="yr">{{ pub.year }} · {{ pub.short_venue }}</div>
+        <h3><a href="{{ pub.url }}" style="color:inherit">{{ pub.title }}</a></h3>
+        <p>{{ pub.authors }}</p>
+        <div class="v">{{ pub.venue }} {{ pub.citation }}</div>
+      </div>
+    {% endfor %}
+    {% for proj in p.projects %}
+      <div class="card">
+        <div class="yr">{{ proj.date_label }} · {{ proj.tag }}</div>
+        <h3>{{ proj.title }}</h3>
+        <p>{{ proj.blurb | truncate: 130 }}</p>
+        <div class="v">{{ proj.stack }}</div>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% for t in p.themes %}
+    <section class="qsec {% if forloop.index == 2 %}flip{% endif %}">
+      <div>
+        <h2>{{ t.title }}</h2>
+        <p>{{ t.body | strip_html | strip_newlines }}</p>
+      </div>
+      <div class="figure">
+        {% if t.figure_kind == "image" %}
+          <img src="{{ t.figure }}" alt="{{ t.figure_caption }}">
+        {% else %}
+          <div class="placeholder">[ {{ t.figure_label }} ]</div>
+        {% endif %}
+        <div class="cap">{{ t.figure_caption }}</div>
+      </div>
+    </section>
+  {% endfor %}
+
+  <h2 class="sec-h">{% include hover_icon.html name="file" %} Projects &amp; software</h2>
+  <div class="proj-grid">
+    {% for proj in p.projects %}
+      <div class="proj">
+        <div class="ptop">
+          <span class="ptag">{{ proj.tag }}</span>
+          <span class="pdate">{{ proj.date_label }}</span>
+        </div>
+        <h3>{% if proj.url and proj.url != "" %}<a href="{{ proj.url }}" style="color:inherit">{{ proj.title }}</a>{% else %}{{ proj.title }}{% endif %}</h3>
+        <p>{{ proj.blurb }}</p>
+        <div class="stack">{{ proj.stack }}</div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <h2 class="sec-h">{% include hover_icon.html name="book" %} Publications</h2>
+  <div class="pubs">
+    {% for pub in p.publications %}
+      <div class="pub">
+        <div class="pyr">{{ pub.date_label }}</div>
+        <div class="ptitle"><a href="{{ pub.url }}">{{ pub.title }}</a></div>
+        <div class="pauth">{{ pub.authors }}</div>
+        <div class="pvenue">{{ pub.venue }} {{ pub.citation }}</div>
+      </div>
+    {% endfor %}
+  </div>
+
+</main>
+
+</body>
+</html>

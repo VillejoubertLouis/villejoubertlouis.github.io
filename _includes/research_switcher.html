@@ -1,0 +1,16 @@
+{%- comment -%}
+Top navigation strip for /research/ detail-page variants.
+Usage:  {% include research_switcher.html active=1 label="R1 · Scrollytelling" %}
+{%- endcomment -%}
+<nav class="switcher">
+  <div class="idx" style="margin-right: auto; display: inline-flex; gap: 14px;">
+    <a href="/variants/v12.html">← Back to V12</a>
+    <a href="/research/">All R-variants</a>
+  </div>
+  <div class="nums">
+    {% for n in (1..10) %}
+      <a href="/research/r{{ n }}.html"{% if n == include.active %} class="active"{% endif %}>{{ n }}</a>
+    {% endfor %}
+  </div>
+  <span class="name">{{ include.label }}</span>
+</nav>

@@ -1,0 +1,14 @@
+{%- comment -%}
+Sticky number-strip nav appearing at the top of every variant page.
+Usage:  {% include variant_switcher.html active=2 label="V2 · Studio Dark" %}
+The host page styles `.switcher` itself (light/dark theming).
+{%- endcomment -%}
+<nav class="switcher">
+  <a href="/variants/" class="idx">← All designs</a>
+  <div class="nums">
+    {% for n in (1..12) %}
+      <a href="/variants/v{{ n }}.html"{% if n == include.active %} class="active"{% endif %}>{{ n }}</a>
+    {% endfor %}
+  </div>
+  <span class="name">{{ include.label }}</span>
+</nav>

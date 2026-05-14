@@ -1,0 +1,246 @@
+---
+permalink: /variants/v11.html
+sitemap: false
+---
+{% assign p = site.data.profile %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>V11 · Floating Pills · {{ p.identity.name }}</title>
+<style>
+  :root {
+    --ink: #15171c;
+    --muted: #6c727f;
+    --rule: #e7e9ee;
+    --bg: #fcfcfd;
+    --paper: #ffffff;
+    --accent: #246d4d;
+    --pill: #f1f4f8;
+    --pill-hover: #e6ecf3;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    color: var(--ink); background: var(--bg);
+    line-height: 1.6; font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .switcher {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 24px;
+    background: rgba(252,252,253,0.96);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+  }
+  .switcher a.idx { color: var(--muted); margin-right: auto; }
+  .switcher .nums { display: flex; gap: 4px; }
+  .switcher .nums a {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted); font-variant-numeric: tabular-nums;
+  }
+  .switcher .nums a.active { background: var(--accent); color: #fff; }
+  .switcher .nums a:hover { color: var(--ink); text-decoration: none; }
+  .switcher .nums a.active:hover { color: #fff; }
+  .switcher .name { color: var(--muted); margin-left: 12px; font-size: 12px; }
+
+  .layout {
+    max-width: 1280px; margin: 0 auto;
+    display: grid; grid-template-columns: 260px 1fr; gap: 56px;
+    padding: 48px 24px 80px;
+  }
+
+  /* Sticky pill navigation */
+  .nav {
+    position: sticky; top: 64px; align-self: start;
+    padding: 8px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .nav .head {
+    padding: 14px 14px 20px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 12px;
+  }
+  .nav .head img {
+    width: 48px; height: 48px; border-radius: 50%; object-fit: cover;
+    margin-bottom: 12px; display: block;
+  }
+  .nav .head h1 { font-size: 16px; margin: 0; letter-spacing: -0.005em; font-weight: 600; line-height: 1.3; }
+  .nav .head .role { font-size: 12.5px; color: var(--muted); margin: 2px 0 0; line-height: 1.4; }
+
+  .nav .pill {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; border-radius: 999px;
+    color: var(--ink); font-size: 14px; font-weight: 500;
+    background: transparent; transition: background 0.15s;
+  }
+  .nav .pill:hover { background: var(--pill); text-decoration: none; }
+  .nav .pill .hi { width: 16px; height: 16px; color: var(--muted); }
+  .nav .pill .count {
+    margin-left: auto; font-size: 11.5px; color: var(--muted);
+    font-family: ui-monospace, Menlo, monospace;
+  }
+
+  .nav .group-h {
+    font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.2em;
+    color: var(--muted); font-weight: 600;
+    padding: 18px 14px 6px;
+  }
+  .nav .ext {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 14px; color: var(--muted); font-size: 13px;
+  }
+  .nav .ext:hover { color: var(--accent); text-decoration: none; }
+  .nav .ext .hi { width: 14px; height: 14px; }
+
+  /* Main content */
+  .content { min-width: 0; }
+  .content > section {
+    scroll-margin-top: 80px;
+    padding: 48px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .content > section:first-child { padding-top: 8px; }
+  .content > section:last-child { border-bottom: none; }
+  .content h2 {
+    font-size: 28px; letter-spacing: -0.015em; font-weight: 600;
+    margin: 0 0 6px;
+  }
+  .content .h-sub {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.18em;
+    color: var(--muted); margin: 0 0 24px; font-weight: 600;
+  }
+
+  .bio p { font-size: 16.5px; line-height: 1.7; color: #222; margin: 0 0 14px; max-width: 65ch; }
+
+  .theme {
+    padding: 20px 0; border-top: 1px solid var(--rule);
+    display: grid; grid-template-columns: 56px 1fr; gap: 18px;
+  }
+  .theme:last-child { padding-bottom: 4px; }
+  .theme .tn {
+    font-size: 18px; color: var(--accent); font-weight: 600;
+    font-family: ui-monospace, Menlo, monospace;
+  }
+  .theme h3 { margin: 0 0 8px; font-size: 18px; line-height: 1.3; }
+  .theme p { margin: 0; color: #333; font-size: 15px; line-height: 1.65; }
+
+  .proj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .proj-card {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 14px;
+    padding: 20px; transition: transform 0.18s, border-color 0.18s;
+  }
+  .proj-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+  .proj-card .top { display: flex; justify-content: space-between; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-family: ui-monospace, Menlo, monospace; margin-bottom: 8px; }
+  .proj-card .top .tag { color: var(--accent); }
+  .proj-card h3 { margin: 0 0 8px; font-size: 16px; line-height: 1.35; }
+  .proj-card p { margin: 0 0 8px; color: #3a3d44; font-size: 14px; line-height: 1.55; }
+  .proj-card .stack { color: var(--muted); font-size: 12.5px; font-family: ui-monospace, Menlo, monospace; }
+
+  .pub { padding: 18px 0; border-top: 1px solid var(--rule); }
+  .pub:last-child { border-bottom: 1px solid var(--rule); }
+  .pub .pmeta { color: var(--muted); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; font-family: ui-monospace, Menlo, monospace; margin-bottom: 4px; }
+  .pub h3 { margin: 0 0 6px; font-size: 17px; line-height: 1.35; font-weight: 500; }
+  .pub .pauth { color: var(--muted); font-size: 14px; }
+  .pub .pvenue { font-size: 14px; color: #333; font-style: italic; }
+
+  @media (max-width: 920px) {
+    .layout { grid-template-columns: 1fr; gap: 24px; padding: 24px 16px 64px; }
+    .nav { position: static; flex-direction: row; flex-wrap: wrap; padding: 14px; background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; }
+    .nav .head { width: 100%; padding: 6px 8px 14px; }
+    .nav .pill { padding: 8px 12px; font-size: 13px; }
+    .nav .group-h, .nav .ext { display: none; }
+    .proj-grid { grid-template-columns: 1fr; }
+  }
+
+{% include hover_icon_css.html %}
+</style>
+</head>
+<body>
+
+{% include variant_switcher.html active=11 label="V11 · Floating Pills" %}
+
+<div class="layout">
+
+  <aside class="nav">
+    <div class="head">
+      <img src="{{ p.identity.avatar }}" alt="{{ p.identity.name }}">
+      <h1>{{ p.identity.name }}</h1>
+      <p class="role">{{ p.identity.role }}<br>{{ p.identity.affiliation }}</p>
+    </div>
+
+    <a class="pill" href="#about">{% include hover_icon.html name="file" %} About</a>
+    <a class="pill" href="#research">{% include hover_icon.html name="brain" %} Research <span class="count">{{ p.themes.size }}</span></a>
+    <a class="pill" href="#projects">{% include hover_icon.html name="file" %} Projects <span class="count">{{ p.projects.size }}</span></a>
+    <a class="pill" href="#publications">{% include hover_icon.html name="book" %} Publications <span class="count">{{ p.publications.size }}</span></a>
+
+    <div class="group-h">Elsewhere</div>
+    {% for l in p.links %}<a class="ext" href="{{ l.url }}">{% include hover_icon.html name=l.icon %}{{ l.label }}</a>{% endfor %}
+  </aside>
+
+  <main class="content">
+
+    <section id="about">
+      <h2>About</h2>
+      <p class="h-sub">Brief introduction</p>
+      <div class="bio">
+        {% for para in p.bio %}<p>{{ para | strip_html }}</p>{% endfor %}
+      </div>
+    </section>
+
+    <section id="research">
+      <h2>Research</h2>
+      <p class="h-sub">Three open questions</p>
+      {% for t in p.themes %}
+        <article class="theme">
+          <div class="tn">{{ forloop.index | prepend: "0" | slice: -2, 2 }}</div>
+          <div>
+            <h3>{{ t.title }}</h3>
+            <p>{{ t.body | strip_html | strip_newlines }}</p>
+          </div>
+        </article>
+      {% endfor %}
+    </section>
+
+    <section id="projects">
+      <h2>Projects &amp; software</h2>
+      <p class="h-sub">Tools and platforms</p>
+      <div class="proj-grid">
+        {% for proj in p.projects %}
+          <article class="proj-card">
+            <div class="top"><span class="tag">{{ proj.tag }}</span><span>{{ proj.date_label }}</span></div>
+            <h3>{% if proj.url and proj.url != "" %}<a href="{{ proj.url }}" style="color:inherit">{{ proj.title }}</a>{% else %}{{ proj.title }}{% endif %}</h3>
+            <p>{{ proj.blurb }}</p>
+            <div class="stack">{{ proj.stack }}</div>
+          </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section id="publications">
+      <h2>Publications</h2>
+      <p class="h-sub">Peer-reviewed</p>
+      {% for pub in p.publications %}
+        <div class="pub">
+          <div class="pmeta">{{ pub.date_label }} · {{ pub.short_venue }}</div>
+          <h3><a href="{{ pub.url }}" style="color:inherit">{{ pub.title }}</a></h3>
+          <div class="pauth">{{ pub.authors }}</div>
+          <div class="pvenue">{{ pub.venue }} {{ pub.citation }}</div>
+        </div>
+      {% endfor %}
+    </section>
+
+  </main>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,352 @@
+---
+permalink: /research/r7.html
+sitemap: false
+---
+{% assign p = site.data.profile %}{% assign r = site.data.research.perception %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>R7 · Mini quiz · {{ r.title }}</title>
+<style>
+  :root {
+    --ink: #11141b;
+    --muted: #6a727e;
+    --rule: #e5e7ec;
+    --bg: #f7f8fa;
+    --paper: #ffffff;
+    --accent: #c43a6f;
+    --accent-soft: #f3eef1;
+    --green: #2a8e3a;
+    --green-soft: #e2f3e6;
+    --red: #b13c2d;
+    --red-soft: #fbe5e3;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    color: var(--ink); background: var(--bg);
+    line-height: 1.6; font-size: 15.5px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .switcher {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 24px;
+    background: rgba(247,248,250,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+  }
+  .switcher .idx a { color: var(--muted); text-decoration: none; }
+  .switcher .idx a:hover { color: var(--ink); }
+  .switcher .nums a {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted); font-variant-numeric: tabular-nums; text-decoration: none;
+  }
+  .switcher .nums a.active { background: var(--accent); color: #fff; }
+  .switcher .nums a:hover { color: var(--ink); }
+  .switcher .nums a.active:hover { color: #fff; }
+  .switcher .name { color: var(--muted); margin-left: 12px; font-size: 12px; }
+
+  .wrap { max-width: 920px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  .head { text-align: center; margin-bottom: 32px; }
+  .head .crumb {
+    font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 12px;
+  }
+  .head h1 { font-size: clamp(28px, 4vw, 42px); margin: 0 0 12px; letter-spacing: -0.015em; font-weight: 600; line-height: 1.1; max-width: 22ch; margin-left: auto; margin-right: auto; }
+  .head .headline { color: #3a3d44; max-width: 60ch; margin: 0 auto 18px; font-size: 16px; line-height: 1.55; }
+  .head .meta { display: inline-flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--muted); align-items: center; }
+  .head .badge { background: var(--accent-soft); color: var(--accent); padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+
+  /* Quiz card */
+  .quiz-card {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 22px;
+    padding: 32px;
+    box-shadow: 0 10px 40px rgba(196,58,111,0.08);
+    margin: 24px 0 36px;
+  }
+  .quiz-card .lbl {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent-soft); color: var(--accent);
+    padding: 5px 14px; border-radius: 999px;
+    font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600;
+    margin-bottom: 16px;
+  }
+  .quiz-card .lbl .hi { width: 14px; height: 14px; }
+  .quiz-card .intro { font-size: 16px; color: #2a2c33; margin: 0 0 14px; line-height: 1.65; max-width: 70ch; }
+
+  .quiz-progress {
+    display: flex; align-items: center; gap: 12px; margin-top: 18px;
+    font-size: 13px; color: var(--muted);
+  }
+  .quiz-progress .bar { flex: 1; height: 6px; background: var(--rule); border-radius: 999px; overflow: hidden; }
+  .quiz-progress .bar div { height: 100%; width: 0%; background: var(--accent); transition: width 0.4s; }
+
+  /* Questions */
+  .q {
+    padding: 22px 0;
+    border-top: 1px solid var(--rule);
+  }
+  .q:first-of-type { border-top: none; padding-top: 0; }
+  .q h3 {
+    font-size: 18px; margin: 0 0 14px; line-height: 1.35; font-weight: 600;
+    display: flex; align-items: baseline; gap: 10px;
+  }
+  .q h3 .qn {
+    color: var(--accent); font-family: ui-monospace, Menlo, monospace;
+    font-size: 12px; letter-spacing: 0.16em; font-weight: 700;
+  }
+
+  .options { display: grid; gap: 10px; }
+  .opt input[type=radio] { display: none; }
+  .opt label {
+    display: block;
+    background: var(--bg); border: 1.5px solid var(--rule); border-radius: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: border-color 0.18s, background 0.18s, transform 0.18s;
+    position: relative;
+    font-size: 15px;
+  }
+  .opt label::before {
+    content: ""; display: inline-block;
+    width: 16px; height: 16px; border-radius: 50%;
+    border: 2px solid var(--muted);
+    vertical-align: middle; margin-right: 12px;
+    transition: all 0.18s;
+  }
+  .opt label:hover {
+    border-color: var(--accent); transform: translateX(2px);
+  }
+  .opt input:checked + label {
+    border-color: var(--accent); background: var(--accent-soft);
+  }
+  .opt input:checked + label::before {
+    background: var(--accent); border-color: var(--accent);
+    box-shadow: inset 0 0 0 3px #fff;
+  }
+
+  /* Reveal state */
+  .q.revealed .opt label { cursor: default; }
+  .q.revealed .opt label:hover { transform: none; }
+  .q.revealed .opt.correct label {
+    border-color: var(--green); background: var(--green-soft);
+    color: var(--green);
+  }
+  .q.revealed .opt.correct label::before {
+    background: var(--green); border-color: var(--green);
+    box-shadow: inset 0 0 0 3px #fff;
+  }
+  .q.revealed .opt.incorrect input:checked + label {
+    border-color: var(--red); background: var(--red-soft);
+    color: var(--red);
+  }
+  .q.revealed .opt.incorrect input:checked + label::before {
+    background: var(--red); border-color: var(--red);
+    box-shadow: inset 0 0 0 3px #fff;
+  }
+
+  .explainer {
+    margin-top: 14px; padding: 14px 16px; border-radius: 10px;
+    background: var(--bg); border-left: 4px solid var(--muted);
+    font-size: 14.5px; line-height: 1.6; color: #2a2c33;
+    display: none;
+  }
+  .q.revealed .explainer { display: block; }
+  .q.revealed.right .explainer { border-left-color: var(--green); }
+  .q.revealed.wrong .explainer { border-left-color: var(--red); }
+  .explainer .lead { font-weight: 600; margin-bottom: 4px; }
+  .q.revealed.right .explainer .lead { color: var(--green); }
+  .q.revealed.wrong .explainer .lead { color: var(--red); }
+
+  .q-actions { display: flex; gap: 10px; margin-top: 14px; }
+  .q-actions button {
+    background: var(--accent); color: #fff; border: none; border-radius: 999px;
+    padding: 8px 18px; font-size: 13.5px; cursor: pointer; font-weight: 500;
+    font-family: inherit;
+  }
+  .q-actions button:disabled { opacity: 0.5; cursor: default; }
+  .q-actions button.ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+
+  /* Score summary */
+  .summary {
+    margin-top: 24px; padding: 22px; border-radius: 16px;
+    background: var(--accent-soft); border: 1px solid #f0d8e1;
+    display: none;
+  }
+  .summary.visible { display: block; }
+  .summary h3 { margin: 0 0 6px; color: var(--accent); font-size: 18px; }
+  .summary p { margin: 0 0 8px; font-size: 15px; color: #2a2c33; }
+  .summary .score { font-size: 36px; font-weight: 600; color: var(--accent); font-family: ui-monospace, Menlo, monospace; }
+
+  /* The rest of the page (compact) */
+  .more { margin-top: 36px; }
+  .sec-h {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em;
+    color: var(--muted); margin: 32px 0 16px; font-weight: 600;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sec-h::after { content: ""; flex: 1; height: 1px; background: var(--rule); }
+
+  .card {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 14px;
+    padding: 18px 20px; margin-bottom: 12px;
+  }
+  .card p { margin: 0; font-size: 15px; line-height: 1.65; color: #2a2c33; }
+
+  .row-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 720px) { .row-grid { grid-template-columns: 1fr; } }
+
+  .row-card {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .row-card .ttag {
+    background: var(--accent-soft); color: var(--accent); padding: 3px 8px; border-radius: 999px;
+    font-family: ui-monospace, Menlo, monospace; font-size: 10.5px; letter-spacing: 0.1em;
+    text-transform: uppercase; font-weight: 600; display: inline-block; margin-bottom: 6px;
+  }
+  .row-card h4 { margin: 0 0 6px; font-size: 15px; }
+  .row-card p { margin: 0; font-size: 13.5px; color: #3a3d44; line-height: 1.5; }
+
+  .pub { padding: 14px 0; border-top: 1px solid var(--rule); }
+  .pub:last-child { border-bottom: 1px solid var(--rule); }
+  .pub h3 { margin: 0 0 4px; font-size: 15.5px; font-weight: 500; line-height: 1.35; }
+  .pub .pmeta { color: var(--muted); font-size: 12.5px; }
+
+{% include hover_icon_css.html %}
+</style>
+</head>
+<body>
+
+{% include research_switcher.html active=7 label="R7 · Mini quiz" %}
+
+<main class="wrap">
+
+  <header class="head">
+    <div class="crumb">Research project · Perception</div>
+    <h1>{{ r.title }}</h1>
+    <p class="headline">{{ r.headline }}</p>
+    <div class="meta">
+      <span class="badge">{{ r.status }}</span>
+      <span>· {{ r.date_range }}</span>
+      <span>· {{ r.reading_time }}</span>
+    </div>
+  </header>
+
+  <section class="quiz-card">
+    <span class="lbl">{% include hover_icon.html name="brain" %} Try the experiment · 3 questions</span>
+    <p class="intro">{{ r.quiz.intro }}</p>
+
+    <div class="quiz-progress">
+      <span><strong id="answered">0</strong> / {{ r.quiz.questions.size }} answered</span>
+      <div class="bar"><div id="bar-fill"></div></div>
+      <span><strong id="score">0</strong> correct</span>
+    </div>
+
+    {% for q in r.quiz.questions %}
+      <div class="q" data-i="{{ forloop.index0 }}">
+        <h3><span class="qn">Q · 0{{ forloop.index }}</span><span>{{ q.prompt }}</span></h3>
+        <div class="options">
+          {% for o in q.options %}
+            <div class="opt {% if o.correct %}correct{% else %}incorrect{% endif %}">
+              <input type="radio" name="q{{ forloop.parentloop.index }}" id="q{{ forloop.parentloop.index }}o{{ forloop.index }}" data-correct="{{ o.correct }}" data-why="{{ o.why | escape }}">
+              <label for="q{{ forloop.parentloop.index }}o{{ forloop.index }}">{{ o.text }}</label>
+            </div>
+          {% endfor %}
+        </div>
+        <div class="explainer">
+          <div class="lead"></div>
+          <div class="why"></div>
+        </div>
+      </div>
+    {% endfor %}
+
+    <div class="summary" id="summary">
+      <h3>You're done! 🎉</h3>
+      <p>You got <span class="score" id="final-score">0</span> / {{ r.quiz.questions.size }} right.</p>
+      <p style="font-size:14px;margin-top:10px;">The "right" answer is just the one the data points to most clearly — getting one wrong is fine, the explanations below tell you why each option matters.</p>
+    </div>
+  </section>
+
+  <div class="more">
+    <h2 class="sec-h">Background</h2>
+    {% for para in r.background %}<div class="card"><p>{{ para }}</p></div>{% endfor %}
+
+    <h2 class="sec-h">Methods</h2>
+    <div class="row-grid">
+      {% for m in r.methods %}
+        <div class="row-card">
+          <span class="ttag">M · 0{{ forloop.index }}</span>
+          <h4>{{ m.title }}</h4>
+          <p>{{ m.body }}</p>
+        </div>
+      {% endfor %}
+    </div>
+
+    <h2 class="sec-h">Findings</h2>
+    <div class="row-grid">
+      {% for f in r.findings %}
+        <div class="row-card">
+          <span class="ttag">F · 0{{ f.icon }}</span>
+          <h4>{{ f.title }}</h4>
+          <p>{{ f.body }}</p>
+        </div>
+      {% endfor %}
+    </div>
+
+    <h2 class="sec-h">Publications</h2>
+    {% for pub in r.publications %}
+      <div class="pub">
+        <h3><a href="{{ pub.url }}">{{ pub.title }}</a></h3>
+        <div class="pmeta">{{ pub.authors }} — <em>{{ pub.venue }}</em>, {{ pub.year }}.</div>
+      </div>
+    {% endfor %}
+  </div>
+
+</main>
+
+<script>
+  let answered = 0;
+  let correct = 0;
+  const total = document.querySelectorAll('.q').length;
+
+  document.querySelectorAll('.q').forEach(q => {
+    q.querySelectorAll('input[type=radio]').forEach(inp => {
+      inp.addEventListener('change', () => {
+        if (q.classList.contains('revealed')) return;
+        const isCorrect = inp.dataset.correct === 'true';
+        const why = inp.dataset.why;
+
+        q.classList.add('revealed');
+        q.classList.add(isCorrect ? 'right' : 'wrong');
+
+        const ex = q.querySelector('.explainer');
+        ex.querySelector('.lead').textContent = isCorrect ? '✓ Right.' : '✗ Not quite.';
+        ex.querySelector('.why').textContent = why;
+
+        answered++;
+        if (isCorrect) correct++;
+        document.getElementById('answered').textContent = answered;
+        document.getElementById('score').textContent = correct;
+        document.getElementById('bar-fill').style.width = (answered / total * 100) + '%';
+
+        if (answered === total) {
+          document.getElementById('summary').classList.add('visible');
+          document.getElementById('final-score').textContent = correct;
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
