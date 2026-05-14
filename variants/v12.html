@@ -120,12 +120,14 @@ sitemap: false
     padding: 4px 10px; border-radius: 999px; font-size: 11.5px; color: #2a2c33;
   }
 
-  /* Articles grid (News tab) */
+  /* Articles grid (News tab) — 2 cols on desktop, 1 col on mobile */
   .articles-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 16px;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    width: 100%;
   }
+  @media (max-width: 760px) { .articles-grid { grid-template-columns: 1fr; } }
   .article-card {
     background: var(--paper); border: 1px solid var(--rule);
     border-top: 4px solid var(--accent);
@@ -153,8 +155,7 @@ sitemap: false
   .article-card p { margin: 0; color: #3a3d44; font-size: 14px; line-height: 1.6; }
   .article-card .art-more { margin-top: auto; padding-top: 8px; font-size: 13.5px; font-weight: 500; color: var(--accent); display: inline-flex; align-items: center; gap: 4px; }
   .article-card .art-more .hi { width: 13px; height: 13px; }
-  .article-card.draft .art-more { color: var(--muted); }
-  .article-card.draft .art-more::after { content: " (draft)"; opacity: 0.8; }
+  .article-card .coming-soon { margin-top: auto; padding-top: 8px; font-size: 13px; color: var(--muted); font-style: italic; }
 
   /* News timeline (kept for reference) */
   .news-feed { position: relative; padding-left: 24px; }
@@ -236,7 +237,9 @@ sitemap: false
   .pub .pauth { color: var(--muted); font-size: 13.5px; }
   .pub .pvenue { font-size: 13.5px; color: #3a3d44; font-style: italic; }
 
-  .add-row {
+  /* "+ Add" buttons hidden unless ?admin=1 */
+  .add-row { display: none; }
+  html[data-admin="1"] .add-row {
     margin-top: 22px; padding-top: 18px; border-top: 1px dashed var(--rule);
     display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
   }
@@ -307,15 +310,19 @@ sitemap: false
         <p class="h-sub">Articles &amp; essays</p>
         <div class="articles-grid">
           {% for a in p.articles %}
-            {% assign is_draft = false %}{% if a.url == "#" or a.url == "" %}{% assign is_draft = true %}{% endif %}
-            <article class="article-card{% if is_draft %} draft{% endif %}" data-cat="{{ a.accent | default: 'pink' }}">
+            {% assign has_link = false %}{% if a.url and a.url != "" and a.url != "#" %}{% assign has_link = true %}{% endif %}
+            <article class="article-card" data-cat="{{ a.accent | default: 'pink' }}">
               <div class="art-top">
                 <span class="cat">{{ a.category }}</span>
                 <span>{{ a.date }}</span>
               </div>
-              <h3>{% if a.url and a.url != "" and a.url != "#" %}<a href="{{ a.url }}">{{ a.title }}</a>{% else %}{{ a.title }}{% endif %}</h3>
+              <h3>{% if has_link %}<a href="{{ a.url }}">{{ a.title }}</a>{% else %}{{ a.title }}{% endif %}</h3>
               <p>{{ a.excerpt }}</p>
-              {% if a.url and a.url != "" %}<a class="art-more" href="{{ a.url }}">Read more {% include hover_icon.html name="open" %}</a>{% endif %}
+              {% if has_link %}
+                <a class="art-more" href="{{ a.url }}">Read more {% include hover_icon.html name="open" %}</a>
+              {% else %}
+                <span class="coming-soon">Coming soon</span>
+              {% endif %}
             </article>
           {% endfor %}
         </div>
@@ -384,7 +391,7 @@ sitemap: false
 </main>
 
 <script>
-  // Lightweight tab activation: highlight the matching pill on hash change.
+  // Tab activation
   function setActive() {
     var hash = location.hash || '#pane-about';
     document.querySelectorAll('.tabbar a').forEach(function(a) {
@@ -393,6 +400,11 @@ sitemap: false
   }
   window.addEventListener('hashchange', setActive);
   setActive();
+
+  // Admin mode — show "+ Add" buttons when URL has ?admin=1
+  if (new URLSearchParams(location.search).get('admin') === '1') {
+    document.documentElement.setAttribute('data-admin', '1');
+  }
 </script>
 
 </body>
