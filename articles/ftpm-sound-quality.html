@@ -109,7 +109,12 @@ sitemap: true
     letter-spacing: -0.015em; line-height: 1.2;
   }
   .mushra .trial-desc {
-    margin: 0 0 22px; color: var(--muted); font-size: 14.5px; line-height: 1.55; max-width: 64ch;
+    margin: 0 0 12px; color: var(--muted); font-size: 14.5px; line-height: 1.55; max-width: 64ch;
+  }
+  .mushra .trial-prompt {
+    margin: 0 0 22px; font-size: 15px; font-weight: 600; color: var(--ink);
+    padding: 10px 16px; background: var(--accent-soft); border-radius: 10px;
+    display: inline-block;
   }
 
   /* Reference player — large, prominent */
@@ -402,6 +407,7 @@ sitemap: true
 
     <h2 class="trial-h" id="trial-label"></h2>
     <p class="trial-desc" id="trial-desc"></p>
+    <p class="trial-prompt" id="trial-prompt"></p>
 
     <div class="ref-row" id="ref-row">
       <button class="play-btn" id="ref-play" aria-label="Play reference">▶</button>
@@ -476,6 +482,7 @@ sitemap: true
 <!-- Serialise the YAML config to JSON for the JS to consume -->
 <script id="mushra-config" type="application/json">{
   "title": {{ m.title | jsonify }},
+  "prompt": {{ m.prompt | jsonify }},
   "scale": {{ m.scale | jsonify }},
   "mismatch": {{ m.mismatch | jsonify }},
   "trials": {{ m.trials | jsonify }}
@@ -577,7 +584,8 @@ sitemap: true
     const t = currentTrial();
     trialCurEl.textContent = (trialIdx + 1);
     trialLblEl.textContent = t.label;
-    trialDescEl.textContent = t.description || '';
+    trialDescEl.innerHTML = t.description || '';
+    document.getElementById('trial-prompt').textContent = config.prompt || '';
     refPlay.onclick = () => togglePlay(t.reference);
     stopAll();
 
@@ -586,6 +594,9 @@ sitemap: true
 
     stimGrid.innerHTML = '';
     const unit = (config.mismatch && config.mismatch.unit) || '';
+    const sMin = (config.scale && config.scale.min != null) ? config.scale.min : 0;
+    const sMax = (config.scale && config.scale.max != null) ? config.scale.max : 100;
+    const sDef = (config.scale && config.scale.default != null) ? config.scale.default : Math.round((sMin + sMax) / 2);
     stims.forEach(s => {
       const initial = (scores[t.id] && scores[t.id][s.label] != null) ? scores[t.id][s.label] : null;
       const row = document.createElement('div');
@@ -598,7 +609,6 @@ sitemap: true
       let mmCls = '';
       if (s.mean_mismatch != null) {
         const v = s.mean_mismatch;
-        // Format with sign + 2 dp; show 0 as "0.00"
         mmText = (v > 0 ? '+' : '') + v.toFixed(2) + (unit ? ' ' + unit : '');
       }
       if (s.hidden_ref) mmCls = 'hidden-ref';
@@ -611,7 +621,7 @@ sitemap: true
           ${mmText ? `<div class="mismatch-tag ${mmCls}" title="${(config.mismatch && config.mismatch.label) || 'Mean mismatch'}">${mmText}</div>` : ''}
         </div>
         <div class="slider-wrap">
-          <input type="range" min="0" max="100" step="1" value="${initial != null ? initial : 50}" ${initial == null ? 'data-unset="1"' : ''}>
+          <input type="range" min="${sMin}" max="${sMax}" step="1" value="${initial != null ? initial : sDef}" ${initial == null ? 'data-unset="1"' : ''}>
           <div class="scale-marks">
             ${config.scale.labels.map(l => `<span>${l.text}</span>`).join('')}
           </div>
