@@ -282,6 +282,12 @@ defaults:
       layout: talk
       author_profile: true
       share: true
+  # Unlisted documents in files/archive/ — keep them OUT of sitemap.xml.
+  # (Paired with a Disallow rule in robots.txt; they are not linked anywhere.)
+  - scope:
+      path: "files/archive"
+    values:
+      sitemap: false
 
 
 # Sass/SCSS

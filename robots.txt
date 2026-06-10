@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /files/archive/
+
+Sitemap: https://villejoubertlouis.github.io/sitemap.xml
